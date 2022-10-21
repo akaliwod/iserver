@@ -1,0 +1,6 @@
+paramiko
+pyyaml
+click
+requests
+validators
+progress

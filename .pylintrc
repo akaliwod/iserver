@@ -1,0 +1,33 @@
+[MASTER]
+init-hook='import sys; sys.path.append(".")'
+
+disable=
+    C0114, # missing-module-docstring
+    C0115, # missing-class-docstring
+    C0116, # missing-function-docstring
+    C0209, # consider-using-f-string
+    W0703, # broad-except
+    W0612, # unused-variable
+    W0613, # unused-argument
+    E1101, # no-member
+    E1128, # assignment-from-none
+    C0206, # consider-using-dict-items
+    C0302, # too-many-lines
+    W0102, # dangerous-default-value
+    W0123, # eval-used
+    W0603, # global-statement
+    R1702, # too-many-nested-blocks
+    R0901, # too-many-ancestors
+    R0902, # too-many-instance-attributes
+    R0903, # too-few-public-methods
+    R0904, # too-many-public-methods
+    R0911, # too-many-return-statements
+    R0912, # too-many-branches
+    R0913, # too-many-arguments
+    R0914, # too-many-local-variables
+    R0915, # too-many-statements
+
+[FORMAT]
+
+# Maximum number of characters on a single line.
+max-line-length=256
