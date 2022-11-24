@@ -3,8 +3,8 @@
 Use --serial option to provide comma (,) separated list of serial numbers you want to get.
 
 ```
-# iserver get servers
-    --serial WMP24040059,WMP240400FM
+# iserver get servers --serial WMP24040059,WMP240400FM
+
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
 | Flags      | Name                            | Model           | Serial       | IP           | CPU         | Memory     |
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+

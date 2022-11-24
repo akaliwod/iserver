@@ -39,6 +39,11 @@ class IntersightAccount(Settings):
         success, version = self.get_isctl_version()
         return success
 
+    def is_iaccount(self, name):
+        if self.get_iaccount_configuration(name) is None:
+            return False
+        return True
+
     def get_iaccounts(self):
         iaccounts = []
         for name in os.listdir(self.iaccount_dir):

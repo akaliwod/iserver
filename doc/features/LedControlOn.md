@@ -4,6 +4,7 @@
 
 ```
 # iserver set locator on --help
+
 Usage: iserver.py set locator on [OPTIONS]
 
   Locator on
@@ -25,9 +26,8 @@ Options:
 ## Default output
 
 ```
-# iserver set locator on
-    --group self-test-locator
-    --no-confirm
+# iserver set locator on --group self-test-locator --no-confirm
+
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
 | Flags      | Name                            | Model           | Serial       | IP           | CPU         | Memory     |
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
@@ -48,8 +48,8 @@ Workflows finished: [#######################] 1/1
 Server state
 
 ```
-# iserver get servers
-    --group self-test-locator
+# iserver get servers --group self-test-locator
+
 +-------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
 | Flags       | Name                            | Model           | Serial       | IP           | CPU         | Memory     |
 +-------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
@@ -68,10 +68,8 @@ Flags
 ## Dry run
 
 ```
-# iserver set locator on
-    --group self-test-locator
-    --no-confirm
-    --dry-run
+# iserver set locator on --group self-test-locator --no-confirm --dry-run
+
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
 | Flags      | Name                            | Model           | Serial       | IP           | CPU         | Memory     |
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
@@ -85,9 +83,8 @@ isctl create compute updatecomputeserversetting moid 5fdfe47f6573732d3006dc76
 ## Verbose
 
 ```
-# iserver set locator on
-    --group self-test-locator
-    --no-confirm
+# iserver set locator on --group self-test-locator --no-confirm
+
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
 | Flags      | Name                            | Model           | Serial       | IP           | CPU         | Memory     |
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
@@ -138,9 +135,8 @@ Workflow
 ## Developer
 
 ```
-# iserver set locator on
-    --group self-test-locator
-    --no-confirm
+# iserver set locator on --group self-test-locator --no-confirm
+
 Developer output
 
 {

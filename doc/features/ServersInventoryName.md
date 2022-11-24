@@ -5,8 +5,8 @@ Define --name value for case-insensite loose match of server's name.
 You can add any extra filtering options following logical AND rule. Use -o|--output for desired output format.
 
 ```
-# iserver get servers
-    --name p2b
+# iserver get servers --name p2b
+
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
 | Flags      | Name                            | Model           | Serial       | IP           | CPU         | Memory     |
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+

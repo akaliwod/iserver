@@ -62,6 +62,34 @@ def tests_fixup(directory):
             print('- filename changed %s' % (dst))
 
 
+def get_test_iaccount(test_filename, directory):
+    test_definition = get_test(
+        test_filename,
+        directory
+    )
+
+    if test_definition is None:
+        print('Test not found: %s' % (test_filename))
+        sys.exit(1)
+
+    if 'iaccount' not in test_definition:
+        return None
+
+    return test_definition['iaccount']
+
+
+def get_test_environment(test_filename, directory):
+    test_definition = get_test(
+        test_filename,
+        directory
+    )
+
+    if 'environment' not in test_definition:
+        return None
+
+    return test_definition['environment']
+
+
 def get_test_commands(test):
     iserver_prefix = get_iserver_prefix()
     commands = []
@@ -202,36 +230,6 @@ def get_test_results():
             results.append(content)
 
     return results
-
-
-def get_supported_cli(names=True):
-    cli = {}
-
-    test_results = get_test_results()
-    for result in test_results:
-        if result['reference'] not in cli:
-            cli[result['reference']] = dict(
-                successful=[],
-                failed=[],
-                supported=True
-            )
-        if result['success']:
-            cli[result['reference']]['successful'] = result['command']
-        else:
-            cli[result['reference']]['failed'] = result['command']
-            cli[result['reference']]['supported'] = False
-
-    if names:
-        names = []
-        for item in cli:
-            if cli[item]['supported']:
-                if item not in names:
-                    names.append(item)
-
-        names = sorted(names)
-        return names
-
-    return cli
 
 
 def get_test(test_filename, directory):
@@ -451,14 +449,28 @@ def save_test_result(results_directory, filename, command, ref_command, success,
             print('Failed to find log directory: %s' % (search_command))
             sys.exit(1)
 
-        for log_filename in ['isctl.debug', 'iserver.debug', 'iserver.info', 'iserver.error', 'iserver.output.debug', 'iserver.output.verbose', 'iserver.output.default', 'devel.debug']:
+        files = [
+            'isctl.debug',
+            'iserver.debug',
+            'iserver.info',
+            'iserver.error',
+            'iserver.output.debug',
+            'iserver.output.verbose',
+            'iserver.output.default',
+            'devel.debug',
+            'api.debug',
+            'redfish.debug',
+            'odata.debug'
+        ]
+
+        for log_filename in files:
             source = os.path.join(log_directory, log_filename)
             if os.path.isfile(source):
                 dst = os.path.join(result_location, log_filename)
                 shutil.copyfile(source, dst)
 
 
-def extend_variables(variables, exec, iaccount):
+def extend_variables(variables, exec_section, iaccount):
     '''
     "exec": {
         "isctl": "firmware serverconfigurationutilitydistributable --name \"SCU 6.2.2a\" -o json",
@@ -474,27 +486,27 @@ def extend_variables(variables, exec, iaccount):
     '''
     template_handler = template_helper.TemplateHelper()
 
-    if 'isctl' in exec:
+    if 'isctl' in exec_section:
         for key in ['attribute', 'variable']:
-            if key not in exec:
+            if key not in exec_section:
                 print('No key found in exec')
                 sys.exit(1)
 
         isctl_handler = isctl_helper.Isctl(iaccount)
-        command = template_handler.replace_variables(exec['isctl'], variables)
+        command = template_handler.replace_variables(exec_section['isctl'], variables)
         response = isctl_handler.get(command, json_conversion=True)
         if response is None:
             print('Command failed: %s' % (command))
             sys.exit(1)
 
-        if exec['attribute'] not in response:
-            print('Attribute not found in response: %s' % (exec['attribute']))
+        if exec_section['attribute'] not in response:
+            print('Attribute not found in response: %s' % (exec_section['attribute']))
             sys.exit(1)
 
-        variables[exec['variable']] = response[exec['attribute']]
+        variables[exec_section['variable']] = response[exec_section['attribute']]
 
-    if 'system' in exec:
-        command = template_handler.replace_variables(exec['system'], variables)
+    if 'system' in exec_section:
+        command = template_handler.replace_variables(exec_section['system'], variables)
         try:
             (return_code, output, duration) = get_output(command)
         except BaseException:
@@ -512,19 +524,19 @@ def extend_variables(variables, exec, iaccount):
             print(output)
             sys.exit(1)
 
-        if 'index' in exec:
-            if exec['attribute'] not in response[exec['index']]:
-                print('Attribute not found in response list: %s' % (exec['attribute']))
+        if 'index' in exec_section:
+            if exec_section['attribute'] not in response[exec_section['index']]:
+                print('Attribute not found in response list: %s' % (exec_section['attribute']))
                 sys.exit(1)
 
-            variables[exec['variable']] = response[exec['index']][exec['attribute']]
+            variables[exec_section['variable']] = response[exec_section['index']][exec_section['attribute']]
 
         else:
-            if exec['attribute'] not in response:
-                print('Attribute not found in response: %s' % (exec['attribute']))
+            if exec_section['attribute'] not in response:
+                print('Attribute not found in response: %s' % (exec_section['attribute']))
                 sys.exit(1)
 
-            variables[exec['variable']] = response[exec['attribute']]
+            variables[exec_section['variable']] = response[exec_section['attribute']]
 
     return variables
 
@@ -841,6 +853,7 @@ def run_tests(tests, tests_count, tests_directory, results_directory, environmen
         )
         for test_result in test_results:
             results.append(test_result)
+
     bar_handler.finish()
 
     return results

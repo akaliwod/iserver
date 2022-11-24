@@ -27,6 +27,9 @@ class Log():
         self.info_filename = os.path.join(self.logs_directory, 'iserver.info')
         self.debug_filename = os.path.join(self.logs_directory, 'iserver.debug')
         self.isctl_filename = os.path.join(self.logs_directory, 'isctl.debug')
+        self.api_filename = os.path.join(self.logs_directory, 'api.debug')
+        self.redfish_filename = os.path.join(self.logs_directory, 'redfish.debug')
+        self.odata_filename = os.path.join(self.logs_directory, 'odata.debug')
         self.ssh_filename = os.path.join(self.logs_directory, 'ssh.debug')
         self.devel_filename = os.path.join(self.logs_directory, 'devel.debug')
         self.lcm_report_filename = os.path.join(self.logs_directory, 'lcm.report')
@@ -37,6 +40,9 @@ class Log():
         self.mapping['info'] = self.info_filename
         self.mapping['debug'] = self.debug_filename
         self.mapping['isctl'] = self.isctl_filename
+        self.mapping['api'] = self.api_filename
+        self.mapping['odata'] = self.odata_filename
+        self.mapping['redfish'] = self.redfish_filename
         self.mapping['ssh'] = self.ssh_filename
 
     def run_id(self, my_run_id):
@@ -90,11 +96,53 @@ class Log():
         for line in content.split('\n'):
             if len(line) > 0:
                 result['calls'] = result['calls'] + 1
+                (when, success, duration, count, command) = line.split('\t')
+                if success == 'True':
+                    result['success'] = result['success'] + 1
+                else:
+                    result['failed'] = result['failed'] + 1
+
+                result['total_time'] = result['total_time'] + int(duration)
+
+        return result
+
+    def analyze_redfish(self):
+        result = {}
+        result['read'] = False
+        result['success'] = 0
+        result['failed'] = 0
+        result['connect'] = 0
+        result['disconnect'] = 0
+        result['path'] = 0
+        result['connect_time'] = 0
+        result['disconnect_time'] = 0
+        result['path_time'] = 0
+        result['total_time'] = 0
+
+        content = self.get_file(self.redfish_filename)
+        if content is None:
+            return result
+
+        result['read'] = True
+        for line in content.split('\n'):
+            if len(line) > 0:
                 (when, success, duration, command) = line.split('\t')
                 if success == 'True':
                     result['success'] = result['success'] + 1
                 else:
                     result['failed'] = result['failed'] + 1
+
+                if command == 'connect':
+                    result['connect'] = result['connect'] + 1
+                    result['connect_time'] = result['connect_time'] + int(duration)
+
+                if command == 'disconnect':
+                    result['disconnect'] = result['disconnect'] + 1
+                    result['disconnect_time'] = result['disconnect_time'] + int(duration)
+
+                if command not in ['connect', 'disconnect']:
+                    result['path'] = result['path'] + 1
+                    result['path_time'] = result['path_time'] + int(duration)
 
                 result['total_time'] = result['total_time'] + int(duration)
 
@@ -136,6 +184,7 @@ class Log():
         result = {}
         result['duration'] = duration
         result['isctl'] = self.analyze_isctl()
+        result['redfish'] = self.analyze_redfish()
         result['ssh'] = self.analyze_ssh()
         result['error'] = self.analyze_log(self.error_filename)
         result['info'] = self.analyze_log(self.info_filename)
@@ -154,7 +203,7 @@ class Log():
 
     def get_logs(self, files=None):
         if files is None:
-            files = ['debug', 'info', 'error', 'isctl', 'ssh']
+            files = ['debug', 'info', 'error', 'isctl', 'ssh', 'redfish']
 
         content = {}
         for filename in files:
@@ -174,11 +223,71 @@ class Log():
         except BaseException:
             print(traceback.format_exc())
 
-    def cli(self, command, success, duration):
+    def redfish(self, command, success, duration):
         try:
             current_time = datetime.datetime.now()
+
             msg = "%s\t%s\t%s\t%s\n" % (
-                current_time, success, duration, command)
+                current_time,
+                success,
+                duration,
+                command
+            )
+
+            with open(self.redfish_filename, 'a', encoding='utf-8') as file_handler:
+                file_handler.write(msg)
+
+        except BaseException:
+            print(traceback.format_exc())
+
+    def get_api(self):
+        content = self.get_file(self.api_filename)
+        if content is None:
+            return {}
+        return json.loads(content)
+
+    def api(self, command, content):
+        try:
+            apis = self.get_api()
+            apis[command] = content
+            with open(self.api_filename, 'w', encoding='utf-8') as file_handler:
+                file_handler.write(json.dumps(apis, indent=4))
+
+        except BaseException:
+            print(traceback.format_exc())
+
+    def get_odata(self):
+        content = self.get_file(self.odata_filename)
+        if content is None:
+            return {}
+        return json.loads(content)
+
+    def odata(self, path, content):
+        try:
+            odatas = self.get_odata()
+            odatas[path] = content
+            with open(self.odata_filename, 'w', encoding='utf-8') as file_handler:
+                file_handler.write(json.dumps(odatas, indent=4))
+
+        except BaseException:
+            print(traceback.format_exc())
+
+    def cli(self, command, success, duration, item_count=None):
+        try:
+            current_time = datetime.datetime.now()
+
+            count = '-'
+            if item_count is not None:
+                count = int(item_count)
+
+            msg = "%s\t%s\t%s\t%s\t%s\n" % (
+                current_time,
+                success,
+                duration,
+                count,
+                command
+            )
+
             with open(self.isctl_filename, 'a', encoding='utf-8') as file_handler:
                 file_handler.write(msg)
 
@@ -312,6 +421,12 @@ class Log():
         for my_dir in my_dirs:
             if my_dir['command'] == search_command:
                 return my_dir['directory']
+
+        if '"' in search_command:
+            search_command = search_command.replace('"', '')
+            for my_dir in my_dirs:
+                if my_dir['command'] == search_command:
+                    return my_dir['directory']
 
         return None
 

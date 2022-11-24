@@ -4,6 +4,7 @@ Get workflow's detail selected by Moid in table, json or yaml formats.
 
 ```
 # iserver get workflow --help
+
 Usage: iserver.py get workflow [OPTIONS] WORKFLOW_ID
 
   Get workflow
@@ -20,6 +21,7 @@ Default output
 
 ```
 # iserver get workflow 6346a23c696f6e2d30f93ad5
+
 Get server workflow info...
 
 Server
@@ -55,6 +57,7 @@ JSON output
 
 ```
 # iserver get workflow 6346a23c696f6e2d30f93ad5 -o json
+
 {
     "workflow": {
         "Moid": "6346a23c696f6e2d30f93ad5",
@@ -547,6 +550,7 @@ YAML output
 
 ```
 # iserver get workflow 6346a23c696f6e2d30f93ad5 -o yaml
+
 server:
   AccountMoid: 5be4b2ce67626c6d661ca38d
   Adapters:

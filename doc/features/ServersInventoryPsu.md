@@ -5,8 +5,8 @@ Use --psu option to select servers with power supply reporting unhealthy state.
 You can add any extra filtering options following logical AND rule. Use -o|--output for desired output format.
 
 ```
-# iserver get servers
-    --psu
+# iserver get servers --psu
+
 +--------+--------------------------------+-----------------+--------------+----------------+-------------+------------+------+
 | Flags  | Name                           | Model           | Serial       | IP             | CPU         | Memory     | Psu  |
 +--------+--------------------------------+-----------------+--------------+----------------+-------------+------------+------+

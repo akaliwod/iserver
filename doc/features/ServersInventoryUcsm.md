@@ -5,8 +5,8 @@ Use --ucsm option to select UCSM managed servers.
 You can add any extra filtering options following logical AND rule. Use -o|--output for desired output format.
 
 ```
-# iserver get servers
-    --ucsm
+# iserver get servers --ucsm
+
 +--------+-----------------------+-----------------+--------------+----------------+--------------+------------+
 | Flags  | Name                  | Model           | Serial       | IP             | CPU          | Memory     |
 +--------+-----------------------+-----------------+--------------+----------------+--------------+------------+

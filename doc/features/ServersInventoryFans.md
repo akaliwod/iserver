@@ -5,8 +5,8 @@ Use --fan option to select servers with fans reporting unhealthy state.
 You can add any extra filtering options following logical AND rule. Use -o|--output for desired output format.
 
 ```
-# iserver get servers
-    --fan
+# iserver get servers --fan
+
 +--------+--------------------------------+-----------------+--------------+----------------+--------------+------------+------+
 | Flags  | Name                           | Model           | Serial       | IP             | CPU          | Memory     | Fan  |
 +--------+--------------------------------+-----------------+--------------+----------------+--------------+------------+------+

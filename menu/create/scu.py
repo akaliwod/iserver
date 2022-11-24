@@ -4,7 +4,7 @@ import click
 
 from progress.bar import Bar
 
-from lib import scu
+from lib.intersight import scu
 from menu import defaults
 from menu import validations
 

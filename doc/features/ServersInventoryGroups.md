@@ -9,9 +9,8 @@ The groups are created using --set option of servers list command. See below for
 ## Set group
 
 ```
-# iserver get servers
-    --serial WMP24040059,WMP240400FM
-    --set self-test
+# iserver get servers --serial WMP24040059,WMP240400FM --set self-test
+
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
 | Flags      | Name                            | Model           | Serial       | IP           | CPU         | Memory     |
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
@@ -33,9 +32,8 @@ Group configured with selected servers: self-test
 ## Add to group
 
 ```
-# iserver get servers
-    --cpu 30
-    --set +self-test
+# iserver get servers --cpu 30 --set +self-test
+
 +--------+-------+--------+---------+-----+------+---------+
 | Flags  | Name  | Model  | Serial  | IP  | CPU  | Memory  |
 +--------+-------+--------+---------+-----+------+---------+
@@ -55,9 +53,8 @@ Servers added to group: self-test
 ## Delete from group
 
 ```
-# iserver get servers
-    --serial WMP24040059,WMP240400FM
-    --set -self-test
+# iserver get servers --serial WMP24040059,WMP240400FM --set -self-test
+
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
 | Flags      | Name                            | Model           | Serial       | IP           | CPU         | Memory     |
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+

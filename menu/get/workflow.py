@@ -4,7 +4,7 @@ import traceback
 import yaml
 import click
 
-from lib import workflow_info
+from lib.intersight import workflow_info
 
 from menu import common
 from menu import defaults

@@ -14,6 +14,7 @@ Notes:
 
 ```
 # iserver get os-image
+
 +-------------------------+---------------------------+----------------------------+---------+----------------------------+-------+-------------------------------------------------------------------+
 | Organization            | Image ID                  | Image Name                 | Vendor  | Version                    | Type  | Link                                                              |
 +-------------------------+---------------------------+----------------------------+---------+----------------------------+-------+-------------------------------------------------------------------+
@@ -28,8 +29,8 @@ Notes:
 ## Verify
 
 ```
-# iserver get os-image
-    --verify
+# iserver get os-image --verify
+
 +-------------------------+---------------------------+----------------------------+---------+----------------------------+-------+-------------------------------------------------------------------+-----------+
 | Organization            | Image ID                  | Image Name                 | Vendor  | Version                    | Type  | Link                                                              | Verified  |
 +-------------------------+---------------------------+----------------------------+---------+----------------------------+-------+-------------------------------------------------------------------+-----------+
@@ -54,6 +55,7 @@ When YAML file used, rules are enforced on every entry in the list.
 
 ```
 # iserver create os-image --help
+
 Usage: iserver.py create os-image [OPTIONS]
 
   Create os image
@@ -79,6 +81,7 @@ Options:
     --version "Ubuntu Server 20.04.3 LTS"
     --link http://10.1.1.1/ubuntu.iso
     --organization EMEAR-SPDC-Specialists
+
 Input parameters verification...
 Input parameters verified
 
@@ -103,6 +106,7 @@ Negative test: duplicate name
     --version "Ubuntu Server 20.04.3 LTS"
     --link http://10.1.1.1/ubuntu.iso
     --organization EMEAR-SPDC-Specialists
+
 Input parameters verification...
 [ERROR] Input parameters validation failed
 Name Image via CLI already defined
@@ -117,6 +121,7 @@ Negative test: wrong vendor
     --version "Ubuntu Server 35.04.3 LTS"
     --link http://10.1.1.1/ubuntu.iso
     --organization EMEAR-SPDC-Specialists
+
 Input parameters verification...
 [ERROR] Input parameters validation failed
 Vendor not found: NewOsVendor
@@ -131,6 +136,7 @@ Negative test: wrong vendor
     --version "Ubuntu Server 35.04.3 LTS"
     --link http://10.1.1.1/ubuntu.iso
     --organization EMEAR-SPDC-Specialists
+
 Input parameters verification...
 [ERROR] Input parameters validation failed
 Invalid version for vendor: Ubuntu Server 35.04.3 LTS
@@ -144,6 +150,7 @@ Negative test: missing organization
     --vendor Ubuntu
     --version "Ubuntu Server 35.04.3 LTS"
     --link http://10.1.1.1/ubuntu.iso
+
 Input parameters verification...
 [ERROR] Multiple organizations found. Select single one
 - EMEAR-SPDC-Specialists
@@ -160,6 +167,7 @@ Negative test: wrong link
     --version "Ubuntu Server 35.04.3 LTS"
     --link http://.1.1/ubuntu.iso
     --organization EMEAR-SPDC-Specialists
+
 Input parameters verification...
 [ERROR] Input parameters validation failed
 Invalid version for vendor: Ubuntu Server 35.04.3 LTS
@@ -179,8 +187,8 @@ File content:
 ```
 
 ```
-# iserver create os-image
-    --filename ./tests/os-image/new.yaml
+# iserver create os-image --filename ./tests/os-image/new.yaml
+
 Input parameters verification...
 Input parameters verified
 
@@ -203,6 +211,7 @@ Example
 
 ```
 # iserver get os-vendor
+
 +---------------------------+------------+
 | Moid                      | Name       |
 +---------------------------+------------+
@@ -222,8 +231,8 @@ Example
 Example
 
 ```
-# iserver get os-version
-    --vendor Ubuntu
+# iserver get os-version --vendor Ubuntu
+
 +---------------------------+-----------------+---------------------------+----------------------------+
 | Vendor Moid               | Vendor Version  | Version Moid              | Version Name               |
 +---------------------------+-----------------+---------------------------+----------------------------+
@@ -267,6 +276,7 @@ Object ID (Moid) is the only required parameter. All others are optional and wil
 
 ```
 # iserver set os-image --help
+
 Usage: iserver.py set os-image [OPTIONS]
 
   Set os image objects from input yaml file
@@ -289,6 +299,7 @@ Example:
 # iserver set os-image
     --id 63465b1f6567612d3018b497
     --link http://10.10.10.10/new.iso
+
 Input parameters verification...
 Input parameters verified
 
@@ -311,6 +322,7 @@ Delete command requires name or id (moid) of image metadata definition.
 
 ```
 # iserver delete os-image --help
+
 Usage: iserver.py delete os-image [OPTIONS]
 
   Delete operating system image metadata
@@ -326,8 +338,8 @@ Options:
 Example:
 
 ```
-# iserver delete os-image
-    --name "Image via CLI"
+# iserver delete os-image --name "Image via CLI"
+
 Object deleted: 63465b1f6567612d3018b497
 
 

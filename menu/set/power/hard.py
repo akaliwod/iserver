@@ -3,7 +3,7 @@ import copy
 import traceback
 import click
 
-from lib import lcm_server_power
+from lib.lcm_server import lcm_server_power
 from menu import defaults
 from menu import validations
 from menu import common

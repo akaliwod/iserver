@@ -4,7 +4,7 @@ import traceback
 import yaml
 import click
 
-from lib import computes_info
+from lib.intersight import computes_info
 from menu import common
 from menu import defaults
 from menu import validations

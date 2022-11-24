@@ -2,6 +2,7 @@
 
 ```
 # iserver create os-install dhcp --help
+
 Usage: iserver.py create os-install dhcp [OPTIONS]
 
   OS installation with dhcp
@@ -34,8 +35,9 @@ Options:
     --image "Ubuntu 22.04LTS"
     --interface eno5
     --hostname kvm
-    --password cisco
+    --password ******
     --organization EMEAR-SPDC-Specialists
+
 Validate input parameters...
 Power Cycle request: [#######################] 1/1
 Workflows started: [#######################] 1/1
@@ -66,8 +68,9 @@ OS installation successful
     --image "Ubuntu 22.04LTS"
     --interface eno5
     --hostname kvm
-    --password cisco
+    --password ******
     --organization EMEAR-SPDC-Specialists
+
 Validate input parameters...
 isctl create compute updatecomputeserversetting moid 5fdfe47f6573732d3006dc76
 	--AdminPowerState PowerCycle
@@ -167,9 +170,10 @@ OS installation successful
     --image "Ubuntu 22.04LTS"
     --interface eno5
     --hostname kvm
-    --password cisco
+    --password ******
     --organization EMEAR-SPDC-Specialists
     --dry-run
+
 Validate input parameters...
 isctl create os install 
 	--InstallMethod vMedia
@@ -191,8 +195,9 @@ isctl create os install
     --image "Ubuntu 22.04LTS"
     --interface eno5
     --hostname kvm
-    --password cisco
+    --password ******
     --organization EMEAR-SPDC-Specialists
+
 Developer output
 
 {

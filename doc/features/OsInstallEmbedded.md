@@ -2,6 +2,7 @@
 
 ```
 # iserver create os-install embedded --help
+
 Usage: iserver.py create os-install embedded [OPTIONS]
 
   OS installation with embedded kickstart
@@ -29,6 +30,7 @@ Options:
     --scu "SCU 6.2.2a"
     --image "Ubuntu 22.04LTS"
     --organization EMEAR-SPDC-Specialists
+
 Validate input parameters...
 Power Cycle request: [#######################] 1/1
 Workflows started: [#######################] 1/1
@@ -58,6 +60,7 @@ OS installation successful
     --scu "SCU 6.2.2a"
     --image "Ubuntu 22.04LTS"
     --organization EMEAR-SPDC-Specialists
+
 Validate input parameters...
 isctl create compute updatecomputeserversetting moid 5fdfe47f6573732d3006dc76
 	--AdminPowerState PowerCycle
@@ -156,6 +159,7 @@ OS installation successful
     --image "Ubuntu 22.04LTS"
     --organization EMEAR-SPDC-Specialists
     --dry-run
+
 Validate input parameters...
 isctl create os install 
 	--InstallMethod vMedia
@@ -175,6 +179,7 @@ isctl create os install
     --scu "SCU 6.2.2a"
     --image "Ubuntu 22.04LTS"
     --organization EMEAR-SPDC-Specialists
+
 Developer output
 
 {

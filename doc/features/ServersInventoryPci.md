@@ -5,8 +5,8 @@ Use --pci option to select servers with PCI device model name matching provided 
 You can add any extra filtering options following logical AND rule. Use -o|--output for desired output format.
 
 ```
-# iserver get servers
-    --pci 710
+# iserver get servers --pci 710
+
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+-------------------------------------------------------------------+
 | Flags      | Name                            | Model           | Serial       | IP           | CPU         | Memory     | PCI                                                               |
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+-------------------------------------------------------------------+

@@ -8,6 +8,7 @@ Use command options for servers' filtering and information shown in summary.
 
 ```
 # iserver get summary
+
 Selected servers count: 92
 
 Type
@@ -70,6 +71,7 @@ Workflow Names
 
 ```
 # iserver get summary -c all
+
 Selected servers count: 92
 
 Type

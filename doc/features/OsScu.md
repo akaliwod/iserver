@@ -19,6 +19,7 @@ Notes:
 
 ```
 # iserver get scu
+
 +-------------------------+---------------------------+-------------+----------+-------+-------------------------------------------------------------------------+
 | Organization            | SCU ID                    | SCU Name    | Version  | Type  | Link                                                                    |
 +-------------------------+---------------------------+-------------+----------+-------+-------------------------------------------------------------------------+
@@ -31,8 +32,8 @@ Notes:
 ## Verify
 
 ```
-# iserver get scu
-    --verify
+# iserver get scu --verify
+
 +-------------------------+---------------------------+-------------+----------+-------+-------------------------------------------------------------------------+-----------+
 | Organization            | SCU ID                    | SCU Name    | Version  | Type  | Link                                                                    | Verified  |
 +-------------------------+---------------------------+-------------+----------+-------+-------------------------------------------------------------------------+-----------+
@@ -54,6 +55,7 @@ When YAML file used, rules are enforced on every entry in the list.
 
 ```
 # iserver create scu --help
+
 Usage: iserver.py create scu [OPTIONS]
 
   Create software configuration utilities
@@ -77,6 +79,7 @@ Options:
     --version 6.2.2
     --link http://10.1.1.1/ucs-scu.6.2.2.iso
     --organization EMEAR-SPDC-Specialists
+
 Input parameters verification...
 Input parameters verified
 
@@ -98,6 +101,7 @@ Negative test: duplicate name
     --version 6.2.2
     --link http://10.1.1.1/ucs-scu.6.2.2.iso
     --organization EMEAR-SPDC-Specialists
+
 Input parameters verification...
 [ERROR] Input parameters validation failed
 Name SCU via CLI already defined
@@ -110,6 +114,7 @@ Negative test: no version
     --name lalala
     --link http://10.1.1.1/ucs-scu.6.2.2.iso
     --organization EMEAR-SPDC-Specialists
+
 Input parameters verification...
 [ERROR] Define version
 ```
@@ -121,6 +126,7 @@ Negative test: missing organization
     --name lalala
     --version 6.2.2
     --link http://10.1.1.1/ucs-scu.6.2.2.iso
+
 Input parameters verification...
 [ERROR] Multiple organizations found. Select single one
 - EMEAR-SPDC-Specialists
@@ -136,6 +142,7 @@ Negative test: wrong link
     --version 6.2.2
     --link http://.1.1/a.iso
     --organization EMEAR-SPDC-Specialists
+
 Input parameters verification...
 [ERROR] Input parameters validation failed
 Invalid link: http://.1.1/a.iso
@@ -155,8 +162,8 @@ File content:
 ```
 
 ```
-# iserver create scu
-    --filename ./tests/scu/new.yaml
+# iserver create scu --filename ./tests/scu/new.yaml
+
 Input parameters verification...
 Input parameters verified
 
@@ -179,6 +186,7 @@ Object ID (Moid) is the only required parameter. All others are optional and wil
 
 ```
 # iserver set scu --help
+
 Usage: iserver.py set scu [OPTIONS]
 
   Set software configuration utilities
@@ -200,6 +208,7 @@ Example:
 # iserver set scu
     --id 634652336567612d30185301
     --link http://10.10.10.10/new.iso
+
 Input parameters verification...
 Input parameters verified
 
@@ -220,6 +229,7 @@ Delete command requires name or id (moid) of SCU metadata definition.
 
 ```
 # iserver delete scu --help
+
 Usage: iserver.py delete scu [OPTIONS]
 
   Delete software configuration utilities
@@ -235,8 +245,8 @@ Options:
 Example:
 
 ```
-# iserver delete scu
-    --name "SCU via CLI"
+# iserver delete scu --name "SCU via CLI"
+
 Object deleted: 634652336567612d30185301
 
 

@@ -1,5 +1,10 @@
 import traceback
 import time
+
+import warnings
+warnings.filterwarnings(action='ignore', module='.*paramiko.*')
+
+# pylint: disable=wrong-import-position
 import paramiko
 from paramiko import SSHClient
 

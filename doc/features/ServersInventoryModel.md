@@ -5,8 +5,8 @@ Define --model value for case-insensite loose match of server's model.
 You can add any extra filtering options following logical AND rule. Use -o|--output for desired output format.
 
 ```
-# iserver get servers
-    --model m5sx
+# iserver get servers --model m5sx
+
 +------------+---------------------------------+-----------------+--------------+----------------+--------------+------------+
 | Flags      | Name                            | Model           | Serial       | IP             | CPU          | Memory     |
 +------------+---------------------------------+-----------------+--------------+----------------+--------------+------------+

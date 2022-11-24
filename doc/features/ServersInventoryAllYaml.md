@@ -4,6 +4,7 @@ Use YAML (-o yaml) output format.
 
 ```
 # iserver get servers -o yaml
+
 - AccountMoid: 5be4b2ce67626c6d661ca38d
   Adapters:
   - ClassId: mo.MoRef
@@ -394,7 +395,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/5ecf82ea6176752d35b80a94
   GraphicsCards: []
-  Groups: ''
+  Groups: pods
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -1438,7 +1439,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/5fa048d96176752d35caf931
   GraphicsCards: []
-  Groups: ''
+  Groups: pods
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -4305,7 +4306,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/5fdf9c7f6176752d35e473d9
   GraphicsCards: []
-  Groups: p2b
+  Groups: p2b,pod2b,pods
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -4574,7 +4575,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/5fdf9cf66176752d35e4a75b
   GraphicsCards: []
-  Groups: p2b
+  Groups: p2b,pod2b,pods
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -4843,7 +4844,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/5fdf9d806176752d35e4de4d
   GraphicsCards: []
-  Groups: p2b
+  Groups: p2b,pod2b,pods
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -5128,7 +5129,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/5fdfa1fe6176752d35e6b22f
   GraphicsCards: []
-  Groups: self-test-power,p2b
+  Groups: p2b,pod2b,test,pods,self-test-power
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -5160,7 +5161,7 @@ Use YAML (-o yaml) output format.
   MemorySpeed: '2933'
   MgmtIdentity: null
   MgmtIpAddress: 10.58.50.44
-  ModTime: '2022-10-11T10:28:42.097Z'
+  ModTime: '2022-10-12T11:16:18.093Z'
   Model: UCSC-C220-M5SX
   Moid: 5fdfa1806176752d35e678c2
   Name: comp-1-p2b-eu-spdc-WMP240400FM
@@ -5239,7 +5240,7 @@ Use YAML (-o yaml) output format.
   ServerId: 1
   ServiceProfile: ''
   SharedScope: ''
-  State: P+HRS W16
+  State: P+HRS
   StorageControllers: []
   StorageEnclosures: []
   Tags:
@@ -5261,252 +5262,11 @@ Use YAML (-o yaml) output format.
   Uuid: E6FB96C5-2DA8-465D-A83E-E1764CA90D5B
   Vendor: Cisco Systems Inc
   Vmedia: null
-  WorkflowLast: &id001
-    Completed: true
-    CreateTime: '2022-10-11T10:29:47.275Z'
-    CreateTimeEpoch: 1665476987275
-    Duration: 00:00:11
-    EndTime: '2022-10-11T10:29:58.518Z'
-    EndTimeEpoch: 1665476998518
-    Moid: 6345459b696f6e2d30f645ba
-    Name: Reboot IMC
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:29:47.303Z'
-    StartTimeEpoch: 1665476987303
-    Status: COMPLETED
-    Type: UserDefined
+  WorkflowLast: null
   WorkflowRunning: null
-  WorkflowsLast:
-  - *id001
-  - Completed: true
-    CreateTime: '2022-10-11T10:28:15.896Z'
-    CreateTimeEpoch: 1665476895896
-    Duration: 00:00:09
-    EndTime: '2022-10-11T10:28:24.537Z'
-    EndTimeEpoch: 1665476904537
-    Moid: 6345453f696f6e2d30f64470
-    Name: Power On
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:28:15.928Z'
-    StartTimeEpoch: 1665476895928
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:26:42.629Z'
-    CreateTimeEpoch: 1665476802629
-    Duration: 00:00:11
-    EndTime: '2022-10-11T10:26:53.64Z'
-    EndTimeEpoch: 1665476813640
-    Moid: 634544e2696f6e2d30f64341
-    Name: Shut Down OS
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:26:42.828Z'
-    StartTimeEpoch: 1665476802828
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:25:15.869Z'
-    CreateTimeEpoch: 1665476715869
-    Duration: 00:00:04
-    EndTime: '2022-10-11T10:25:19.782Z'
-    EndTimeEpoch: 1665476719782
-    Moid: 6345448b696f6e2d30f6421a
-    Name: Power On
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:25:15.897Z'
-    StartTimeEpoch: 1665476715897
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:23:48.899Z'
-    CreateTimeEpoch: 1665476628899
-    Duration: 00:00:05
-    EndTime: '2022-10-11T10:23:53.717Z'
-    EndTimeEpoch: 1665476633717
-    Moid: 63454434696f6e2d30f64065
-    Name: Power Cycle
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:23:48.934Z'
-    StartTimeEpoch: 1665476628934
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:21:58.272Z'
-    CreateTimeEpoch: 1665476518272
-    Duration: 00:00:27
-    EndTime: '2022-10-11T10:22:25.551Z'
-    EndTimeEpoch: 1665476545551
-    Moid: 634543c6696f6e2d30f63e9d
-    Name: Power On
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:21:58.337Z'
-    StartTimeEpoch: 1665476518337
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:20:15.387Z'
-    CreateTimeEpoch: 1665476415387
-    Duration: 00:00:24
-    EndTime: '2022-10-11T10:20:39.308Z'
-    EndTimeEpoch: 1665476439308
-    Moid: 6345435f696f6e2d30f63db3
-    Name: Hard Reset
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:20:15.417Z'
-    StartTimeEpoch: 1665476415417
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:18:32.22Z'
-    CreateTimeEpoch: 1665476312220
-    Duration: 00:00:18
-    EndTime: '2022-10-11T10:18:50.425Z'
-    EndTimeEpoch: 1665476330425
-    Moid: 634542f7696f6e2d30f63ca0
-    Name: Power On
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:18:32.343Z'
-    StartTimeEpoch: 1665476312343
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:17:06.158Z'
-    CreateTimeEpoch: 1665476226158
-    Duration: 00:00:07
-    EndTime: '2022-10-11T10:17:13.524Z'
-    EndTimeEpoch: 1665476233524
-    Moid: 634542a2696f6e2d30f63bc3
-    Name: Power Off
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:17:06.187Z'
-    StartTimeEpoch: 1665476226187
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:15:41.09Z'
-    CreateTimeEpoch: 1665476141090
-    Duration: 00:00:05
-    EndTime: '2022-10-11T10:15:46.369Z'
-    EndTimeEpoch: 1665476146369
-    Moid: 6345424d696f6e2d30f63abd
-    Name: Power On
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:15:41.12Z'
-    StartTimeEpoch: 1665476141120
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:13:56.951Z'
-    CreateTimeEpoch: 1665476036951
-    Duration: 00:00:19
-    EndTime: '2022-10-11T10:14:16.525Z'
-    EndTimeEpoch: 1665476056525
-    Moid: 634541e4696f6e2d30f639ae
-    Name: Power On
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:13:57.244Z'
-    StartTimeEpoch: 1665476037244
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:12:31.376Z'
-    CreateTimeEpoch: 1665475951376
-    Duration: 00:00:05
-    EndTime: '2022-10-11T10:12:36.846Z'
-    EndTimeEpoch: 1665475956846
-    Moid: 6345418f696f6e2d30f635bf
-    Name: Power Off
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:12:31.555Z'
-    StartTimeEpoch: 1665475951555
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T09:32:47.465Z'
-    CreateTimeEpoch: 1665473567465
-    Duration: 00:00:04
-    EndTime: '2022-10-11T09:32:51.502Z'
-    EndTimeEpoch: 1665473571502
-    Moid: 6345383f696f6e2d30f61d0d
-    Name: Power On
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T09:32:47.494Z'
-    StartTimeEpoch: 1665473567494
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T09:30:45.933Z'
-    CreateTimeEpoch: 1665473445933
-    Duration: 00:00:05
-    EndTime: '2022-10-11T09:30:51.376Z'
-    EndTimeEpoch: 1665473451376
-    Moid: 634537c5696f6e2d30f61b58
-    Name: Power Off
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T09:30:46.072Z'
-    StartTimeEpoch: 1665473446072
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T08:10:31.331Z'
-    CreateTimeEpoch: 1665468631331
-    Duration: 00:00:04
-    EndTime: '2022-10-11T08:10:35.342Z'
-    EndTimeEpoch: 1665468635342
-    Moid: 634524f7696f6e2d30f5ca0e
-    Name: Power Off
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T08:10:31.462Z'
-    StartTimeEpoch: 1665468631462
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T08:05:01.481Z'
-    CreateTimeEpoch: 1665468301481
-    Duration: 00:00:06
-    EndTime: '2022-10-11T08:05:07.577Z'
-    EndTimeEpoch: 1665468307577
-    Moid: 634523ad696f6e2d30f5c61c
-    Name: Power Off
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T08:05:01.817Z'
-    StartTimeEpoch: 1665468301817
-    Status: COMPLETED
-    Type: UserDefined
+  WorkflowsLast: []
   WorkflowsLastFailedIds: []
-  WorkflowsLastIds:
-  - 634523ad696f6e2d30f5c61c
-  - 634524f7696f6e2d30f5ca0e
-  - 634537c5696f6e2d30f61b58
-  - 6345383f696f6e2d30f61d0d
-  - 6345418f696f6e2d30f635bf
-  - 634541e4696f6e2d30f639ae
-  - 6345424d696f6e2d30f63abd
-  - 634542a2696f6e2d30f63bc3
-  - 634542f7696f6e2d30f63ca0
-  - 6345435f696f6e2d30f63db3
-  - 634543c6696f6e2d30f63e9d
-  - 63454434696f6e2d30f64065
-  - 6345448b696f6e2d30f6421a
-  - 634544e2696f6e2d30f64341
-  - 6345453f696f6e2d30f64470
-  - 6345459b696f6e2d30f645ba
+  WorkflowsLastIds: []
 - AccountMoid: 5be4b2ce67626c6d661ca38d
   Adapters:
   - ClassId: mo.MoRef
@@ -5646,7 +5406,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/5fdfdcb76176752d35fd1249
   GraphicsCards: []
-  Groups: p2b
+  Groups: p2b,pod2b,pods
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -5860,9 +5620,9 @@ Use YAML (-o yaml) output format.
     ObjectType: boot.HddDevice
     link: https://www.intersight.com/api/v1/boot/HddDevices/633e7c0876752d31394170ac
   - ClassId: mo.MoRef
-    Moid: 6345c9eb76752d3139826a0c
+    Moid: 63467f3976752d3139a03cdb
     ObjectType: boot.HddDevice
-    link: https://www.intersight.com/api/v1/boot/HddDevices/6345c9eb76752d3139826a0c
+    link: https://www.intersight.com/api/v1/boot/HddDevices/63467f3976752d3139a03cdb
   BootIscsiDevices: []
   BootNvmeDevices: []
   BootPchStorageDevices: []
@@ -5923,7 +5683,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/61dc839d76752d3139cbb954
   GraphicsCards: []
-  Groups: self-test-power,p2b
+  Groups: p2b,pod2b,test,pods,self-test-power,self-test-locator
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -5955,7 +5715,7 @@ Use YAML (-o yaml) output format.
   MemorySpeed: '2933'
   MgmtIdentity: null
   MgmtIpAddress: 10.58.50.46
-  ModTime: '2022-10-11T19:54:19.498Z'
+  ModTime: '2022-10-12T11:16:18.171Z'
   Model: UCSC-C220-M5SX
   Moid: 5fdfe47f6176752d35001995
   Name: comp-3-p2b-eu-spdc-WMP24040059
@@ -5963,8 +5723,8 @@ Use YAML (-o yaml) output format.
   NumCpuCores: 40
   NumCpuCoresEnabled: 40
   NumCpus: 2
-  NumEthHostInterfaces: 0
-  NumFcHostInterfaces: 0
+  NumEthHostInterfaces: 10
+  NumFcHostInterfaces: 2
   NumThreads: 80
   ObjectType: compute.RackUnit
   OperPowerState: 'on'
@@ -6034,7 +5794,7 @@ Use YAML (-o yaml) output format.
   ServerId: 1
   ServiceProfile: ''
   SharedScope: ''
-  State: P+HRS W39
+  State: P+HRS
   StorageControllers: []
   StorageEnclosures: []
   Tags:
@@ -6056,597 +5816,11 @@ Use YAML (-o yaml) output format.
   Uuid: 0C455BAB-4534-41B2-B84F-C27E202D2D45
   Vendor: Cisco Systems Inc
   Vmedia: null
-  WorkflowLast: &id002
-    Completed: true
-    CreateTime: '2022-10-11T19:40:52.746Z'
-    CreateTimeEpoch: 1665510052746
-    Duration: 00:01:33
-    EndTime: '2022-10-11T19:42:25.563Z'
-    EndTimeEpoch: 1665510145563
-    Moid: 6345c6c4696f6e2d30f7d61f
-    Name: InstallOS
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T19:40:52.746Z'
-    StartTimeEpoch: 1665510052746
-    Status: COMPLETED
-    Type: UserDefined
+  WorkflowLast: null
   WorkflowRunning: null
-  WorkflowsLast:
-  - *id002
-  - Completed: true
-    CreateTime: '2022-10-11T19:40:51.331Z'
-    CreateTimeEpoch: 1665510051331
-    Duration: 00:01:36
-    EndTime: '2022-10-11T19:42:27.154Z'
-    EndTimeEpoch: 1665510147154
-    Moid: 6345c6c3696f6e2d30f7d5c4
-    Name: Operating System Install
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T19:40:51.598Z'
-    StartTimeEpoch: 1665510051598
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T19:40:38.066Z'
-    CreateTimeEpoch: 1665510038066
-    Duration: 00:00:06
-    EndTime: '2022-10-11T19:40:44.885Z'
-    EndTimeEpoch: 1665510044885
-    Moid: 6345c6b5696f6e2d30f7d55d
-    Name: Power Cycle
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T19:40:38.414Z'
-    StartTimeEpoch: 1665510038414
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T18:38:46.612Z'
-    CreateTimeEpoch: 1665506326612
-    Duration: 00:58:24
-    EndTime: '2022-10-11T19:37:10.059Z'
-    EndTimeEpoch: 1665509830059
-    Moid: 6345b836696f6e2d30f7aaa0
-    Name: InstallOS
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T18:38:46.612Z'
-    StartTimeEpoch: 1665506326612
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T18:38:45.257Z'
-    CreateTimeEpoch: 1665506325257
-    Duration: 00:58:26
-    EndTime: '2022-10-11T19:37:11.228Z'
-    EndTimeEpoch: 1665509831228
-    Moid: 6345b834696f6e2d30f7aa3b
-    Name: Operating System Install
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T18:38:45.562Z'
-    StartTimeEpoch: 1665506325562
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T18:38:31.886Z'
-    CreateTimeEpoch: 1665506311886
-    Duration: 00:00:07
-    EndTime: '2022-10-11T18:38:38.635Z'
-    EndTimeEpoch: 1665506318635
-    Moid: 6345b827696f6e2d30f7a93c
-    Name: Power Cycle
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T18:38:31.915Z'
-    StartTimeEpoch: 1665506311915
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T17:56:46.658Z'
-    CreateTimeEpoch: 1665503806658
-    Duration: 00:38:17
-    EndTime: '2022-10-11T18:35:03.636Z'
-    EndTimeEpoch: 1665506103636
-    Moid: 6345ae5e696f6e2d30f76915
-    Name: InstallOS
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T17:56:46.658Z'
-    StartTimeEpoch: 1665503806658
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T17:56:44.616Z'
-    CreateTimeEpoch: 1665503804616
-    Duration: 00:38:20
-    EndTime: '2022-10-11T18:35:04.989Z'
-    EndTimeEpoch: 1665506104989
-    Moid: 6345ae5c696f6e2d30f768b5
-    Name: Operating System Install
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T17:56:44.896Z'
-    StartTimeEpoch: 1665503804896
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T17:56:30.022Z'
-    CreateTimeEpoch: 1665503790022
-    Duration: 00:00:05
-    EndTime: '2022-10-11T17:56:35.952Z'
-    EndTimeEpoch: 1665503795952
-    Moid: 6345ae4d696f6e2d30f76847
-    Name: Power Cycle
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T17:56:30.051Z'
-    StartTimeEpoch: 1665503790051
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T17:26:23.872Z'
-    CreateTimeEpoch: 1665501983872
-    Duration: 00:00:04
-    EndTime: '2022-10-11T17:26:28.924Z'
-    EndTimeEpoch: 1665501988924
-    Moid: 6345a73f696f6e2d30f7502b
-    Name: Turn Off Locator
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T17:26:24.011Z'
-    StartTimeEpoch: 1665501984011
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T17:25:09.652Z'
-    CreateTimeEpoch: 1665501909652
-    Duration: 00:00:04
-    EndTime: '2022-10-11T17:25:13.708Z'
-    EndTimeEpoch: 1665501913708
-    Moid: 6345a6f5696f6e2d30f74bfa
-    Name: Turn On Locator
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T17:25:09.681Z'
-    StartTimeEpoch: 1665501909681
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T17:19:29.272Z'
-    CreateTimeEpoch: 1665501569272
-    Duration: 00:00:14
-    EndTime: '2022-10-11T17:19:43.323Z'
-    EndTimeEpoch: 1665501583323
-    Moid: 6345a5a1696f6e2d30f7456c
-    Name: Turn Off Locator
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T17:19:29.511Z'
-    StartTimeEpoch: 1665501569511
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T17:18:27.183Z'
-    CreateTimeEpoch: 1665501507183
-    Duration: 00:00:05
-    EndTime: '2022-10-11T17:18:32.352Z'
-    EndTimeEpoch: 1665501512352
-    Moid: 6345a563696f6e2d30f743d4
-    Name: Turn On Locator
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T17:18:27.241Z'
-    StartTimeEpoch: 1665501507241
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T15:38:16.158Z'
-    CreateTimeEpoch: 1665495496158
-    Duration: 00:08:01
-    EndTime: '2022-10-11T15:46:17.988Z'
-    EndTimeEpoch: 1665495977988
-    Moid: 63458de8696f6e2d30f6fbe9
-    Name: InstallOS
-    Progress: 8.235294
-    Running: false
-    StartTime: '2022-10-11T15:38:16.158Z'
-    StartTimeEpoch: 1665495496158
-    Status: FAILED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T15:38:14.299Z'
-    CreateTimeEpoch: 1665495494299
-    Duration: 00:08:12
-    EndTime: '2022-10-11T15:46:26.866Z'
-    EndTimeEpoch: 1665495986866
-    Moid: 63458de5696f6e2d30f6fb89
-    Name: Operating System Install
-    Progress: 33.333336
-    Running: false
-    StartTime: '2022-10-11T15:38:14.821Z'
-    StartTimeEpoch: 1665495494821
-    Status: FAILED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T15:37:44.574Z'
-    CreateTimeEpoch: 1665495464574
-    Duration: 00:00:11
-    EndTime: '2022-10-11T15:37:55.429Z'
-    EndTimeEpoch: 1665495475429
-    Moid: 63458dc8696f6e2d30f6f7fb
-    Name: Power Cycle
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T15:37:44.619Z'
-    StartTimeEpoch: 1665495464619
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T15:33:14.165Z'
-    CreateTimeEpoch: 1665495194165
-    Duration: 00:00:06
-    EndTime: '2022-10-11T15:33:20.016Z'
-    EndTimeEpoch: 1665495200016
-    Moid: 63458cba696f6e2d30f6f576
-    Name: Power Cycle
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T15:33:14.204Z'
-    StartTimeEpoch: 1665495194204
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T12:18:23.635Z'
-    CreateTimeEpoch: 1665483503635
-    Duration: 01:00:27
-    EndTime: '2022-10-11T13:18:50.736Z'
-    EndTimeEpoch: 1665487130736
-    Moid: 63455f0f696f6e2d30f6792f
-    Name: InstallOS
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T12:18:23.635Z'
-    StartTimeEpoch: 1665483503635
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T12:18:21.184Z'
-    CreateTimeEpoch: 1665483501184
-    Duration: 01:00:32
-    EndTime: '2022-10-11T13:18:53.339Z'
-    EndTimeEpoch: 1665487133339
-    Moid: 63455f0c696f6e2d30f678ca
-    Name: Operating System Install
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T12:18:21.54Z'
-    StartTimeEpoch: 1665483501540
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T12:13:55.583Z'
-    CreateTimeEpoch: 1665483235583
-    Duration: 00:00:58
-    EndTime: '2022-10-11T12:14:53.985Z'
-    EndTimeEpoch: 1665483293985
-    Moid: 63455e03696f6e2d30f6763f
-    Name: InstallOS
-    Progress: 7.058824
-    Running: false
-    StartTime: '2022-10-11T12:13:55.583Z'
-    StartTimeEpoch: 1665483235583
-    Status: FAILED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T12:13:54.486Z'
-    CreateTimeEpoch: 1665483234486
-    Duration: 00:01:00
-    EndTime: '2022-10-11T12:14:54.361Z'
-    EndTimeEpoch: 1665483294361
-    Moid: 63455e02696f6e2d30f675a8
-    Name: Operating System Install
-    Progress: 33.333336
-    Running: false
-    StartTime: '2022-10-11T12:13:54.565Z'
-    StartTimeEpoch: 1665483234565
-    Status: FAILED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T12:08:43.729Z'
-    CreateTimeEpoch: 1665482923729
-    Duration: 00:01:43
-    EndTime: '2022-10-11T12:10:26.331Z'
-    EndTimeEpoch: 1665483026331
-    Moid: 63455ccb696f6e2d30f6738f
-    Name: InstallOS
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T12:08:43.729Z'
-    StartTimeEpoch: 1665482923729
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T12:08:39.056Z'
-    CreateTimeEpoch: 1665482919056
-    Duration: 00:01:49
-    EndTime: '2022-10-11T12:10:29.338Z'
-    EndTimeEpoch: 1665483029338
-    Moid: 63455cc6696f6e2d30f6732f
-    Name: Operating System Install
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T12:08:40.033Z'
-    StartTimeEpoch: 1665482920033
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:29:47.733Z'
-    CreateTimeEpoch: 1665476987733
-    Duration: 00:00:11
-    EndTime: '2022-10-11T10:29:58.867Z'
-    EndTimeEpoch: 1665476998867
-    Moid: 6345459b696f6e2d30f645d9
-    Name: Reboot IMC
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:29:47.762Z'
-    StartTimeEpoch: 1665476987762
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:28:16.569Z'
-    CreateTimeEpoch: 1665476896569
-    Duration: 00:00:03
-    EndTime: '2022-10-11T10:28:19.831Z'
-    EndTimeEpoch: 1665476899831
-    Moid: 63454540696f6e2d30f644a1
-    Name: Power On
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:28:16.601Z'
-    StartTimeEpoch: 1665476896601
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:26:45.728Z'
-    CreateTimeEpoch: 1665476805728
-    Duration: 00:00:09
-    EndTime: '2022-10-11T10:26:54.629Z'
-    EndTimeEpoch: 1665476814629
-    Moid: 634544e5696f6e2d30f6435f
-    Name: Shut Down OS
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:26:45.914Z'
-    StartTimeEpoch: 1665476805914
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:25:16.392Z'
-    CreateTimeEpoch: 1665476716392
-    Duration: 00:00:03
-    EndTime: '2022-10-11T10:25:19.749Z'
-    EndTimeEpoch: 1665476719749
-    Moid: 6345448c696f6e2d30f6423e
-    Name: Power On
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:25:16.423Z'
-    StartTimeEpoch: 1665476716423
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:23:49.376Z'
-    CreateTimeEpoch: 1665476629376
-    Duration: 00:00:04
-    EndTime: '2022-10-11T10:23:53.323Z'
-    EndTimeEpoch: 1665476633323
-    Moid: 63454435696f6e2d30f64090
-    Name: Power Cycle
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:23:49.405Z'
-    StartTimeEpoch: 1665476629405
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:21:59.769Z'
-    CreateTimeEpoch: 1665476519769
-    Duration: 00:00:27
-    EndTime: '2022-10-11T10:22:26.232Z'
-    EndTimeEpoch: 1665476546232
-    Moid: 634543c7696f6e2d30f63ec3
-    Name: Power On
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:21:59.919Z'
-    StartTimeEpoch: 1665476519919
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:20:16.105Z'
-    CreateTimeEpoch: 1665476416105
-    Duration: 00:00:23
-    EndTime: '2022-10-11T10:20:39.816Z'
-    EndTimeEpoch: 1665476439816
-    Moid: 63454360696f6e2d30f63dd2
-    Name: Hard Reset
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:20:16.132Z'
-    StartTimeEpoch: 1665476416132
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:18:34.661Z'
-    CreateTimeEpoch: 1665476314661
-    Duration: 00:00:17
-    EndTime: '2022-10-11T10:18:51.054Z'
-    EndTimeEpoch: 1665476331054
-    Moid: 634542fa696f6e2d30f63cb9
-    Name: Power On
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:18:34.919Z'
-    StartTimeEpoch: 1665476314919
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:17:06.859Z'
-    CreateTimeEpoch: 1665476226859
-    Duration: 00:00:05
-    EndTime: '2022-10-11T10:17:11.311Z'
-    EndTimeEpoch: 1665476231311
-    Moid: 634542a2696f6e2d30f63be2
-    Name: Power Off
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:17:06.887Z'
-    StartTimeEpoch: 1665476226887
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:15:41.774Z'
-    CreateTimeEpoch: 1665476141774
-    Duration: 00:00:05
-    EndTime: '2022-10-11T10:15:46.249Z'
-    EndTimeEpoch: 1665476146249
-    Moid: 6345424d696f6e2d30f63aee
-    Name: Power On
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:15:41.803Z'
-    StartTimeEpoch: 1665476141803
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:13:58.657Z'
-    CreateTimeEpoch: 1665476038657
-    Duration: 00:00:22
-    EndTime: '2022-10-11T10:14:20.417Z'
-    EndTimeEpoch: 1665476060417
-    Moid: 634541e6696f6e2d30f639cf
-    Name: Power On
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:13:58.923Z'
-    StartTimeEpoch: 1665476038923
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T10:12:32.251Z'
-    CreateTimeEpoch: 1665475952251
-    Duration: 00:00:04
-    EndTime: '2022-10-11T10:12:36.728Z'
-    EndTimeEpoch: 1665475956728
-    Moid: 63454190696f6e2d30f635f6
-    Name: Power Off
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T10:12:32.41Z'
-    StartTimeEpoch: 1665475952410
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T09:32:48.867Z'
-    CreateTimeEpoch: 1665473568867
-    Duration: 00:00:04
-    EndTime: '2022-10-11T09:32:52.14Z'
-    EndTimeEpoch: 1665473572140
-    Moid: 63453840696f6e2d30f61d3e
-    Name: Power On
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T09:32:48.895Z'
-    StartTimeEpoch: 1665473568895
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T09:30:47.743Z'
-    CreateTimeEpoch: 1665473447743
-    Duration: 00:00:04
-    EndTime: '2022-10-11T09:30:51.6Z'
-    EndTimeEpoch: 1665473451600
-    Moid: 634537c7696f6e2d30f61b77
-    Name: Power Off
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T09:30:47.904Z'
-    StartTimeEpoch: 1665473447904
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T08:10:33.183Z'
-    CreateTimeEpoch: 1665468633183
-    Duration: 00:00:03
-    EndTime: '2022-10-11T08:10:36.816Z'
-    EndTimeEpoch: 1665468636816
-    Moid: 634524f9696f6e2d30f5ca5f
-    Name: Power Off
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T08:10:33.418Z'
-    StartTimeEpoch: 1665468633418
-    Status: COMPLETED
-    Type: UserDefined
-  - Completed: true
-    CreateTime: '2022-10-11T08:05:03.602Z'
-    CreateTimeEpoch: 1665468303602
-    Duration: 00:00:05
-    EndTime: '2022-10-11T08:05:08.029Z'
-    EndTimeEpoch: 1665468308029
-    Moid: 634523af696f6e2d30f5c63b
-    Name: Power Off
-    Progress: 100
-    Running: false
-    StartTime: '2022-10-11T08:05:03.777Z'
-    StartTimeEpoch: 1665468303777
-    Status: COMPLETED
-    Type: UserDefined
+  WorkflowsLast: []
   WorkflowsLastFailedIds: []
-  WorkflowsLastIds:
-  - 634523af696f6e2d30f5c63b
-  - 634524f9696f6e2d30f5ca5f
-  - 634537c7696f6e2d30f61b77
-  - 63453840696f6e2d30f61d3e
-  - 63454190696f6e2d30f635f6
-  - 634541e6696f6e2d30f639cf
-  - 6345424d696f6e2d30f63aee
-  - 634542a2696f6e2d30f63be2
-  - 634542fa696f6e2d30f63cb9
-  - 63454360696f6e2d30f63dd2
-  - 634543c7696f6e2d30f63ec3
-  - 63454435696f6e2d30f64090
-  - 6345448c696f6e2d30f6423e
-  - 634544e5696f6e2d30f6435f
-  - 63454540696f6e2d30f644a1
-  - 6345459b696f6e2d30f645d9
-  - 63455cc6696f6e2d30f6732f
-  - 63455ccb696f6e2d30f6738f
-  - 63455e02696f6e2d30f675a8
-  - 63455e03696f6e2d30f6763f
-  - 63455f0c696f6e2d30f678ca
-  - 63455f0f696f6e2d30f6792f
-  - 63458cba696f6e2d30f6f576
-  - 63458dc8696f6e2d30f6f7fb
-  - 63458de5696f6e2d30f6fb89
-  - 63458de8696f6e2d30f6fbe9
-  - 6345a563696f6e2d30f743d4
-  - 6345a5a1696f6e2d30f7456c
-  - 6345a6f5696f6e2d30f74bfa
-  - 6345a73f696f6e2d30f7502b
-  - 6345ae4d696f6e2d30f76847
-  - 6345ae5c696f6e2d30f768b5
-  - 6345ae5e696f6e2d30f76915
-  - 6345b827696f6e2d30f7a93c
-  - 6345b834696f6e2d30f7aa3b
-  - 6345b836696f6e2d30f7aaa0
-  - 6345c6b5696f6e2d30f7d55d
-  - 6345c6c3696f6e2d30f7d5c4
-  - 6345c6c4696f6e2d30f7d61f
+  WorkflowsLastIds: []
 - AccountMoid: 5be4b2ce67626c6d661ca38d
   Adapters:
   - ClassId: mo.MoRef
@@ -6778,7 +5952,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/5fdfe8706176752d3502dc1c
   GraphicsCards: []
-  Groups: p2b
+  Groups: p2b,pod2b,pods
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -7846,7 +7020,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/6026a9a76176752d350b04d4
   GraphicsCards: []
-  Groups: ''
+  Groups: pods
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -8103,7 +7277,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/6026aae06176752d350ba92d
   GraphicsCards: []
-  Groups: ''
+  Groups: pods
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -8360,7 +7534,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/6026aad56176752d350ba21e
   GraphicsCards: []
-  Groups: ''
+  Groups: pods
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -8617,7 +7791,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/6026ab7f6176752d350bf32e
   GraphicsCards: []
-  Groups: ''
+  Groups: pods
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -8874,7 +8048,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/6026ac0c6176752d350c2bc3
   GraphicsCards: []
-  Groups: ''
+  Groups: pods
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -10201,7 +9375,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/6026b3126176752d350f36fa
   GraphicsCards: []
-  Groups: ''
+  Groups: pods
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -12675,7 +11849,7 @@ Use YAML (-o yaml) output format.
   AdminPowerState: policy
   AlarmSummary:
     ClassId: compute.AlarmSummary
-    Critical: 1
+    Critical: 2
     ObjectType: compute.AlarmSummary
     Warning: 0
   Alerts: []
@@ -12775,7 +11949,7 @@ Use YAML (-o yaml) output format.
   GraphicsCards: []
   Groups: ''
   HardwareUuid: ''
-  Health: Critical (1)
+  Health: Critical (2)
   InventoryDeviceInfo: null
   KvmIpAddresses:
   - Address: 10.58.250.241
@@ -12805,7 +11979,7 @@ Use YAML (-o yaml) output format.
   MemorySpeed: '2933'
   MgmtIdentity: null
   MgmtIpAddress: 10.58.250.241
-  ModTime: '2022-10-10T17:31:36.327Z'
+  ModTime: '2022-10-13T14:12:47.002Z'
   Model: UCSC-C220-M5SX
   Moid: 60632dcf6176752d350c72bc
   Name: C220-231
@@ -13566,7 +12740,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/61324fe676752d3131fd7670
   GraphicsCards: []
-  Groups: ''
+  Groups: pod2b
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -18151,7 +17325,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/61e998e176752d3139e5bb5d
   GraphicsCards: []
-  Groups: ''
+  Groups: p3b
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -18424,7 +17598,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/61e99c3976752d3139e6556e
   GraphicsCards: []
-  Groups: ''
+  Groups: p3b
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -18456,7 +17630,7 @@ Use YAML (-o yaml) output format.
   MemorySpeed: '1866'
   MgmtIdentity: null
   MgmtIpAddress: 10.58.50.50
-  ModTime: '2022-10-05T21:51:45.642Z'
+  ModTime: '2022-10-13T12:42:07.117Z'
   Model: UCSC-C240-M4SX
   Moid: 61e99b6176752d3139e62d14
   Name: aio3-p3b-eu-spdc-FCH2017V1J5
@@ -18515,13 +17689,13 @@ Use YAML (-o yaml) output format.
   Processors: []
   Psus:
   - ClassId: mo.MoRef
-    Moid: 62aebbf676752d3139112c40
+    Moid: 6348051c76752d3139e13d68
     ObjectType: equipment.Psu
-    link: https://www.intersight.com/api/v1/equipment/Psus/62aebbf676752d3139112c40
+    link: https://www.intersight.com/api/v1/equipment/Psus/6348051c76752d3139e13d68
   - ClassId: mo.MoRef
-    Moid: 62aebbf676752d3139112c43
+    Moid: 6348079f76752d3139e19ff9
     ObjectType: equipment.Psu
-    link: https://www.intersight.com/api/v1/equipment/Psus/62aebbf676752d3139112c43
+    link: https://www.intersight.com/api/v1/equipment/Psus/6348079f76752d3139e19ff9
   RackEnclosureSlot: null
   RegisteredDevice:
     ClassId: mo.MoRef
@@ -18689,7 +17863,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/61e9a06376752d3139e73ba0
   GraphicsCards: []
-  Groups: ''
+  Groups: p3b
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -18958,7 +18132,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/61e9a25e76752d3139e79a35
   GraphicsCards: []
-  Groups: ''
+  Groups: p3b
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -19227,7 +18401,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/61e9a4ce76752d3139e817f3
   GraphicsCards: []
-  Groups: ''
+  Groups: p3b
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -19496,7 +18670,7 @@ Use YAML (-o yaml) output format.
     ObjectType: inventory.GenericInventoryHolder
     link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/61fa667a76752d313949477f
   GraphicsCards: []
-  Groups: ''
+  Groups: p3b
   HardwareUuid: ''
   Health: Healthy
   InventoryDeviceInfo: null
@@ -22272,7 +21446,7 @@ Use YAML (-o yaml) output format.
   MemorySpeed: '2666'
   MgmtIdentity: null
   MgmtIpAddress: 10.58.52.41, 10.58.26.5
-  ModTime: '2022-10-12T04:45:04.097Z'
+  ModTime: '2022-10-13T10:35:00.136Z'
   Model: UCSB-B200-M5
   Moid: 6335c26e76752d3139b9694c
   Name: FI-ucsb1-eu-spdc-2-1
@@ -22284,9 +21458,9 @@ Use YAML (-o yaml) output format.
   NumFcHostInterfaces: 0
   NumThreads: 80
   ObjectType: compute.Blade
-  OperPowerState: 'off'
+  OperPowerState: 'on'
   OperReason: []
-  OperState: power-off
+  OperState: ok
   Operability: operable
   Owners:
   - 5be4b2ce67626c6d661ca38d
@@ -22331,7 +21505,7 @@ Use YAML (-o yaml) output format.
   ServiceProfile: org-root/org-EU-SPN/ls-esx51-eu-spdc
   SharedScope: ''
   SlotId: 1
-  State: P-HBU
+  State: P+HBU
   StorageControllers: []
   StorageEnclosures: []
   Tags:
@@ -22574,7 +21748,7 @@ Use YAML (-o yaml) output format.
   AdminPowerState: policy
   AlarmSummary:
     ClassId: compute.AlarmSummary
-    Critical: 11
+    Critical: 0
     ObjectType: compute.AlarmSummary
     Warning: 0
   Alerts: []
@@ -22643,7 +21817,7 @@ Use YAML (-o yaml) output format.
   GraphicsCards: []
   Groups: ''
   HardwareUuid: ''
-  Health: Critical (11)
+  Health: Healthy
   InventoryDeviceInfo: null
   KvmIpAddresses:
   - Address: 10.58.52.33
@@ -22686,7 +21860,7 @@ Use YAML (-o yaml) output format.
   MemorySpeed: '2133'
   MgmtIdentity: null
   MgmtIpAddress: 10.58.52.33, 10.58.26.1
-  ModTime: '2022-10-12T03:15:04.431Z'
+  ModTime: '2022-10-13T10:35:00.081Z'
   Model: UCSB-B200-M4
   Moid: 6335e1f376752d3139bf12b8
   Name: FI-ucsb1-eu-spdc-1-1
@@ -22698,9 +21872,9 @@ Use YAML (-o yaml) output format.
   NumFcHostInterfaces: 0
   NumThreads: 48
   ObjectType: compute.Blade
-  OperPowerState: 'off'
+  OperPowerState: 'on'
   OperReason: []
-  OperState: power-off
+  OperState: ok
   Operability: operable
   Owners:
   - 5be4b2ce67626c6d661ca38d
@@ -22745,7 +21919,7 @@ Use YAML (-o yaml) output format.
   ServiceProfile: org-root/org-EU-SPN/ls-esx41-eu-spdc
   SharedScope: ''
   SlotId: 1
-  State: P-CBU
+  State: P+HBU
   StorageControllers: []
   StorageEnclosures: []
   Tags:
@@ -22779,7 +21953,7 @@ Use YAML (-o yaml) output format.
   AdminPowerState: policy
   AlarmSummary:
     ClassId: compute.AlarmSummary
-    Critical: 10
+    Critical: 0
     ObjectType: compute.AlarmSummary
     Warning: 0
   Alerts: []
@@ -22848,7 +22022,7 @@ Use YAML (-o yaml) output format.
   GraphicsCards: []
   Groups: ''
   HardwareUuid: ''
-  Health: Critical (10)
+  Health: Healthy
   InventoryDeviceInfo: null
   KvmIpAddresses:
   - Address: 10.58.52.34
@@ -22891,7 +22065,7 @@ Use YAML (-o yaml) output format.
   MemorySpeed: '2133'
   MgmtIdentity: null
   MgmtIpAddress: 10.58.52.34, 10.58.26.2
-  ModTime: '2022-10-12T05:25:04.485Z'
+  ModTime: '2022-10-13T10:35:00.031Z'
   Model: UCSB-B200-M4
   Moid: 6337014c76752d3139f2f459
   Name: FI-ucsb1-eu-spdc-1-2
@@ -22903,9 +22077,9 @@ Use YAML (-o yaml) output format.
   NumFcHostInterfaces: 0
   NumThreads: 48
   ObjectType: compute.Blade
-  OperPowerState: 'off'
+  OperPowerState: 'on'
   OperReason: []
-  OperState: power-off
+  OperState: ok
   Operability: operable
   Owners:
   - 5be4b2ce67626c6d661ca38d
@@ -22950,7 +22124,7 @@ Use YAML (-o yaml) output format.
   ServiceProfile: org-root/org-EU-SPN/ls-esx42-eu-spdc
   SharedScope: ''
   SlotId: 2
-  State: P-CBU
+  State: P+HBU
   StorageControllers: []
   StorageEnclosures: []
   Tags:
@@ -22984,7 +22158,7 @@ Use YAML (-o yaml) output format.
   AdminPowerState: policy
   AlarmSummary:
     ClassId: compute.AlarmSummary
-    Critical: 8
+    Critical: -1
     ObjectType: compute.AlarmSummary
     Warning: 0
   Alerts: []
@@ -23053,7 +22227,6 @@ Use YAML (-o yaml) output format.
   GraphicsCards: []
   Groups: ''
   HardwareUuid: ''
-  Health: Critical (8)
   InventoryDeviceInfo: null
   KvmIpAddresses:
   - Address: 10.58.52.35
@@ -23096,7 +22269,7 @@ Use YAML (-o yaml) output format.
   MemorySpeed: '2133'
   MgmtIdentity: null
   MgmtIpAddress: 10.58.52.35, 10.58.26.3
-  ModTime: '2022-10-12T04:05:04.473Z'
+  ModTime: '2022-10-13T10:35:00.056Z'
   Model: UCSB-B200-M4
   Moid: 6337063276752d3139f3cc83
   Name: FI-ucsb1-eu-spdc-1-3
@@ -23108,9 +22281,9 @@ Use YAML (-o yaml) output format.
   NumFcHostInterfaces: 0
   NumThreads: 48
   ObjectType: compute.Blade
-  OperPowerState: 'off'
+  OperPowerState: 'on'
   OperReason: []
-  OperState: power-off
+  OperState: ok
   Operability: operable
   Owners:
   - 5be4b2ce67626c6d661ca38d
@@ -23155,7 +22328,7 @@ Use YAML (-o yaml) output format.
   ServiceProfile: org-root/org-EU-SPN/ls-esx43-eu-spdc
   SharedScope: ''
   SlotId: 3
-  State: P-CBU
+  State: P+BU
   StorageControllers: []
   StorageEnclosures: []
   Tags:

@@ -4,7 +4,7 @@ import click
 
 from progress.bar import Bar
 
-from lib import os_image
+from lib.intersight import os_image
 from menu import defaults
 from menu import validations
 

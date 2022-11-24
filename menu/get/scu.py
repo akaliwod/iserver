@@ -4,7 +4,7 @@ import traceback
 import click
 import yaml
 
-from lib import scu
+from lib.intersight import scu
 from menu import defaults
 from menu import validations
 

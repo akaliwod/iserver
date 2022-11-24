@@ -2,6 +2,7 @@
 
 ```
 # iserver set power shut --help
+
 Usage: iserver.py set power shut [OPTIONS]
 
   Operating system shutdown
@@ -23,9 +24,8 @@ Options:
 ## Basic execution
 
 ```
-# iserver set power shut
-    --group self-test-power
-    --no-confirm
+# iserver set power shut --group self-test-power --no-confirm
+
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
 | Flags      | Name                            | Model           | Serial       | IP           | CPU         | Memory     |
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
@@ -48,9 +48,8 @@ Workflows finished: [#######################] 2/2
 ## Verbose output
 
 ```
-# iserver set power shut
-    --group self-test-power
-    --no-confirm
+# iserver set power shut --group self-test-power --no-confirm
+
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
 | Flags      | Name                            | Model           | Serial       | IP           | CPU         | Memory     |
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
@@ -133,8 +132,8 @@ Workflow
 Before task
 
 ```
-# iserver get servers
-    --serial WMP24040059,WMP240400FM
+# iserver get servers --serial WMP24040059,WMP240400FM
+
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
 | Flags      | Name                            | Model           | Serial       | IP           | CPU         | Memory     |
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
@@ -154,8 +153,8 @@ Flags
 After task
 
 ```
-# iserver get servers
-    --serial WMP24040059,WMP240400FM
+# iserver get servers --serial WMP24040059,WMP240400FM
+
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
 | Flags      | Name                            | Model           | Serial       | IP           | CPU         | Memory     |
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
@@ -175,9 +174,8 @@ Flags
 ## Developers output
 
 ```
-# iserver set power shut
-    --group self-test-power
-    --no-confirm
+# iserver set power shut --group self-test-power --no-confirm
+
 Developer output
 
 {

@@ -3,8 +3,8 @@ import json
 
 from progress.bar import IncrementalBar
 
-from lib import compute_info
-from lib import os_configuration_file
+from lib.intersight import compute_info
+from lib.intersight import os_configuration_file
 from lib import ip_helper
 from menu import common
 from menu import validations
@@ -323,8 +323,16 @@ def get_embedded_attributes(ctx, iaccount, name_filter, ip_filter, serial_filter
     attributes['image']['name'] = image_info['Name']
     attributes['image']['vendor_id'] = image_info['VendorId']
     attributes['image']['version_id'] = image_info['VersionId']
-    attributes['storage_controller_slot'] = 'MRAID'
-    attributes['virtual_drive_id'] = '0'
+
+    if server_info['VirtualDiskCount'] == 0:
+        ctx.my_output.error('No virtual disk detected on the server')
+        return None
+
+    virtual_disk = server_info['server']['VirtualDisks'][0]
+    attributes['storage_controller_slot'] = virtual_disk['StorageControllerId']
+    attributes['virtual_drive_id'] = virtual_disk['VirtualDriveId']
+    attributes['virtual_drive_name'] = virtual_disk['Name']
+
     attributes['organization_id'] = organization_id
     attributes['server'] = server
 
@@ -384,8 +392,16 @@ def get_dhcp_attributes(ctx, iaccount, name_filter, ip_filter, serial_filter, sc
     attributes['interface_mac'] = interface_mac
     attributes['hostname'] = hostname
     attributes['password'] = password
-    attributes['storage_controller_slot'] = 'MRAID'
-    attributes['virtual_drive_id'] = '0'
+
+    if server_info['VirtualDiskCount'] == 0:
+        ctx.my_output.error('No virtual disk detected on the server')
+        return None
+
+    virtual_disk = server_info['server']['VirtualDisks'][0]
+    attributes['storage_controller_slot'] = virtual_disk['StorageControllerId']
+    attributes['virtual_drive_id'] = virtual_disk['VirtualDriveId']
+    attributes['virtual_drive_name'] = virtual_disk['Name']
+
     attributes['organization_id'] = organization_id
     attributes['server'] = server
 
@@ -487,8 +503,16 @@ def get_static_attributes(ctx, iaccount, name_filter, ip_filter, serial_filter, 
     attributes['nameserver'] = nameserver
     attributes['hostname'] = hostname
     attributes['password'] = password
-    attributes['storage_controller_slot'] = 'MRAID'
-    attributes['virtual_drive_id'] = '0'
+
+    if server_info['VirtualDiskCount'] == 0:
+        ctx.my_output.error('No virtual disk detected on the server')
+        return None
+
+    virtual_disk = server_info['server']['VirtualDisks'][0]
+    attributes['storage_controller_slot'] = virtual_disk['StorageControllerId']
+    attributes['virtual_drive_id'] = virtual_disk['VirtualDriveId']
+    attributes['virtual_drive_name'] = virtual_disk['Name']
+
     attributes['organization_id'] = organization_id
     attributes['server'] = server
 

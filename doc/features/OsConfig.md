@@ -6,6 +6,7 @@ Each combination of OS vendor and version that supports template-based installat
 
 ```
 # iserver get os-config --help
+
 Usage: iserver.py get os-config [OPTIONS]
 
   Get operating system configuration template
@@ -22,9 +23,8 @@ Options:
 Example
 
 ```
-# iserver get os-config
-    --vendor Ubuntu
-    --version "Ubuntu Server 22.04 LTS"
+# iserver get os-config --vendor Ubuntu --version "Ubuntu Server 22.04 LTS"
+
 Validate input parameters...
 Configuration file: Ubuntu2004AutoInstall [62f5b85b925a5af7c1325fc1]
 
@@ -82,6 +82,7 @@ Negative test: not enough parameters
 
 ```
 # iserver get os-config
+
 Validate input parameters...
 [ERROR] Define os version using vendor and version names or version id
 ```
@@ -89,9 +90,8 @@ Validate input parameters...
 Negative test: wrong vendor
 
 ```
-# iserver get os-config
-    --vendor lala
-    --version "Ubuntu Server 22.04 LTS"
+# iserver get os-config --vendor lala --version "Ubuntu Server 22.04 LTS"
+
 Validate input parameters...
 [ERROR] Vendor not found: lala
 ```
@@ -99,9 +99,8 @@ Validate input parameters...
 Negative test: wrong version
 
 ```
-# iserver get os-config
-    --vendor Ubuntu
-    --version lala
+# iserver get os-config --vendor Ubuntu --version lala
+
 Validate input parameters...
 [ERROR] Version not found: lala
 ```

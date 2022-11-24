@@ -1,4 +1,4 @@
-from lib import computes_info
+from lib.intersight import computes_info
 
 
 def flags_fixup(ctx, silent, verbose, debug):
@@ -151,3 +151,37 @@ def print_servers(iaccount, servers):
 
     computes_handler = computes_info.ComputesInfo(iaccount, settings)
     computes_handler.print(servers, legend_on=False)
+
+
+def chassis_settings_fixup(settings):
+
+    # Do not print summary header if any details section is enabled
+
+    summary = True
+    for key in ['power', 'fan', 'module', 'port', 'node']:
+        if settings[key]['enabled']:
+            summary = False
+
+    settings['summary'] = {}
+    settings['summary']['enabled'] = summary
+
+    # Copy module selection to port module selection
+
+    if settings['module']['enabled']:
+        if settings['module']['path'] is not None:
+            if settings['port']['enabled']:
+                if settings['port']['module'] is None:
+                    settings['port']['module'] = settings['module']['path'].lower()
+
+        if settings['module']['id'] is not None:
+            if settings['port']['enabled']:
+                if settings['port']['module'] is None:
+                    settings['port']['module'] = str(settings['module']['id'])
+
+    # If port node is selected, enforce port type host
+
+    if settings['port']['enabled']:
+        if settings['port']['node'] is not None:
+            settings['port']['type'] = 'host'
+
+    return settings

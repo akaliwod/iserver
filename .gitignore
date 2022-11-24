@@ -10,9 +10,13 @@ __pycache__
 /dist
 /bdist
 /build
+/results
+/Notes.md
 /.eggs
 /.stestr
 /.tox
 /.coverage.*
 /.coverage
 *~
+poetry.lock
+*.toml

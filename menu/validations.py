@@ -6,11 +6,11 @@ import yaml
 from lib import iaccount_helper
 from lib import ip_helper
 from lib import my_servers_helper
-from lib import organization
-from lib import scu
-from lib import os_image
-from lib import hcl_operating_system
-from lib import hcl_operating_system_vendor
+from lib.intersight import organization
+from lib.intersight import scu
+from lib.intersight import os_image
+from lib.intersight import hcl_operating_system
+from lib.intersight import hcl_operating_system_vendor
 
 
 def validate_iaccount(ctx, param, value):
@@ -227,3 +227,138 @@ def validate_os_image(ctx, iaccount, image_name, required=True):
     image_item['VersionId'] = version_item['Moid']
 
     return image_item
+
+
+def validate_chassis_ifm_filter(ctx, param, value):
+    if value is None:
+        ifm_filter = {}
+        ifm_filter['enabled'] = False
+        return ifm_filter
+
+    if value.lower() in ['all', '.', '*']:
+        ifm_filter = {}
+        ifm_filter['enabled'] = True
+        ifm_filter['path'] = None
+        ifm_filter['id'] = None
+        return ifm_filter
+
+    if len(value.split(',')) > 1:
+        raise click.BadParameter('Select module by ID or Path')
+
+    if value.lower() == 'a':
+        ifm_filter = {}
+        ifm_filter['enabled'] = True
+        ifm_filter['path'] = 'A'
+        ifm_filter['id'] = None
+        return ifm_filter
+
+    if value.lower() == 'b':
+        ifm_filter = {}
+        ifm_filter['enabled'] = True
+        ifm_filter['path'] = 'B'
+        ifm_filter['id'] = None
+        return ifm_filter
+
+    try:
+        ifm_module_id = int(value)
+    except BaseException:
+        ifm_module_id = None
+
+    if ifm_module_id is None:
+        raise click.BadParameter('Select path A or B')
+
+    if ifm_module_id not in [1, 2]:
+        raise click.BadParameter('Select module id 1 or 2')
+
+    ifm_filter = {}
+    ifm_filter['enabled'] = True
+    ifm_filter['path'] = None
+    ifm_filter['id'] = ifm_module_id
+
+    return ifm_filter
+
+
+def validate_chassis_fan_filter(ctx, param, value):
+    fan_filter = {}
+    fan_filter['enabled'] = value
+    return fan_filter
+
+
+def validate_chassis_power_filter(ctx, param, value):
+    power_filter = {}
+    power_filter['enabled'] = value
+    return power_filter
+
+
+def validate_chassis_node_filter(ctx, param, value):
+    node_filter = {}
+    node_filter['enabled'] = value
+    return node_filter
+
+
+def validate_chassis_port_filter(ctx, param, value):
+    if len(value) == 0:
+        port_filter = {}
+        port_filter['enabled'] = False
+        return port_filter
+
+    port_filter = {}
+    port_filter['enabled'] = True
+    port_filter['type'] = None
+    port_filter['state'] = None
+    port_filter['module'] = None
+    port_filter['node'] = None
+
+    for parameter in value:
+        if parameter.lower() in ['all', '.', '*']:
+            return port_filter
+
+        if len(parameter.split(':')) != 2:
+            continue
+
+        (param_type, param_value) = parameter.split(':')
+
+        if param_type.lower() in ['t', 'type']:
+            if param_value.lower() not in ['host', 'net']:
+                raise click.BadParameter('Port type host or net')
+            port_filter['type'] = param_value.lower()
+
+        if param_type.lower() in ['s', 'state']:
+            if param_value.lower() not in ['up', 'down']:
+                raise click.BadParameter('Port state up or down')
+            port_filter['state'] = param_value.lower()
+
+        if param_type.lower() in ['m', 'module']:
+            if param_value.lower() not in ['a', 'b', '1', '2']:
+                raise click.BadParameter('Port path a/b or 1/2')
+            port_filter['module'] = param_value.lower()
+
+        if param_type.lower() in ['n', 'node']:
+            if param_value.lower() in ['.', '*', 'all']:
+                port_filter['node'] = -1
+            else:
+                node_id = None
+                try:
+                    node_id = int(param_value)
+                except BaseException:
+                    pass
+
+                if node_id is None:
+                    raise click.BadParameter('Node all or index')
+
+                port_filter['node'] = node_id
+
+    return port_filter
+
+
+def validate_redfish_path(ctx, param, value):
+    if value == '':
+        return value
+
+    if value.startswith('/redfish/v1/'):
+        value = value.lstrip('/redfish/v1/')
+
+    if value.startswith('/api-explorer/resources/redfish/v1/'):
+        value = value.lstrip('/api-explorer/resources/redfish/v1/')
+
+    return value

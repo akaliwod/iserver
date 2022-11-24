@@ -3,7 +3,7 @@ import sys
 import traceback
 import click
 
-from lib import os_image
+from lib.intersight import os_image
 from menu import defaults
 from menu import validations
 

@@ -2,9 +2,9 @@ import sys
 import traceback
 import click
 
-from lib import hcl_operating_system
-from lib import hcl_operating_system_vendor
-from lib import os_configuration_file
+from lib.intersight import hcl_operating_system
+from lib.intersight import hcl_operating_system_vendor
+from lib.intersight import os_configuration_file
 from menu import defaults
 from menu import validations
 

@@ -3,7 +3,7 @@ import sys
 import traceback
 import click
 
-from lib import scu
+from lib.intersight import scu
 from menu import defaults
 from menu import validations
 

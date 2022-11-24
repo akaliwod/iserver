@@ -6,6 +6,7 @@ Use command options for workflows' filtering.
 
 ```
 # iserver get workflows --help
+
 Usage: iserver.py get workflows [OPTIONS]
 
   Get workflows
@@ -35,12 +36,8 @@ Options:
 ## Example: failed workflows
 
 ```
-# iserver get workflows
-    --group p2b
-    --failed
-    --days 7
-    --count 5
-    --order workflow
+# iserver get workflows --group p2b --failed --days 7 --count 5 --order workflow
+
 Get servers info...
 Get workflows info...
 
@@ -58,12 +55,8 @@ Get workflows info...
 ## Example: power related in last 7 days
 
 ```
-# iserver get workflows
-    --group p2b
-    --power
-    --order workflow
-    --days 7
-    --count 5
+# iserver get workflows --group p2b --power --order workflow --days 7 --count 5
+
 Get servers info...
 Get workflows info...
 
@@ -97,6 +90,7 @@ Get workflows info...
     --order workflow
     --days 7
     --count 5 -o json
+
 [
     {
         "server_id": "5fdfe47f6176752d35001995",

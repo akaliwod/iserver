@@ -5,8 +5,8 @@ Use --health option to select servers with any warnings or critical alarms.
 You can add any extra filtering options following logical AND rule. Use -o|--output for desired output format.
 
 ```
-# iserver get servers
-    --health
+# iserver get servers --health
+
 +--------+--------------------------------+-----------------+--------------+----------------+-------------+------------+
 | Flags  | Name                           | Model           | Serial       | IP             | CPU         | Memory     |
 +--------+--------------------------------+-----------------+--------------+----------------+-------------+------------+

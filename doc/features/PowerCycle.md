@@ -2,6 +2,7 @@
 
 ```
 # iserver set power cycle --help
+
 Usage: iserver.py set power cycle [OPTIONS]
 
   Power cycle
@@ -23,9 +24,8 @@ Options:
 ## Basic execution
 
 ```
-# iserver set power cycle
-    --group self-test-power
-    --no-confirm
+# iserver set power cycle --group self-test-power --no-confirm
+
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
 | Flags      | Name                            | Model           | Serial       | IP           | CPU         | Memory     |
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
@@ -48,9 +48,8 @@ Workflows finished: [#######################] 2/2
 ## Verbose output
 
 ```
-# iserver set power cycle
-    --group self-test-power
-    --no-confirm
+# iserver set power cycle --group self-test-power --no-confirm
+
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
 | Flags      | Name                            | Model           | Serial       | IP           | CPU         | Memory     |
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
@@ -137,8 +136,8 @@ Workflow
 Before task
 
 ```
-# iserver get servers
-    --serial WMP24040059,WMP240400FM
+# iserver get servers --serial WMP24040059,WMP240400FM
+
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
 | Flags      | Name                            | Model           | Serial       | IP           | CPU         | Memory     |
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
@@ -158,8 +157,8 @@ Flags
 After task
 
 ```
-# iserver get servers
-    --serial WMP24040059,WMP240400FM
+# iserver get servers --serial WMP24040059,WMP240400FM
+
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
 | Flags      | Name                            | Model           | Serial       | IP           | CPU         | Memory     |
 +------------+---------------------------------+-----------------+--------------+--------------+-------------+------------+
@@ -179,9 +178,8 @@ Flags
 ## Developers output
 
 ```
-# iserver set power cycle
-    --group self-test-power
-    --no-confirm
+# iserver set power cycle --group self-test-power --no-confirm
+
 Developer output
 
 {

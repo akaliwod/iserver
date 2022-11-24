@@ -13,8 +13,8 @@ You can add any extra filtering options following logical AND rule. Use -o|--out
 ## Equal
 
 ```
-# iserver get servers
-    --cpu 40
+# iserver get servers --cpu 40
+
 +------------+---------------------------------+-----------------+--------------+----------------+-------------+------------+
 | Flags      | Name                            | Model           | Serial       | IP             | CPU         | Memory     |
 +------------+---------------------------------+-----------------+--------------+----------------+-------------+------------+
@@ -55,8 +55,8 @@ Flags
 ## Lower or Equal
 
 ```
-# iserver get servers
-    --cpu 30
+# iserver get servers --cpu 30
+
 +--------+-------+--------+---------+-----+------+---------+
 | Flags  | Name  | Model  | Serial  | IP  | CPU  | Memory  |
 +--------+-------+--------+---------+-----+------+---------+
@@ -74,8 +74,8 @@ Flags
 ## Greater or Equal
 
 ```
-# iserver get servers
-    --cpu 100
+# iserver get servers --cpu 100
+
 +--------+-------+--------+---------+-----+------+---------+
 | Flags  | Name  | Model  | Serial  | IP  | CPU  | Memory  |
 +--------+-------+--------+---------+-----+------+---------+

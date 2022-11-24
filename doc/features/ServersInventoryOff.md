@@ -5,8 +5,8 @@ Use --off option to select servers with power turned off.
 You can add any extra filtering options following logical AND rule. Use -o|--output for desired output format.
 
 ```
-# iserver get servers
-    --off
+# iserver get servers --off
+
 +--------+--------------------------------+-----------------+--------------+----------------+--------------+------------+
 | Flags  | Name                           | Model           | Serial       | IP             | CPU          | Memory     |
 +--------+--------------------------------+-----------------+--------------+----------------+--------------+------------+

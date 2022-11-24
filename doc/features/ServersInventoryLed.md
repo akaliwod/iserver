@@ -5,8 +5,8 @@ Use --loc option to select servers with location led turned on.
 You can add any extra filtering options following logical AND rule. Use -o|--output for desired output format.
 
 ```
-# iserver get servers
-    --loc
+# iserver get servers --loc
+
 +---------+-------------------------------+-----------------+--------------+--------------+-------------+------------+
 | Flags   | Name                          | Model           | Serial       | IP           | CPU         | Memory     |
 +---------+-------------------------------+-----------------+--------------+--------------+-------------+------------+

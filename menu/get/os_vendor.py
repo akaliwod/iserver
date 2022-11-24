@@ -4,7 +4,7 @@ import yaml
 import traceback
 import click
 
-from lib import hcl_operating_system_vendor
+from lib.intersight import hcl_operating_system_vendor
 from menu import defaults
 from menu import validations
 

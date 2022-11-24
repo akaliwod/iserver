@@ -2,9 +2,9 @@ import json
 
 from progress.bar import IncrementalBar
 
-from lib import os_install
-from lib import lcm_server_common
-from lib import lcm_server_power
+from lib.intersight import os_install
+from lib.lcm_server import lcm_server_common
+from lib.lcm_server import lcm_server_power
 
 
 def servers_power_cycle(ctx, iaccount, attributes, verbose):

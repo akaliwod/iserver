@@ -32,6 +32,7 @@ Servers group management | iserver get servers list --set value | [example](Serv
 
 ```
 # iserver get servers --help
+
 Usage: iserver.py get servers [OPTIONS]
 
   Get servers list
@@ -59,6 +60,6 @@ Options:
   --set TEXT                      Set as group
   -o, --output [default|json|yaml]
                                   [default: default]
-  --devel                         Developer output  [default: False]
+  --devel                         Developer output
   --help                          Show this message and exit.
 ```

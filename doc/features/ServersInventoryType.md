@@ -7,8 +7,8 @@ You can add any extra filtering options following logical AND rule. Use -o|--out
 ## Blade Servers
 
 ```
-# iserver get servers
-    --type blade
+# iserver get servers --type blade
+
 +--------+-------------------------------+-----------------+--------------+-------------+-------------+------------+
 | Flags  | Name                          | Model           | Serial       | IP          | CPU         | Memory     |
 +--------+-------------------------------+-----------------+--------------+-------------+-------------+------------+
@@ -36,8 +36,8 @@ Flags
 ## Rack Servers
 
 ```
-# iserver get servers
-    --type rack
+# iserver get servers --type rack
+
 +------------+---------------------------------+-----------------+--------------+----------------+--------------+------------+
 | Flags      | Name                            | Model           | Serial       | IP             | CPU          | Memory     |
 +------------+---------------------------------+-----------------+--------------+----------------+--------------+------------+

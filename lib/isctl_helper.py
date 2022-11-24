@@ -109,7 +109,7 @@ class Isctl():
             return self.isctl_exec_windows(command, json_conversion=json_conversion, retry=retry)
         return self.isctl_exec_linux(command, json_conversion=json_conversion, retry=retry)
 
-    def get(self, command, json_conversion=True):
+    def get(self, command, json_conversion=True, api_debug=False):
         success, response, duration = self.isctl_exec(
             command,
             json_conversion=json_conversion
@@ -123,7 +123,27 @@ class Isctl():
                 pass
             return None
 
-        self.log.cli(command, True, duration)
+        item_count = None
+        if json_conversion:
+            if isinstance(response, dict):
+                item_count = 1
+
+            if isinstance(response, list):
+                item_count = len(response)
+
+        self.log.cli(
+            command,
+            True,
+            duration,
+            item_count=item_count
+        )
+
+        if api_debug:
+            self.log.api(
+                command,
+                response
+            )
+
         return response
 
     def create(self, command, get_response=False, json_conversion=True):

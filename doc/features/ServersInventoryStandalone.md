@@ -5,8 +5,8 @@ Use --standalong option to select standalone servers i.e. not UCSM managed serve
 You can add any extra filtering options following logical AND rule. Use -o|--output for desired output format.
 
 ```
-# iserver get servers
-    --standalone
+# iserver get servers --standalone
+
 +------------+---------------------------------+-----------------+--------------+----------------+--------------+------------+
 | Flags      | Name                            | Model           | Serial       | IP             | CPU          | Memory     |
 +------------+---------------------------------+-----------------+--------------+----------------+--------------+------------+

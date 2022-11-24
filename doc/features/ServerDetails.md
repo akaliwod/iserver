@@ -10,6 +10,7 @@ Note: The more details you request, the longer it takes to prepare the data.
 
 ```
 # iserver get server --help
+
 Usage: iserver.py get server [OPTIONS]
 
   Get server details
@@ -38,9 +39,8 @@ Options:
 ## Basic output
 
 ```
-# iserver get server
-    --name aio-2-p2b-eu-spdc-WZP23400AK4
-    --flat
+# iserver get server --name aio-2-p2b-eu-spdc-WZP23400AK4 --flat
+
 Identity
 - Server ID : 5fdf9c786176752d35e47110
 - Name      : aio-2-p2b-eu-spdc-WZP23400AK4
@@ -70,10 +70,8 @@ No workflows
 ## All details
 
 ```
-# iserver get server
-    --name aio-2-p2b-eu-spdc-WZP23400AK4
-    --flat
-    --all
+# iserver get server --name aio-2-p2b-eu-spdc-WZP23400AK4 --flat --all
+
 Identity
 - Server ID : 5fdf9c786176752d35e47110
 - Name      : aio-2-p2b-eu-spdc-WZP23400AK4
@@ -214,9 +212,8 @@ No workflows
 ## JSON output
 
 ```
-# iserver get server
-    --name aio-2-p2b-eu-spdc-WZP23400AK4
-    --all -o json
+# iserver get server --name aio-2-p2b-eu-spdc-WZP23400AK4 --all -o json
+
 {
     "AccountMoid": "5be4b2ce67626c6d661ca38d",
     "Adapters": [
@@ -1599,9 +1596,8 @@ No workflows
 ## YAML output
 
 ```
-# iserver get server
-    --name aio-2-p2b-eu-spdc-WZP23400AK4
-    --all -o yaml
+# iserver get server --name aio-2-p2b-eu-spdc-WZP23400AK4 --all -o yaml
+
 AccountMoid: 5be4b2ce67626c6d661ca38d
 Adapters:
 - ClassId: mo.MoRef
