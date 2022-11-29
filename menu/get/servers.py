@@ -1,13 +1,17 @@
 import json
 import sys
+import time
+import threading
 import traceback
 import yaml
 import click
 
 from lib.intersight import computes_info
 from lib import my_servers_helper
+
 from menu import defaults
 from menu import validations
+from menu import progress
 
 
 class Failure(Exception):
@@ -30,6 +34,7 @@ class ErrorExit(Exception):
 @click.option("--fan", is_flag=True, default=False, help="Filter unhealthy fans")
 @click.option("--psu", is_flag=True, default=False, help="Filter unhealthy psu")
 @click.option("--ucsm", is_flag=True, default=False, help="Filter UCSM managed")
+@click.option("--disconnected", is_flag=True, default=False, help="Filter disconnected")
 @click.option("--standalone", is_flag=True, default=False, help="Filter standalone servers")
 @click.option("--ip", "ip_filter", default='', callback=validations.validate_filter_ip, help="Management IP address or subnet filter")
 @click.option("--name", "name_filter", default='', help="Name loose match filter")
@@ -52,6 +57,7 @@ def get_servers_command(
         fan,
         psu,
         ucsm,
+        disconnected,
         standalone,
         ip_filter,
         name_filter,
@@ -77,6 +83,10 @@ def get_servers_command(
     ctx.developer = devel
 
     try:
+        if output not in ['json', 'yaml']:
+            ctx.busy = True
+            threading.Thread(target=progress.spinner_task, args=(ctx,)).start()
+
         settings = {}
         settings['locator'] = True
         settings['workflow'] = 86400
@@ -116,6 +126,7 @@ def get_servers_command(
         match_rules['power_off'] = power_off
         match_rules['alarms'] = health
         match_rules['ucsm'] = ucsm
+        match_rules['disconnected'] = disconnected
         match_rules['standalone'] = standalone
         match_rules['cpu'] = cpu_filter
         match_rules['memory'] = memory_filter
@@ -142,6 +153,8 @@ def get_servers_command(
             ctx.log_prompt = False
             return
 
+        ctx.busy = False
+        time.sleep(.1)
         computes_handler.print(servers)
 
         # Set group operation handling
@@ -172,8 +185,10 @@ def get_servers_command(
             raise ErrorExit
 
     except ErrorExit:
+        ctx.busy = False
         sys.exit(1)
 
     except BaseException:
+        ctx.busy = False
         ctx.my_output.traceback(traceback.format_exc())
         sys.exit(1)

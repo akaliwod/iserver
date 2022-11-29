@@ -177,6 +177,7 @@ class ComputesInfo(ComputeExtraAttributes, ComputeFilter, ComputesWorkflow, Comp
             legend['management'] = '(U)CSM (S)tandalone'
             legend['type'] = '(R)ack (B)lade'
             legend['locator'] = '(L)ocator on'
+            legend['disconnected'] = '(D)isconnected'
             legend['workflow'] = 'W(R)(F)(f)n - (R)unning, Last (F)ailed, Some (f)ailed, n-workflows last 24 hours'
 
             self.my_output.dictionary(
@@ -191,6 +192,7 @@ class ComputesInfo(ComputeExtraAttributes, ComputeFilter, ComputesWorkflow, Comp
                     'type',
                     'management',
                     'locator',
+                    'disconnected',
                     'workflow'
                 ],
                 title_keys=[
@@ -199,6 +201,7 @@ class ComputesInfo(ComputeExtraAttributes, ComputeFilter, ComputesWorkflow, Comp
                     'Type',
                     'Management',
                     'Locator',
+                    'Connection',
                     'Workflow'
                 ]
             )

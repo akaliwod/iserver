@@ -1,4 +1,3 @@
-from lib import info_helper
 from lib.intersight.intersight_common import IntersightCommon
 
 

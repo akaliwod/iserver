@@ -318,10 +318,10 @@ def get_redfish_test_endpoints():
 
 def get_redfish_test_table_content(tests):
     endpoint_map = {}
-    endpoint_map['generic'] = 'EndpointGeneric.md'
+    endpoint_map['standard'] = 'EndpointStandard.md'
     endpoint_map['ucsc'] = 'EndpointUcsc.md'
     endpoint_map['fi'] = 'EndpointFi.md'
-    endpoint_map['hp'] = 'EndpointHp.md'
+    endpoint_map['hpe'] = 'EndpointHpe.md'
     endpoint_map['dell'] = 'EndpointDell.md'
 
     content = ''
@@ -342,6 +342,12 @@ def get_redfish_test_table_content(tests):
                 test['vendor'].lower(),
                 test['model'].lower()
             )
+        identity = ''
+        if test['identity']:
+            identity = '[link](../redfish-tests-%s-%s/Identity.md)' % (
+                test['vendor'].lower(),
+                test['model'].lower()
+            )
         power = ''
         if test['power']:
             power = '[link](../redfish-tests-%s-%s/Power.md)' % (
@@ -355,7 +361,7 @@ def get_redfish_test_table_content(tests):
                 test['model'].lower()
             )
 
-        line = '%s | %s | [%s](./%s) | %s | %s | %s | %s | %s' % (
+        line = '%s | %s | [%s](./%s) | %s | %s | %s | %s | %s | %s' % (
             test['vendor'],
             test['model'],
             test['endpoint'],
@@ -363,6 +369,7 @@ def get_redfish_test_table_content(tests):
             resource,
             oem,
             action,
+            identity,
             power,
             thermal
         )
@@ -673,7 +680,7 @@ def generate_redfish_tests(tests, results_directory):
 
         os.mkdir(test_doc_directory_name)
 
-        for template_name in ['Resource', 'Oem', 'Action', 'Power', 'Thermal']:
+        for template_name in ['Resource', 'Oem', 'Action', 'Identity', 'Power', 'Thermal']:
             if not generate_redfish_test_template(redfish_test_templates_directory, test_template_directory_name, template_name, test, results_directory):
                 print('Generating test %s template %s failed' % (
                     test['model'],

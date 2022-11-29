@@ -12,13 +12,18 @@ requests.packages.urllib3.disable_warnings()
 
 
 class RedfishEndpointFabricInterconnect(RedfishEndpointCommon, RedfishEndpointFabricInterconnectInventory, RedfishEndpointFabricInterconnectTemplates):
-    def __init__(self, endpoint_ip, endpoint_port, redfish_username, redfish_password, ssl_verify=False, deep_search_exlusions=True, verbose=False, debug=False):
+    def __init__(self, endpoint_handler, endpoint_ip, endpoint_port, redfish_username, redfish_password, cache_filename=None, get_timeout=10, ssl_verify=False, deep_search_exlusions=True, verbose=False, debug=False):
+        self.session_connected = False
+
         RedfishEndpointCommon.__init__(
             self,
+            endpoint_handler,
             endpoint_ip,
             endpoint_port,
             redfish_username,
             redfish_password,
+            cache_filename=cache_filename,
+            get_timeout=get_timeout,
             ssl_verify=ssl_verify,
             deep_search_exlusions=deep_search_exlusions,
             verbose=verbose,
@@ -31,7 +36,6 @@ class RedfishEndpointFabricInterconnect(RedfishEndpointCommon, RedfishEndpointFa
             self
         )
 
-        self.session_connected = False
         self.connect()
 
     def __del__(self):
@@ -78,78 +82,81 @@ class RedfishEndpointFabricInterconnect(RedfishEndpointCommon, RedfishEndpointFa
             path = self.path_fixup(path)
 
         start_time = int(time.time() * 1000)
-        try:
-            url = 'https://%s/%s' % (
-                self.endpoint_ip,
-                path
-            )
-
-            headers = {}
-            if len(self.inventory_type) > 0 and len(self.inventory_id) > 0:
-                headers['Inventory-Type'] = self.inventory_type
-                headers['Inventory-Id'] = self.inventory_id
-
-            if inventory_type is not None:
-                headers['Inventory-Type'] = inventory_type
-
-            if inventory_id is not None:
-                headers['Inventory-Id'] = inventory_id
-
-            response = self.session_handler.get(
-                url,
-                headers=headers,
-                verify=self.ssl_verify
-            )
-
-        except BaseException:
-            self.log.error(
-                'get_properties',
-                'Redfish get object exception: %s %s' % (self.endpoint_ip, path)
-            )
-
-            self.log.error(
-                'get_properties',
-                traceback.format_exc()
-            )
-
-            end_time = int(time.time() * 1000)
-            duration_ms = end_time - start_time
-            self.log.redfish(
-                path,
-                False,
-                duration_ms
-            )
-
-            return None
-
-        if response.status_code > 299:
-            self.log.error(
-                'get_properties',
-                'Redfish get object failed: %s %s %s %s' % (
+        if self.is_cache_enabled():
+            all_properties = self.get_properties_cache(path, properties=properties)
+        else:
+            try:
+                url = 'https://%s/%s' % (
                     self.endpoint_ip,
-                    path,
-                    response.status_code,
-                    str(response.content)
+                    path
                 )
-            )
 
-            end_time = int(time.time() * 1000)
-            duration_ms = end_time - start_time
-            self.log.redfish(
-                path,
-                False,
-                duration_ms
-            )
+                headers = {}
+                if len(self.inventory_type) > 0 and len(self.inventory_id) > 0:
+                    headers['Inventory-Type'] = self.inventory_type
+                    headers['Inventory-Id'] = self.inventory_id
 
-            return None
+                if inventory_type is not None:
+                    headers['Inventory-Type'] = inventory_type
 
-        try:
-            all_properties = response.json()
-        except BaseException:
-            self.log.error(
-                'get_properties',
-                'Redfish get object json exception: %s %s' % (self.endpoint_ip, path)
-            )
+                if inventory_id is not None:
+                    headers['Inventory-Id'] = inventory_id
+
+                response = self.session_handler.get(
+                    url,
+                    headers=headers,
+                    verify=self.ssl_verify
+                )
+
+            except BaseException:
+                self.log.error(
+                    'get_properties',
+                    'Redfish get object exception: %s %s' % (self.endpoint_ip, path)
+                )
+
+                self.log.error(
+                    'get_properties',
+                    traceback.format_exc()
+                )
+
+                end_time = int(time.time() * 1000)
+                duration_ms = end_time - start_time
+                self.log.redfish(
+                    path,
+                    False,
+                    duration_ms
+                )
+
+                return None
+
+            if response.status_code > 299:
+                self.log.error(
+                    'get_properties',
+                    'Redfish get object failed: %s %s %s %s' % (
+                        self.endpoint_ip,
+                        path,
+                        response.status_code,
+                        str(response.content)
+                    )
+                )
+
+                end_time = int(time.time() * 1000)
+                duration_ms = end_time - start_time
+                self.log.redfish(
+                    path,
+                    False,
+                    duration_ms
+                )
+
+                return None
+
+            try:
+                all_properties = response.json()
+            except BaseException:
+                self.log.error(
+                    'get_properties',
+                    'Redfish get object json exception: %s %s' % (self.endpoint_ip, path)
+                )
 
         end_time = int(time.time() * 1000)
         duration_ms = end_time - start_time
@@ -181,9 +188,15 @@ class RedfishEndpointFabricInterconnect(RedfishEndpointCommon, RedfishEndpointFa
         return selected_properties
 
     def is_connected(self):
+        if self.is_cache_enabled():
+            return True
+
         return self.session_connected
 
     def connect(self):
+        if self.is_cache_enabled():
+            return True
+
         if self.session_handler is not None:
             return True
 
@@ -266,6 +279,9 @@ class RedfishEndpointFabricInterconnect(RedfishEndpointCommon, RedfishEndpointFa
         return True
 
     def disconnect(self):
+        if self.is_cache_enabled():
+            return True
+
         if self.session_handler is None:
             return True
 
@@ -274,31 +290,42 @@ class RedfishEndpointFabricInterconnect(RedfishEndpointCommon, RedfishEndpointFa
             self.endpoint_ip
         )
 
+        success = True
         try:
             response = self.session_handler.post(
                 url,
                 verify=self.ssl_verify
             )
         except BaseException:
-            self.log.error(
-                'disconnect',
-                'Redfish session close exception: %s' % (self.endpoint_ip)
-            )
+            success = False
 
-            self.log.error(
-                'disconnect',
-                traceback.format_exc()
-            )
+        if not success:
+            self.session_handler = requests.Session()
+            try:
+                response = self.session_handler.post(
+                    url,
+                    verify=self.ssl_verify
+                )
+            except BaseException:
+                self.log.error(
+                    'disconnect',
+                    'Redfish session close exception: %s' % (self.endpoint_ip)
+                )
 
-            end_time = int(time.time() * 1000)
-            duration_ms = end_time - start_time
-            self.log.redfish(
-                'disconnect',
-                False,
-                duration_ms
-            )
+                self.log.error(
+                    'disconnect',
+                    traceback.format_exc()
+                )
 
-            return False
+                end_time = int(time.time() * 1000)
+                duration_ms = end_time - start_time
+                self.log.redfish(
+                    'disconnect',
+                    False,
+                    duration_ms
+                )
+
+                return False
 
         if response.status_code >= 300:
             self.log.error(

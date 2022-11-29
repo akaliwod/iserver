@@ -30,6 +30,7 @@ def get_no_match_definition():
     match_rules['power_off'] = False
     match_rules['alarms'] = False
     match_rules['ucsm'] = False
+    match_rules['disconnected'] = False
     match_rules['standalone'] = False
     match_rules['cpu'] = ''
     match_rules['memory'] = ''
@@ -63,6 +64,7 @@ def get_selected_servers(ctx, iaccount, group, serial_filter, name_filter, ip_fi
     match_rules['power_off'] = False
     match_rules['alarms'] = False
     match_rules['ucsm'] = False
+    match_rules['disconnected'] = False
     match_rules['standalone'] = False
     match_rules['cpu'] = ''
     match_rules['memory'] = ''

@@ -659,7 +659,7 @@ def run_post_scripts(results_directory, filename, test, key, tests_directory, dr
     return True
 
 
-def run_test(bar_handler, test, tests_directory, results_directory, variables, iaccount, verbose, debug, dry_run, iserver_prefix, iserver_version, save_result=True, skip=[], exclude_dry_run=False):
+def run_test(bar_handler, test, tests_directory, results_directory, variables, iaccount, verbose, debug, dry_run, iserver_prefix, iserver_version, save_result=True, skip=[], exclude_dry_run=False, wait=False):
     results = []
     template_handler = template_helper.TemplateHelper()
 
@@ -746,6 +746,9 @@ def run_test(bar_handler, test, tests_directory, results_directory, variables, i
 
                 bar_handler.next()
 
+            if wait:
+                input("Press Enter to continue...")
+
     if 'negative' not in skip and 'negative' in test:
         for key in test['negative']:
             filename = '%s.%s' % (test['name'], key)
@@ -786,6 +789,9 @@ def run_test(bar_handler, test, tests_directory, results_directory, variables, i
 
                 bar_handler.next()
 
+            if wait:
+                input("Press Enter to continue...")
+
     return results
 
 
@@ -818,7 +824,7 @@ def get_iserver_prefix():
     return iserver_prefix
 
 
-def run_tests(tests, tests_count, tests_directory, results_directory, environment, iaccount, verbose, debug, dry_run):
+def run_tests(tests, tests_count, tests_directory, results_directory, environment, iaccount, honor, verbose, debug, dry_run, wait=False):
     variables = load_test_variables(tests_directory, environment)
     if variables is None:
         return []
@@ -838,21 +844,49 @@ def run_tests(tests, tests_count, tests_directory, results_directory, environmen
     bar_handler = Bar('Processing', max=tests_count)
     bar_handler.goto(0)
     for test in tests:
-        test_results = run_test(
-            bar_handler,
-            test,
-            tests_directory,
-            results_directory,
-            variables,
-            iaccount,
-            verbose,
-            debug,
-            dry_run,
-            get_iserver_prefix(),
-            iserver_version
-        )
+        if honor:
+            test_iaccount = iaccount
+            if 'iaccount' in test:
+                test_iaccount = test['iaccount']
+
+            test_variables = variables
+            if 'environment' in test:
+                test_variables = load_test_variables(tests_directory, test['environment'])
+
+            test_results = run_test(
+                bar_handler,
+                test,
+                tests_directory,
+                results_directory,
+                test_variables,
+                test_iaccount,
+                verbose,
+                debug,
+                dry_run,
+                get_iserver_prefix(),
+                iserver_version,
+                wait=wait
+            )
+        else:
+            test_results = run_test(
+                bar_handler,
+                test,
+                tests_directory,
+                results_directory,
+                variables,
+                iaccount,
+                verbose,
+                debug,
+                dry_run,
+                get_iserver_prefix(),
+                iserver_version,
+                wait=wait
+            )
         for test_result in test_results:
             results.append(test_result)
+
+        if wait:
+            input("Press Enter to continue...")
 
     bar_handler.finish()
 

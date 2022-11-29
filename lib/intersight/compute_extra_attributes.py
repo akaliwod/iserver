@@ -12,13 +12,18 @@ from lib.intersight import storage_virtual_drive
 from lib.intersight import storage_controller
 from lib.intersight import compute_server_setting
 from lib.intersight import workflow
+from lib.intersight import asset_device_registration
+
 from lib import my_servers_helper
+from lib import log_helper
 
 
 class ComputeExtraAttributes():
     """Class for rack/blade compute object extra attributes
     """
     def __init__(self, iaccount, settings):
+        self.log = log_helper.Log()
+
         self.settings = settings
         self.my_servers_handler = my_servers_helper.MyServers()
         self.my_servers_serials = self.my_servers_handler.get_serials()
@@ -38,8 +43,11 @@ class ComputeExtraAttributes():
         self.storage_virtual_drive_handler = storage_virtual_drive.StorageVirtualDrive(iaccount)
         self.storage_controller_handler = storage_controller.StorageController(iaccount)
         self.compute_server_setting_handler = compute_server_setting.ComputeServerSetting(iaccount)
+        self.asset_device_registration_handler = asset_device_registration.AssetDeviceContractInformation(iaccount)
         self.workflow = workflow.Workflow(iaccount)
         self.last_workflows = None
+
+        self.get_info_cache_mode = True
 
     def set_rack_compute_filter(self, server):
         self.processor_unit_handler.set_get_filter("ComputeBoard/Moid eq '%s'" % (server['Board']['Moid']))
@@ -102,6 +110,19 @@ class ComputeExtraAttributes():
                 server['DeviceMoId']
             )
 
+        server['Connected'] = False
+        device_registration_info = self.asset_device_registration_handler.get_info(
+            server['RegisteredDevice']['Moid'],
+            cache=self.get_info_cache_mode
+        )
+        if device_registration_info is None:
+            self.log.debug(
+                'add_common_attributes',
+                'Device registration info not found'
+            )
+        else:
+            server['Connected'] = device_registration_info['Connected']
+
         if self.settings['workflow'] is not None:
             server['WorkflowRunning'] = None
             server['WorkflowLast'] = None
@@ -158,6 +179,9 @@ class ComputeExtraAttributes():
 
         if 'LocatorLedOn' in server and server['LocatorLedOn']:
             state = '%sL' % (state)
+
+        if not server['Connected']:
+            state = '%sD' % (state)
 
         if self.settings['workflow'] is not None:
             if server['WorkflowRunning'] is not None or len(server['WorkflowsLast']) > 0:

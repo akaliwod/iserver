@@ -1,8 +1,16 @@
 import re
 import socket
 import struct
+import hashlib
+import uuid
 import requests
 import validators
+
+
+def generate_uuid(seed):
+    md5_handler = hashlib.md5()
+    md5_handler.update(seed.encode('utf-8'))
+    return str(uuid.UUID(md5_handler.hexdigest()))
 
 
 def is_valid_mac_address(address, mac_address_format='colon'):

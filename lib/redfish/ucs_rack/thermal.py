@@ -1,9 +1,38 @@
 class RedfishEndpointUcsRackTemplateThermal():
     def __init__(self):
-        pass
+        self.defult_thermal_uri = '/redfish/v1/Chassis/1/Thermal'
+
+    def get_thermal_uri(self):
+        chassis_uri = self.get_chassis_uri()
+        children = self.endpoint_handler.get_odata_ids(chassis_uri)
+        if children is None:
+            self.log.error(
+                'get_thermal_uri',
+                'Failed to discover thermal URI: %s' % (chassis_uri)
+            )
+            return self.defult_thermal_uri
+
+        thermal_uri = None
+        for child in children:
+            if child == chassis_uri:
+                continue
+
+            leaf = child.split('/')[-1]
+            if leaf == 'Thermal':
+                thermal_uri = child
+                break
+
+        if thermal_uri is None:
+            self.log.error(
+                'get_thermal_uri',
+                'Failed to find thermal uri: %s' % (chassis_uri)
+            )
+            return self.default_chassis_uri
+
+        return thermal_uri
 
     def get_template_thermal_properties(self):
-        uri = '/redfish/v1/Chassis/1/Thermal'
+        uri = self.get_thermal_uri()
         data = self.get_properties(uri)
         if data is None:
             return None
@@ -33,13 +62,20 @@ class RedfishEndpointUcsRackTemplateThermal():
         properties['Temperature'] = []
         for sensor in data['Temperatures']:
             sensor_info = {}
+            sensor_info['Name'] = sensor['Name']
             sensor_info['State'] = sensor['Status']['State']
             sensor_info['Health'] = sensor['Status']['Health']
-            sensor_info['SensorNumber'] = sensor['SensorNumber']
-            sensor_info['Name'] = sensor['Name']
-            sensor_info['PhysicalContext'] = sensor['PhysicalContext']
-            sensor_info['ReadingCelsius'] = sensor['ReadingCelsius']
-            sensor_info['UpperThresholdCritical'] = sensor['UpperThresholdCritical']
+            keys = [
+                'SensorNumber',
+                'PhysicalContext',
+                'ReadingCelsius',
+                'UpperThresholdCritical'
+            ]
+            for key in keys:
+                sensor_info[key] = 'N/A'
+                if key in sensor:
+                    sensor_info[key] = sensor[key]
+
             properties['Temperature'].append(sensor_info)
 
         properties['Temperature'] = sorted(properties['Temperature'], key=lambda i: i['Name'])

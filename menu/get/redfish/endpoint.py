@@ -21,7 +21,8 @@ class ErrorExit(Exception):
 
 @click.command("endpoint")
 @click.pass_obj
-@click.option("--type", "endpoint_type", type=click.Choice(['standard', 'ucsc', 'fi', 'dell', 'hp'], case_sensitive=False), default='standard', help="Redfish endpoint type")
+@click.option("--type", "endpoint_type", type=click.Choice(['standard', 'ucsc', 'fi', 'dell', 'hpe'], case_sensitive=False), default='standard', help="Redfish endpoint type")
+@click.option("--cache", "cache_name", default='', help="Redfish cache entry name")
 @click.option("--ip", "endpoint_ip", default='', help="Redfish management IP")
 @click.option("--port", "endpoint_port", default=443, help="Redfish management TCP port")
 @click.option("--username", default='', help="Redfish username")
@@ -42,12 +43,14 @@ class ErrorExit(Exception):
 @click.option("--no-exclusions", is_flag=True, show_default=True, default=False, help="No uri exclusions in deep search")
 @click.option("--max", "tree_max_execution_time", is_flag=False, type=click.INT, default=120, help="Max execution time in seconds")
 @click.option("--template", "properties_template_name", is_flag=False, show_default=False, default='', help="Endpoint properties template")
+@click.option("--timeout", "get_timeout", is_flag=False, show_default=True, default=10, type=click.INT, help="Get uri timeout")
 @click.option("--output", "-o", type=click.Choice(['default', 'json'], case_sensitive=False), default='default', show_default=True)
 @click.option("--verbose", is_flag=True, show_default=True, default=False, help="Verbose mode")
 @click.option("--devel", is_flag=True, show_default=True, default=False, help="Developer output")
 def get_redfish_endpoint_command(
         ctx,
         endpoint_type,
+        cache_name,
         endpoint_ip,
         endpoint_port,
         username,
@@ -68,6 +71,7 @@ def get_redfish_endpoint_command(
         no_exclusions,
         tree_max_execution_time,
         properties_template_name,
+        get_timeout,
         output,
         verbose,
         devel
@@ -89,16 +93,22 @@ def get_redfish_endpoint_command(
         threading.Thread(target=progress.spinner_task, args=(ctx,)).start()
 
     common.flags_fixup(ctx, silent, verbose, debug)
-    if endpoint_type == 'standard':
-        endpoint_type = 'generic'
 
     try:
+        if len(properties_template_name) > 0:
+            get_timeout = 120
+
+        if len(cache_name) > 0:
+            endpoint_type = 'cache'
+
         redfish_handler = endpoint.RedfishEndpoint(
             endpoint_type,
             endpoint_ip,
             endpoint_port,
             username,
             password,
+            cache_name=cache_name,
+            get_timeout=get_timeout,
             ssl_verify=ssl_verify,
             deep_search_exlusions=not no_exclusions,
             tree_max_execution_time=tree_max_execution_time,
@@ -122,10 +132,11 @@ def get_redfish_endpoint_command(
 
         # --type fi
         if endpoint_type == 'fi':
-            redfish_handler.endpoint_handler.set_inventory(
-                inventory_type,
-                inventory_id
-            )
+            if len(cache_name) == 0:
+                redfish_handler.endpoint_handler.set_inventory(
+                    inventory_type,
+                    inventory_id
+                )
 
         # --type fi --inventory-list
         if endpoint_type == 'fi' and inventory_list:
@@ -319,9 +330,10 @@ def get_redfish_endpoint_command(
             if output == 'default':
                 ctx.my_output.default('')
                 for uri in tree:
-                    ctx.my_output.default(uri, underline=True)
-                    ctx.my_output.default(json.dumps(tree[uri], indent=4))
-                    ctx.my_output.default('')
+                    if tree[uri] is not None:
+                        ctx.my_output.default(uri, underline=True)
+                        ctx.my_output.default(json.dumps(tree[uri], indent=4))
+                        ctx.my_output.default('')
 
             return
 

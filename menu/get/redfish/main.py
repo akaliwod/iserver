@@ -1,10 +1,8 @@
 import click
 
 from menu.get.redfish.endpoint import get_redfish_endpoint_command
-# from menu.get.redfish.chassis import get_redfish_server_command
-# from menu.get.redfish.fi import get_redfish_server_command
-# from menu.get.redfish.server import get_redfish_server_command
-# from menu.get.redfish.servers import get_redfish_servers_command
+from menu.get.redfish.settings import get_redfish_settings_command
+from menu.get.redfish.cache import get_redfish_cache_command
 
 
 class Failure(Exception):
@@ -18,5 +16,5 @@ def get_redfish_menu(ctx):
 
 
 get_redfish_menu.add_command(get_redfish_endpoint_command)
-# get_redfish_menu.add_command(get_redfish_server_command)
-# get_redfish_menu.add_command(get_redfish_servers_command)
+get_redfish_menu.add_command(get_redfish_settings_command)
+get_redfish_menu.add_command(get_redfish_cache_command)

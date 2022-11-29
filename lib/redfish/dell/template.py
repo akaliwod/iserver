@@ -1,9 +1,13 @@
+from lib.redfish.dell.identity import RedfishEndpointDellTemplateIdentity
 from lib.redfish.dell.power import RedfishEndpointDellTemplatePower
 from lib.redfish.dell.thermal import RedfishEndpointDellTemplateThermal
 
 
-class RedfishEndpointDellTemplate(RedfishEndpointDellTemplatePower, RedfishEndpointDellTemplateThermal):
+class RedfishEndpointDellTemplate(RedfishEndpointDellTemplateIdentity, RedfishEndpointDellTemplatePower, RedfishEndpointDellTemplateThermal):
     def __init__(self):
+        RedfishEndpointDellTemplateIdentity.__init__(
+            self
+        )
         RedfishEndpointDellTemplatePower.__init__(
             self
         )
@@ -12,6 +16,9 @@ class RedfishEndpointDellTemplate(RedfishEndpointDellTemplatePower, RedfishEndpo
         )
 
     def get_template_properties(self, template_name):
+        if template_name.lower() == 'identity':
+            return self.get_template_identity_properties()
+
         if template_name.lower() == 'power':
             return self.get_template_power_properties()
 
@@ -28,6 +35,9 @@ class RedfishEndpointDellTemplate(RedfishEndpointDellTemplatePower, RedfishEndpo
         return None
 
     def print_template_properties(self, template_name, properties):
+        if template_name.lower() == 'identity':
+            self.print_template_identity_properties(properties)
+
         if template_name.lower() == 'power':
             self.print_template_power_properties(properties)
 

@@ -78,6 +78,15 @@ class ComputeFilter():
 
         return False
 
+    def disconnected_filter_match(self, server, disconnected):
+        if not disconnected:
+            return True
+
+        if not server['Connected']:
+            return True
+
+        return False
+
     def standalone_filter_match(self, server, standalone):
         if not standalone:
             return True
@@ -273,6 +282,9 @@ class ComputeFilter():
             return False
 
         if not self.ucsm_filter_match(server, rules['ucsm']):
+            return False
+
+        if not self.disconnected_filter_match(server, rules['disconnected']):
             return False
 
         if not self.standalone_filter_match(server, rules['standalone']):

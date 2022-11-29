@@ -74,7 +74,7 @@ class Log():
                         shutil.rmtree(directory)
 
         except BaseException:
-            print(traceback.format_exc())
+            pass
 
     def clean(self):
         if RUN_ID is not None:
@@ -221,7 +221,7 @@ class Log():
                 file_handler.write(msg)
 
         except BaseException:
-            print(traceback.format_exc())
+            pass
 
     def redfish(self, command, success, duration):
         try:
@@ -238,7 +238,7 @@ class Log():
                 file_handler.write(msg)
 
         except BaseException:
-            print(traceback.format_exc())
+            pass
 
     def get_api(self):
         content = self.get_file(self.api_filename)
@@ -254,7 +254,7 @@ class Log():
                 file_handler.write(json.dumps(apis, indent=4))
 
         except BaseException:
-            print(traceback.format_exc())
+            pass
 
     def get_odata(self):
         content = self.get_file(self.odata_filename)
@@ -270,7 +270,7 @@ class Log():
                 file_handler.write(json.dumps(odatas, indent=4))
 
         except BaseException:
-            print(traceback.format_exc())
+            pass
 
     def cli(self, command, success, duration, item_count=None):
         try:
@@ -292,7 +292,7 @@ class Log():
                 file_handler.write(msg)
 
         except BaseException:
-            print(traceback.format_exc())
+            pass
 
     def error(self, location, message):
         try:
@@ -305,7 +305,7 @@ class Log():
             self.info(location, message)
 
         except BaseException:
-            print(traceback.format_exc())
+            pass
 
     def info(self, location, message):
         try:
@@ -318,7 +318,7 @@ class Log():
             self.debug(location, message)
 
         except BaseException:
-            print(traceback.format_exc())
+            pass
 
     def debug(self, location, message):
         try:
@@ -329,7 +329,7 @@ class Log():
                 file_handler.write(msg)
 
         except BaseException:
-            print(traceback.format_exc())
+            pass
 
     def get_lcm_report(self):
         if os.path.isfile(self.lcm_report_filename):
@@ -338,7 +338,7 @@ class Log():
                     return json.loads(file_handler.read())
 
             except BaseException:
-                print(traceback.format_exc())
+                pass
 
         return None
 
@@ -348,7 +348,6 @@ class Log():
                 file_handler.write(json.dumps(report, indent=4))
 
         except BaseException:
-            print(traceback.format_exc())
             return False
 
         return True
@@ -358,7 +357,7 @@ class Log():
             with open(self.command_filename, 'w', encoding='utf-8') as file_handler:
                 file_handler.write(command)
         except BaseException:
-            print(traceback.format_exc())
+            pass
 
     def get_command(self):
         try:
@@ -367,7 +366,7 @@ class Log():
                     return file_handler.read()
 
         except BaseException:
-            print(traceback.format_exc())
+            pass
 
         return None
 

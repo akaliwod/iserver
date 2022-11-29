@@ -2,6 +2,20 @@ class RedfishEndpointFabricInterconnectTemplatePowerChassis():
     def __init__(self):
         pass
 
+    def is_chassis_power_on(self, inventory_type=None, inventory_id=None):
+        power_properties = self.get_template_power_chassis_properties(
+            inventory_type=inventory_type,
+            inventory_id=inventory_id
+        )
+        if power_properties is None:
+            return False
+
+        chassis_power_on = False
+        for power_supply in power_properties['PowerSupply']:
+            chassis_power_on = chassis_power_on or power_supply['On']
+
+        return chassis_power_on
+
     def get_template_power_chassis_properties(self, inventory_type=None, inventory_id=None):
         uri = 'Chassis/1/Power'
         data = self.get_properties(
@@ -102,10 +116,12 @@ class RedfishEndpointFabricInterconnectTemplatePowerChassis():
             power_supply_info['Name'] = item['Name']
             power_supply_info['State'] = item['Status']['State']
             if power_supply_info['State'] == 'Enabled':
+                power_supply_info['On'] = True
                 power_supply_info['Manufacturer'] = item['Manufacturer']
                 power_supply_info['Model'] = item['Model']
                 power_supply_info['SerialNumber'] = item['SerialNumber']
             else:
+                power_supply_info['On'] = False
                 power_supply_info['Manufacturer'] = ''
                 power_supply_info['Model'] = ''
                 power_supply_info['SerialNumber'] = ''

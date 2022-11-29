@@ -1,4 +1,3 @@
-import os
 import json
 import sys
 import time
@@ -38,7 +37,6 @@ class ErrorExit(Exception):
 @click.option("--all", "all_info", is_flag=True, default=False, help="Show all details")
 @click.option("--days", default=7, type=click.INT, help="Last <n> days workflows")
 @click.option("--output", "-o", type=click.Choice(['default', 'json', 'yaml'], case_sensitive=False), default='default', show_default=True)
-@click.option("--flat", is_flag=True, show_default=True, default=False, help="Flat output")
 @click.option("--devel", is_flag=True, show_default=True, default=False, help="Developer output")
 def get_server_command(
         ctx,
@@ -56,7 +54,6 @@ def get_server_command(
         all_info,
         days,
         output,
-        flat,
         devel
         ):
     """Get server details"""
@@ -86,6 +83,10 @@ def get_server_command(
         compute_handler = compute_info.ComputeInfo(iaccount, settings=settings)
         server_info = compute_handler.get(server=server)
 
+        ctx.my_output.debug(
+            json.dumps(server_info, indent=4)
+        )
+
         if output == 'json':
             ctx.my_output.default(json.dumps(server_info, indent=4))
             ctx.log_prompt = False
@@ -103,10 +104,7 @@ def get_server_command(
         ctx.busy = False
         time.sleep(.1)
         ctx.my_output.default('')
-        if not flat and os.get_terminal_size()[0] > 80:
-            compute_handler.print(server_info, multi_column=True)
-        else:
-            compute_handler.print(server_info, multi_column=False)
+        compute_handler.print(server_info)
 
     except ErrorExit:
         ctx.busy = False

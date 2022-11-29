@@ -1,9 +1,38 @@
 class RedfishEndpointUcsRackTemplatePower():
     def __init__(self):
-        pass
+        self.defult_power_uri = '/redfish/v1/Chassis/1/Power'
+
+    def get_power_uri(self):
+        chassis_uri = self.get_chassis_uri()
+        children = self.endpoint_handler.get_odata_ids(chassis_uri)
+        if children is None:
+            self.log.error(
+                'get_power_uri',
+                'Failed to discover Power URI: %s' % (chassis_uri)
+            )
+            return self.defult_power_uri
+
+        power_uri = None
+        for child in children:
+            if child == chassis_uri:
+                continue
+
+            leaf = child.split('/')[-1]
+            if leaf == 'Power':
+                power_uri = child
+                break
+
+        if power_uri is None:
+            self.log.error(
+                'get_power_uri',
+                'Failed to find power uri: %s' % (chassis_uri)
+            )
+            return self.default_chassis_uri
+
+        return power_uri
 
     def get_template_power_properties(self):
-        uri = '/redfish/v1/Chassis/1/Power'
+        uri = self.get_power_uri()
         data = self.get_properties(uri)
         if data is None:
             return None
@@ -27,9 +56,13 @@ class RedfishEndpointUcsRackTemplatePower():
         # }
         power_control_data = data['PowerControl'][0]
         properties['PowerControl']['PowerConsumedWatts'] = power_control_data['PowerConsumedWatts']
-        properties['PowerControl']['LimitException'] = power_control_data['PowerLimit']['LimitException']
-        for key in power_control_data['PowerMetrics']:
-            properties['PowerControl'][key] = power_control_data['PowerMetrics'][key]
+        properties['PowerControl']['LimitException'] = 'N/A'
+        if 'PowerLimit' in power_control_data:
+            if 'LimitException' in power_control_data['PowerLimit']:
+                properties['PowerControl']['LimitException'] = power_control_data['PowerLimit']['LimitException']
+        if 'PowerMetrics' in power_control_data:
+            for key in power_control_data['PowerMetrics']:
+                properties['PowerControl'][key] = power_control_data['PowerMetrics'][key]
 
         # {
         #     "PhysicalContext": "PowerSupply",
@@ -47,12 +80,27 @@ class RedfishEndpointUcsRackTemplatePower():
         properties['Voltage'] = []
         for voltage in data['Voltages']:
             voltage_info = {}
-            voltage_info['Name'] = voltage['Name']
-            voltage_info['ReadingVolts'] = voltage['ReadingVolts']
-            voltage_info['UpperThresholdCritical'] = voltage['UpperThresholdCritical']
-            voltage_info['PhysicalContext'] = voltage['PhysicalContext']
-            voltage_info['State'] = voltage['Status']['State']
-            voltage_info['Health'] = voltage['Status']['Health']
+
+            keys = [
+                'Name',
+                'ReadingVolts',
+                'UpperThresholdCritical',
+                'PhysicalContext'
+            ]
+            for key in keys:
+                voltage_info[key] = 'N/A'
+                if key in voltage:
+                    voltage_info[key] = voltage[key]
+
+            keys = [
+                'State',
+                'Health'
+            ]
+            for key in keys:
+                voltage_info[key] = 'N/A'
+                if key in voltage['Status']:
+                    voltage_info[key] = voltage['Status'][key]
+
             properties['Voltage'].append(voltage_info)
 
         # {
@@ -91,28 +139,30 @@ class RedfishEndpointUcsRackTemplatePower():
             power_supply_info['Name'] = power_supply['Name']
             power_supply_info['Model'] = power_supply['Model']
             power_supply_info['SerialNumber'] = power_supply['SerialNumber']
-            power_supply_info['PartNumber'] = power_supply['PartNumber']
-            power_supply_info['SparePartNumber'] = power_supply['SparePartNumber']
-            power_supply_info['Manufacturer'] = power_supply['Manufacturer']
-            power_supply_info['FirmwareVersion'] = power_supply['FirmwareVersion']
-            power_supply_info['State'] = power_supply['Status']['State']
 
-            power_supply_info['Health'] = 'N/A'
-            if 'Health' in power_supply['Status']:
-                power_supply_info['Health'] = power_supply['Status']['Health']
-            power_supply_info['PowerSupplyType'] = power_supply['PowerSupplyType']
+            keys = [
+                'PartNumber',
+                'SparePartNumber',
+                'Manufacturer',
+                'FirmwareVersion',
+                'PowerOutputWatts',
+                'LastPowerOutputWatts',
+                'PowerInputWatts',
+                'PowerSupplyType'
+            ]
+            for key in keys:
+                power_supply_info[key] = 'N/A'
+                if key in power_supply:
+                    power_supply_info[key] = power_supply[key]
 
-            power_supply_info['PowerOutputWatts'] = 'N/A'
-            if 'PowerOutputWatts' in power_supply:
-                power_supply_info['PowerOutputWatts'] = power_supply['PowerOutputWatts']
-
-            power_supply_info['LastPowerOutputWatts'] = 'N/A'
-            if 'LastPowerOutputWatts' in power_supply:
-                power_supply_info['LastPowerOutputWatts'] = power_supply['LastPowerOutputWatts']
-
-            power_supply_info['PowerInputWatts'] = 'N/A'
-            if 'PowerInputWatts' in power_supply:
-                power_supply_info['PowerInputWatts'] = power_supply['PowerInputWatts']
+            keys = [
+                'State',
+                'Health'
+            ]
+            for key in keys:
+                power_supply_info[key] = 'N/A'
+                if key in power_supply['Status']:
+                    power_supply_info[key] = power_supply['Status'][key]
 
             for input_range in power_supply['InputRanges']:
                 for key in input_range:

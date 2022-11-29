@@ -16,12 +16,14 @@ from menu import validations
 @click.option("--environment", is_flag=False, show_default=False, default='', type=click.STRING, help="Test environment")
 @click.option("--iaccount", is_flag=False, show_default=True, cls=defaults.default_from_context('iaccount'), callback=validations.validate_iaccount, type=click.STRING, help="Intersight account")
 @click.option("--enforce", is_flag=True, show_default=True, default=False, help="Enforce cli iaccount/enviornment")
+@click.option("--honor", is_flag=True, show_default=True, default=False, help="Prefer test iaccount/enviornment over collection/cli")
 @click.option("--no-doc", is_flag=True, show_default=True, default=False, help="Disable documentation generation when tests are successful")
 @click.option("--no-redfish", is_flag=True, show_default=True, default=False, help="Disable redfish tests doc")
+@click.option("--wait", is_flag=True, show_default=True, default=False, help="Wait for keypress between tests")
 @click.option("--verbose", is_flag=True, show_default=True, default=False, help="Verbose output")
 @click.option("--debug", is_flag=True, show_default=True, default=False, help="Debug output")
 @click.option("--dry-run", is_flag=True, show_default=True, default=False, help="Dry run")
-def utils_test_run_command(ctx, test_name, test_collection, tests_directory, results_directory, environment, iaccount, enforce, no_doc, no_redfish, verbose, debug, dry_run):
+def utils_test_run_command(ctx, test_name, test_collection, tests_directory, results_directory, environment, iaccount, enforce, honor, no_doc, no_redfish, wait, verbose, debug, dry_run):
     """run iserver tests"""
 
     # iserver utils devel self-test run
@@ -59,11 +61,24 @@ def utils_test_run_command(ctx, test_name, test_collection, tests_directory, res
         print('Test collection failed')
         sys.exit(1)
 
-    print('iaccount: %s' % (iaccount))
-    if len(environment) > 0:
-        print('environment: %s' % (environment))
+    if not honor:
+        print('iaccount: %s' % (iaccount))
+        if len(environment) > 0:
+            print('environment: %s' % (environment))
 
-    results = self_testing.run_tests(selected_tests, tests_count, tests_directory, results_directory, environment, iaccount, verbose, debug, dry_run)
+    results = self_testing.run_tests(
+        selected_tests,
+        tests_count,
+        tests_directory,
+        results_directory,
+        environment,
+        iaccount,
+        honor,
+        verbose,
+        debug,
+        dry_run,
+        wait=wait
+    )
     success = 0
     for result in results:
         if result['success']:

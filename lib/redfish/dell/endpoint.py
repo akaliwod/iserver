@@ -1,15 +1,18 @@
-from lib.redfish.generic.endpoint import RedfishEndpointGeneric
+from lib.redfish.standard.endpoint import RedfishEndpointStandard
 from lib.redfish.dell.template import RedfishEndpointDellTemplate
 
 
-class RedfishEndpointDell(RedfishEndpointGeneric, RedfishEndpointDellTemplate):
-    def __init__(self, endpoint_ip, endpoint_port, redfish_username, redfish_password, ssl_verify=False, deep_search_exlusions=True, verbose=False, debug=False):
-        RedfishEndpointGeneric.__init__(
+class RedfishEndpointDell(RedfishEndpointStandard, RedfishEndpointDellTemplate):
+    def __init__(self, endpoint_handler, endpoint_ip, endpoint_port, redfish_username, redfish_password, cache_filename=None, get_timeout=10, ssl_verify=False, deep_search_exlusions=True, verbose=False, debug=False):
+        RedfishEndpointStandard.__init__(
             self,
+            endpoint_handler,
             endpoint_ip,
             endpoint_port,
             redfish_username,
             redfish_password,
+            cache_filename=cache_filename,
+            get_timeout=get_timeout,
             ssl_verify=ssl_verify,
             deep_search_exlusions=deep_search_exlusions,
             verbose=verbose,

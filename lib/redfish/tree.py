@@ -1,10 +1,13 @@
 import time
 import json
 
+from lib import log_helper
+
 
 class RedfishTree():
     def __init__(self, endpoint_handler):
         self.endpoint_handler = endpoint_handler
+        self.log = log_helper.Log()
 
         self.tree = {}
         self.tree_root = None
@@ -14,6 +17,11 @@ class RedfishTree():
         self.tree_max_execution_time_reached = False
 
     def initialize_tree(self, path, deep, max_time):
+        self.log.debug(
+            'initalize_tree',
+            'Initialize tree: %s %s %s' % (path, deep, max_time)
+        )
+
         self.tree = {}
         self.tree_root = self.endpoint_handler.path_fixup(path)
         self.tree_deep_search = deep
@@ -60,6 +68,11 @@ class RedfishTree():
         return items
 
     def get_branch(self, branch):
+        self.log.debug(
+            'get_branch',
+            'Get branch: %s' % (branch)
+        )
+
         # Make sure get_tree does not run for too long
         if self.tree_max_execution_time > 0:
             if int(time.time()) - self.tree_start_time > self.tree_max_execution_time:
@@ -68,11 +81,19 @@ class RedfishTree():
 
         # No need to duplicate
         if branch in self.tree:
+            self.log.debug(
+                'get_branch',
+                'Branch already in the tree:%s' % (branch)
+            )
             return
 
         # Get JSON properties of branch URI
         self.tree[branch] = self.endpoint_handler.get_properties(branch)
         if self.tree[branch] is None:
+            self.log.debug(
+                'get_branch',
+                'Branch properties not found: %s' % (branch)
+            )
             return
 
         # Find all odata.id references in JSON properties
@@ -83,6 +104,10 @@ class RedfishTree():
         if not self.tree_deep_search:
             # If no deep search/walk in redfish api tree, just note the existence of leaves (children) and exit
             for leaf in leaves:
+                self.log.debug(
+                    'get_branch',
+                    'No deep search: %s' % (leaf)
+                )
                 self.tree[leaf] = None
 
             return
@@ -93,17 +118,29 @@ class RedfishTree():
             # For example if tree_root is 'Chassis/1' but odata.id reference is 'System/...' then we do not go there
             # just note the existence of such leaf and exit
             if not leaf.startswith(self.tree_root):
+                self.log.debug(
+                    'get_branch',
+                    'No deep outside of root: %s' % (leaf)
+                )
                 self.tree[leaf] = None
                 continue
 
             # Do not go deep on excluded branches
             if leaf in self.endpoint_handler.get_excluded_tree_uri():
                 self.tree[leaf] = None
+                self.log.debug(
+                    'get_branch',
+                    'No deep direct match: %s' % (leaf)
+                )
                 continue
 
             for excluded_tree_uri in self.endpoint_handler.get_excluded_tree_uri():
                 if leaf.startswith(excluded_tree_uri):
                     self.tree[leaf] = None
+                    self.log.debug(
+                        'get_branch',
+                        'No deep partial match: %s' % (leaf)
+                    )
                     continue
 
             # Let's go deeper in the tree...

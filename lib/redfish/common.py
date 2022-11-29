@@ -1,3 +1,4 @@
+import os
 import json
 import time
 import traceback
@@ -11,13 +12,14 @@ requests.packages.urllib3.disable_warnings()
 
 
 class RedfishEndpointCommon():
-    def __init__(self, endpoint_ip, endpoint_port, redfish_username, redfish_password, ssl_verify=False, deep_search_exlusions=True, verbose=False, debug=False):
+    def __init__(self, endpoint_handler, endpoint_ip, endpoint_port, redfish_username, redfish_password, cache_filename=None, get_timeout=10, ssl_verify=False, deep_search_exlusions=True, verbose=False, debug=False):
         self.log = log_helper.Log()
         self.my_output = output_helper.OutputHelper(
             verbose=verbose,
             debug=debug
         )
 
+        self.endpoint_handler = endpoint_handler
         self.endpoint_ip = endpoint_ip
         self.endpoint_port = endpoint_port
         self.redfish_username = redfish_username
@@ -25,13 +27,34 @@ class RedfishEndpointCommon():
         self.ssl_verify = ssl_verify
 
         self.system_id = None
-        self.get_timeout = 10
+        self.get_timeout = get_timeout
 
         self.session_handler = None
         self.session_id = None
         self.session_token = None
 
+        self.cache_filename = cache_filename
+        self.cache = None
+        if self.cache_filename is not None:
+            if os.path.isfile(self.cache_filename):
+                try:
+                    with open(self.cache_filename, 'r', encoding='utf-8') as file_handler:
+                        self.cache = json.loads(file_handler.read())
+
+                except BaseException:
+                    pass
+
+            if self.cache is None:
+                raise ValueError(
+                    'Redfish cache file initialization failed: %s' % (self.cache_filename)
+                )
+
         self.deep_search_exclusions = deep_search_exlusions
+
+    def is_cache_enabled(self):
+        if self.cache_filename is not None:
+            return True
+        return False
 
     def get_excluded_tree_uri(self):
         if not self.deep_search_exclusions:
@@ -42,8 +65,12 @@ class RedfishEndpointCommon():
         return uri
 
     def is_connected(self):
+        if self.is_cache_enabled():
+            return True
+
         if self.session_id is not None and self.session_token is not None:
             return True
+
         return False
 
     def path_fixup(self, path):
@@ -117,6 +144,11 @@ class RedfishEndpointCommon():
 
         return selected_properties
 
+    def get_properties_cache(self, path, properties=[]):
+        if path not in self.cache['resources']:
+            return None
+        return self.cache['resources'][path]
+
     def get_properties(self, path, properties=[]):
         if not self.is_connected():
             return None
@@ -124,72 +156,75 @@ class RedfishEndpointCommon():
         path = self.path_fixup(path)
 
         start_time = int(time.time() * 1000)
-        try:
-            url = 'https://%s:%s%s' % (
-                self.endpoint_ip,
-                self.endpoint_port,
-                path
-            )
-
-            headers = {}
-            headers['X-Auth-Token'] = self.session_token
-
-            response = self.session_handler.get(
-                url,
-                headers=headers,
-                verify=self.ssl_verify,
-                timeout=self.get_timeout
-            )
-
-        except BaseException:
-            self.log.error(
-                'get_properties',
-                'Redfish get object exception: %s %s' % (self.endpoint_ip, path)
-            )
-
-            self.log.error(
-                'get_properties',
-                traceback.format_exc()
-            )
-
-            end_time = int(time.time() * 1000)
-            duration_ms = end_time - start_time
-            self.log.redfish(
-                path,
-                False,
-                duration_ms
-            )
-
-            return None
-
-        if response.status_code > 299:
-            self.log.error(
-                'get_properties',
-                'Redfish get object failed: %s %s %s %s' % (
+        if self.is_cache_enabled():
+            all_properties = self.get_properties_cache(path, properties=properties)
+        else:
+            try:
+                url = 'https://%s:%s%s' % (
                     self.endpoint_ip,
-                    path,
-                    response.status_code,
-                    str(response.content)
+                    self.endpoint_port,
+                    path
                 )
-            )
 
-            end_time = int(time.time() * 1000)
-            duration_ms = end_time - start_time
-            self.log.redfish(
-                path,
-                False,
-                duration_ms
-            )
+                headers = {}
+                headers['X-Auth-Token'] = self.session_token
 
-            return None
+                response = self.session_handler.get(
+                    url,
+                    headers=headers,
+                    verify=self.ssl_verify,
+                    timeout=self.get_timeout
+                )
 
-        try:
-            all_properties = response.json()
-        except BaseException:
-            self.log.error(
-                'get_properties',
-                'Redfish get object json exception: %s %s' % (self.endpoint_ip, path)
-            )
+            except BaseException:
+                self.log.error(
+                    'get_properties',
+                    'Redfish get object exception: %s %s' % (self.endpoint_ip, path)
+                )
+
+                self.log.error(
+                    'get_properties',
+                    traceback.format_exc()
+                )
+
+                end_time = int(time.time() * 1000)
+                duration_ms = end_time - start_time
+                self.log.redfish(
+                    path,
+                    False,
+                    duration_ms
+                )
+
+                return None
+
+            if response.status_code > 299:
+                self.log.error(
+                    'get_properties',
+                    'Redfish get object failed: %s %s %s %s' % (
+                        self.endpoint_ip,
+                        path,
+                        response.status_code,
+                        str(response.content)
+                    )
+                )
+
+                end_time = int(time.time() * 1000)
+                duration_ms = end_time - start_time
+                self.log.redfish(
+                    path,
+                    False,
+                    duration_ms
+                )
+
+                return None
+
+            try:
+                all_properties = response.json()
+            except BaseException:
+                self.log.error(
+                    'get_properties',
+                    'Redfish get object json exception: %s %s' % (self.endpoint_ip, path)
+                )
 
         end_time = int(time.time() * 1000)
         duration_ms = end_time - start_time

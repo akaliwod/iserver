@@ -14,6 +14,8 @@ class ComputeInfo(ComputeExtraAttributes):
             self.settings = self.get_default_settings()
 
         ComputeExtraAttributes.__init__(self, iaccount, self.settings)
+        self.get_info_cache_mode = False
+
         self.rack_handler = compute_rack.ComputeRack(iaccount)
         self.blade_handler = compute_blade.ComputeBlade(iaccount)
         self.my_output = output_helper.OutputHelper()
@@ -223,6 +225,7 @@ class ComputeInfo(ComputeExtraAttributes):
                 'LocatorLedOn',
                 'Health',
                 'ManagementMode',
+                'Connected',
                 'Fw',
                 'PsuSummary',
                 'FanSummary'
@@ -232,6 +235,7 @@ class ComputeInfo(ComputeExtraAttributes):
                 'Locator',
                 'Health',
                 'Mode',
+                'Connected',
                 'Firmware',
                 'PSU',
                 'Fan'
@@ -575,11 +579,8 @@ class ComputeInfo(ComputeExtraAttributes):
             table=True
         )
 
-    def print(self, server, multi_column=True, workflow_count=10):
-        if multi_column:
-            self.print_summary_columns(server)
-        else:
-            self.print_summary_standard(server)
+    def print(self, server, workflow_count=10):
+        self.print_summary_standard(server)
 
         if 'CpuInfo' in server:
             self.print_cpu(server['CpuInfo'])

@@ -1,15 +1,16 @@
 import json
 
 from lib import output_helper
+from lib.redfish.cache import RedfishCache
 from lib.redfish.ucs_rack import endpoint as ucs_rack_endpoint
-from lib.redfish.generic import endpoint as generic_endpoint
+from lib.redfish.standard import endpoint as standard_endpoint
 from lib.redfish.fi import endpoint as fi_endpoint
 from lib.redfish.dell import endpoint as dell_endpoint
-from lib.redfish.hp import endpoint as hp_endpoint
+from lib.redfish.hpe import endpoint as hpe_endpoint
 from lib.redfish import tree
 
 
-class RedfishEndpoint():
+class RedfishEndpoint(RedfishCache):
     def __init__(
         self,
         endpoint_type,
@@ -17,83 +18,121 @@ class RedfishEndpoint():
         endpoint_port,
         redfish_username,
         redfish_password,
+        cache_name=None,
+        get_timeout=10,
         ssl_verify=False,
         deep_search_exlusions=True,
         tree_max_execution_time=0,
         verbose=False,
         debug=False
         ):
+
+        RedfishCache.__init__(self)
+
         self.my_output = output_helper.OutputHelper(
             verbose=verbose,
             debug=debug
         )
 
+        self.tree_max_execution_time = tree_max_execution_time
         self.endpoint_handler = None
 
-        if endpoint_type == 'generic':
-            self.endpoint_handler = generic_endpoint.RedfishEndpointGeneric(
+        endpoint_cache_filename = None
+        endpoint_cache_entry = None
+        if endpoint_type == 'cache':
+            endpoint_cache_entry = self.get_redfish_cache_entry(cache_name)
+            if endpoint_cache_entry is None:
+                raise ValueError('Unknown cache entry: %s' % (cache_name))
+
+            endpoint_cache_filename = self.get_cache_resources_filename(cache_name)
+            if endpoint_cache_filename is None or len(endpoint_cache_filename) == 0:
+                raise ValueError('Unknown cache filename: %s' % (cache_name))
+
+            endpoint_type = endpoint_cache_entry['EndpointType']
+            endpoint_ip = endpoint_cache_entry['EndpointType']
+            redfish_username = None
+            redfish_password = None
+
+        if endpoint_type == 'standard':
+            self.endpoint_handler = standard_endpoint.RedfishEndpointStandard(
+                self,
                 endpoint_ip,
                 endpoint_port,
                 redfish_username,
                 redfish_password,
+                cache_filename=endpoint_cache_filename,
+                get_timeout=get_timeout,
                 ssl_verify=ssl_verify,
                 deep_search_exlusions=deep_search_exlusions,
                 verbose=verbose,
                 debug=debug
             )
-            self.tree_max_execution_time = tree_max_execution_time
 
         if endpoint_type == 'ucsc':
             self.endpoint_handler = ucs_rack_endpoint.RedfishEndpointUcsRack(
+                self,
                 endpoint_ip,
                 endpoint_port,
                 redfish_username,
                 redfish_password,
+                cache_filename=endpoint_cache_filename,
+                get_timeout=get_timeout,
                 ssl_verify=ssl_verify,
                 deep_search_exlusions=deep_search_exlusions,
                 verbose=verbose,
                 debug=debug
             )
-            self.tree_max_execution_time = tree_max_execution_time
 
         if endpoint_type == 'fi':
             self.endpoint_handler = fi_endpoint.RedfishEndpointFabricInterconnect(
+                self,
                 endpoint_ip,
                 endpoint_port,
                 redfish_username,
                 redfish_password,
+                cache_filename=endpoint_cache_filename,
+                get_timeout=get_timeout,
                 ssl_verify=ssl_verify,
                 deep_search_exlusions=deep_search_exlusions,
                 verbose=verbose,
                 debug=debug
             )
-            self.tree_max_execution_time = tree_max_execution_time
+
+            if endpoint_cache_entry is not None:
+                self.endpoint_handler.set_inventory(
+                    endpoint_cache_entry['EndpointInventoryType'],
+                    endpoint_cache_entry['EndpointInventoryId']
+                )
 
         if endpoint_type == 'dell':
             self.endpoint_handler = dell_endpoint.RedfishEndpointDell(
+                self,
                 endpoint_ip,
                 endpoint_port,
                 redfish_username,
                 redfish_password,
+                cache_filename=endpoint_cache_filename,
+                get_timeout=get_timeout,
                 ssl_verify=ssl_verify,
                 deep_search_exlusions=deep_search_exlusions,
                 verbose=verbose,
                 debug=debug
             )
-            self.tree_max_execution_time = tree_max_execution_time
 
-        if endpoint_type == 'hp':
-            self.endpoint_handler = hp_endpoint.RedfishEndpointHp(
+        if endpoint_type == 'hpe':
+            self.endpoint_handler = hpe_endpoint.RedfishEndpointHpe(
+                self,
                 endpoint_ip,
                 endpoint_port,
                 redfish_username,
                 redfish_password,
+                cache_filename=endpoint_cache_filename,
+                get_timeout=get_timeout,
                 ssl_verify=ssl_verify,
                 deep_search_exlusions=deep_search_exlusions,
                 verbose=verbose,
                 debug=debug
             )
-            self.tree_max_execution_time = tree_max_execution_time
 
         if self.endpoint_handler is None:
             raise ValueError('Unsupported endpoint type: %s' % (endpoint_type))
@@ -199,7 +238,7 @@ class RedfishEndpoint():
                 path=path
             )
 
-            if len(properties) > 0:
+            if properties is not None and len(properties) > 0:
                 keys[path] = properties
 
         return keys
@@ -252,6 +291,13 @@ class RedfishEndpoint():
                 values[path] = properties
 
         return values
+
+    def get_odata_ids(self, path):
+        properties = self.get_properties(path)
+        if properties is None:
+            return None
+
+        return self.tree_handler.find_odata_id(properties)
 
     def get_children(self, path, deep):
         self.tree_handler.initialize_tree(

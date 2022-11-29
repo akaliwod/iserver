@@ -2,7 +2,10 @@ class RedfishEndpointFabricInterconnectTemplatePowerServer():
     def __init__(self):
         pass
 
-    def get_server_power_utilization(self):
+    def get_server_chassis_properties(self):
+        if self.is_cache_enabled():
+            return self.cache['extra']['Power']
+
         server_inventory = self.get_server_inventory(self.get_system_id())
         if server_inventory is None:
             return None
@@ -12,6 +15,14 @@ class RedfishEndpointFabricInterconnectTemplatePowerServer():
             inventory_id=server_inventory['Chassis']['Iom1']
         )
 
+        return chassis_power
+
+    def get_server_power_utilization(self):
+        server_inventory = self.get_server_inventory(self.get_system_id())
+        if server_inventory is None:
+            return None
+
+        chassis_power = self.get_server_chassis_properties()
         if chassis_power is None:
             return None
 

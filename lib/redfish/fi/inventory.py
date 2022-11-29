@@ -5,6 +5,7 @@ class RedfishEndpointFabricInterconnectInventory():
     def __init__(self):
         self.inventory_type = ''
         self.inventory_id = ''
+        self.inventory = None
 
     def get_inventory_type(self):
         return self.inventory_type
@@ -83,7 +84,22 @@ class RedfishEndpointFabricInterconnectInventory():
         self.print_inventory_chassis(inventory['chassis'])
         self.print_inventory_servers(inventory['servers'])
 
-    def get_chassis_info(self, data):
+    def get_chassis(self):
+        chassis = self.get_properties(
+            'Chassis',
+            fixup=False
+        )
+        return chassis
+
+    def get_servers(self):
+        chassis = self.get_properties(
+            'Servers',
+            fixup=False
+        )
+        return chassis
+
+    def get_chassis_info(self):
+        data = self.get_chassis()
         chassiz_info = []
 
         for chassis in data['Results']:
@@ -110,7 +126,8 @@ class RedfishEndpointFabricInterconnectInventory():
 
         return chassiz_info
 
-    def get_servers_info(self, data):
+    def get_servers_info(self):
+        data = self.get_servers()
         servers_info = []
 
         for server in data['Results']:
@@ -151,13 +168,11 @@ class RedfishEndpointFabricInterconnectInventory():
 
         return servers_info
 
-    def get_server_to_chassis_info(self, inventory):
-        for server in inventory['servers']:
-            for chassis in inventory['chassis']:
+    def get_server_to_chassis_info(self):
+        for server in self.inventory['servers']:
+            for chassis in self.inventory['chassis']:
                 if server['ChassisIdentifier'] == chassis['Identifier']:
                     server['Chassis'] = chassis
-
-        return inventory
 
     def get_server_inventory(self, server_system_id):
         inventory = self.get_inventory()
@@ -168,10 +183,10 @@ class RedfishEndpointFabricInterconnectInventory():
 
         return None
 
-    def get_blades_id(self, inventory):
+    def get_blades_id(self):
         blades = []
 
-        for chassis in inventory['chassis']:
+        for chassis in self.inventory['chassis']:
             chassis_properties = self.get_properties(
                 'Chassis',
                 fixup=True,
@@ -180,7 +195,23 @@ class RedfishEndpointFabricInterconnectInventory():
             )
 
             if chassis_properties is None:
+                self.log.error(
+                    'get_blades_id',
+                    'Chassis properties not found: %s %s' % (
+                        chassis['InventoryType'],
+                        chassis['Iom1']
+                    )
+                )
                 continue
+
+            self.log.debug(
+                'get_blades_id',
+                '%s %s properties: %s' % (
+                    chassis['InventoryType'],
+                    chassis['Iom1'],
+                    json.dumps(chassis_properties, indent=4)
+                )
+            )
 
             for member in chassis_properties['Members']:
                 if member['@odata.id'].startswith('/redfish/v1/Chassis/Blade'):
@@ -198,39 +229,47 @@ class RedfishEndpointFabricInterconnectInventory():
                             blade_info['SerialNumber'] = blade['SerialNumber']
                             blades.append(blade_info)
 
+            self.log.debug(
+                'get_blades_id',
+                'Blades %s %s properties: %s' % (
+                    chassis['InventoryType'],
+                    chassis['Iom1'],
+                    json.dumps(blades, indent=4)
+                )
+            )
+
         return blades
 
-    def get_server_to_blade_info(self, inventory):
-        for server in inventory['servers']:
+    def get_server_to_blade_info(self):
+        for server in self.inventory['servers']:
             server['BladeId'] = None
 
-        blades = self.get_blades_id(inventory)
+        blades = self.get_blades_id()
         if blades is None:
-            return inventory
+            self.log.error('get_server_to_blade_info', 'Blade IDs discovery failed')
+            return
 
-        for server in inventory['servers']:
+        self.log.error('get_server_to_blade_info', 'Blade IDs: %s' % (json.dumps(blades, indent=4)))
+
+        for server in self.inventory['servers']:
             for blade in blades:
                 if server['Serial'] == blade['SerialNumber']:
                     server['BladeId'] = blade['BladeId']
 
-        return inventory
-
     def get_inventory(self):
-        inventory = {}
-        inventory['chassis'] = self.get_chassis_info(
-            self.get_properties(
-                'Chassis',
-                fixup=False
-            )
-        )
-        inventory['servers'] = self.get_servers_info(
-            self.get_properties(
-                'Servers',
-                fixup=False
-            )
-        )
+        if self.inventory is not None:
+            return self.inventory
 
-        inventory = self.get_server_to_chassis_info(inventory)
-        inventory = self.get_server_to_blade_info(inventory)
+        if self.is_cache_enabled():
+            return self.cache['extra']['Inventory']
 
-        return inventory
+        self.inventory = {}
+        self.inventory['chassis'] = self.get_chassis_info()
+        self.inventory['servers'] = self.get_servers_info()
+        self.log.debug('get_inventory', 'Base info: %s' % (json.dumps(self.inventory, indent=4)))
+
+        self.get_server_to_chassis_info()
+        self.get_server_to_blade_info()
+        self.log.debug('get_inventory', 'Extended info: %s' % (json.dumps(self.inventory, indent=4)))
+
+        return self.inventory

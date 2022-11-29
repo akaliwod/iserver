@@ -107,7 +107,7 @@ class AssetDeviceContractInformation(IntersightCommon):
     ],
     "PlatformType": "UCSFIISM",
     "ProxyApp": "astro",
-    "PublicAccessKey": "-----BEGIN RSA PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu/kLAlQkjn2D6AB/BiHK\n995WhFbn7Ab+t9iEW8dZm3iC/ZiG9t5FTl3N8XImac43k8VCRl31HYsCTkx/DOwG\nnFfkUsjWZ0gdILkml911anN6Y/5ziMLDclX+E+kLhFF7ZnauHPY7/Q22w6/grvUh\nnqeEGhADBu9cBf+JtMOX0qYiHbs7n5oOykx0aCPknDaWXPjSq4YJfXw2KNqAIuXa\nCiGpzX7Zvapzln9w1zMpn+t82+hwuSiw6gI6idn5gYBCXoUdADtm0rO5+h7MmzS4\nPJnVyFPFLha0Fb458xm3XEKyGgQOAirgRmiJUL2vTu7pLsCJg9JA5RVyme3XqbBJ\n1QIDAQAB\n-----END RSA PUBLIC KEY-----\n",
+    "PublicAccessKey": "",
     "ReadOnly": false,
     "SecurityToken": null,
     "Serial": [
@@ -127,3 +127,22 @@ class AssetDeviceContractInformation(IntersightCommon):
     def __init__(self, iaccount):
         self.iobject = 'asset deviceregistration'
         IntersightCommon.__init__(self, iaccount, self.iobject)
+
+    def get_info(self, moid, cache=True):
+        if cache:
+            item = self.get_cache_moid(moid)
+        else:
+            item = self.get(moid)
+
+        if item is None:
+            return None
+
+        info = {}
+        info['Moid'] = item['Moid']
+        info['ConnectionStatus'] = item['ConnectionStatus']
+        info['ConnectionStatusLastChangeTime'] = item['ConnectionStatusLastChangeTime']
+        info['Connected'] = False
+        if info['ConnectionStatus'] == 'Connected':
+            info['Connected'] = True
+
+        return info

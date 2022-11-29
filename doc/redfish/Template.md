@@ -1,12 +1,16 @@
 # Templates
 
+## Identity
+
+Identity templates are unified for different supported servers. Refer to the main table with tested endpoints.
+
 ## Power
 
 - [UCS Rack Standalone](./TemplateUcsPower.md)
 - [UCS Chassis](./TemplateFiChassisPower.md)
 - [FI-Attached Server](./TemplateFiServerPower.md)
 - [Dell](./TemplateDellPower.md)
-- [HP](./TemplateHpPower.md)
+- [HPE](./TemplateHpePower.md)
 
 ## Thermal
 
@@ -14,4 +18,4 @@
 - [UCS Chassis](./TemplateFiChassisThermal.md)
 - [FI-Attached Server](./TemplateFiServerThermal.md)
 - [Dell](./TemplateDellThermal.md)
-- [HP](./TemplateHpThermal.md)
+- [HPE](./TemplateHpeThermal.md)

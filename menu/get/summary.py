@@ -111,6 +111,7 @@ def get_summary_command(
         match_rules['power_off'] = power_off
         match_rules['alarms'] = health
         match_rules['ucsm'] = ucsm
+        match_rules['disconnected'] = False
         match_rules['standalone'] = standalone
         match_rules['cpu'] = cpu_filter
         match_rules['memory'] = memory_filter
