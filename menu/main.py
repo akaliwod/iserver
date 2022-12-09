@@ -24,18 +24,14 @@ class MyCliContext():
     def __init__(self, user_command):
         self.run_id = str(uuid.uuid4()).rsplit('-', maxsplit=1)[-1]
 
-        self.my_output = output_helper.OutputHelper()
-        self.my_output.run_id(self.run_id)
-        self.my_output = output_helper.OutputHelper()
+        self.my_output = output_helper.OutputHelper(log_id=self.run_id)
         self.my_output.initialize()
 
         self.developer = False
         self.busy = False
         self.start_time = int(time.time() * 1000)
 
-        self.log = log_helper.Log()
-        self.log.run_id(self.run_id)
-        self.log = log_helper.Log()
+        self.log = log_helper.Log(log_id=self.run_id)
         self.log.initialize()
         self.log.set_command(user_command)
         self.log_prompt = True
@@ -122,7 +118,7 @@ def check_isctl_option(ctx, param, value):
 
 @click.pass_obj
 def _on_close(ctx):
-    log_handler = log_helper.Log()
+    log_handler = log_helper.Log(log_id=ctx.run_id)
 
     duration = int(time.time() * 1000) - ctx.start_time
 
@@ -148,7 +144,7 @@ def _on_close(ctx):
 
         if not no_log and ctx.my_output.is_output():
             if ctx.log_prompt:
-                print('\nInfo: logs saved in %s' % (ctx.log.logs_directory))
+                print('\nInfo: finished in %s ms and logs saved in %s' % (duration, ctx.log.logs_directory))
             clean_logs = False
 
     if clean_logs:

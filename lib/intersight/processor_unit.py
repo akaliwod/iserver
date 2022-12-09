@@ -97,9 +97,9 @@ class ProcessorUnit(IntersightCommon):
         "Vendor": "Intel(R) Corporation"
     }
     """
-    def __init__(self, iaccount):
+    def __init__(self, iaccount, log_id=None):
         self.iobject = 'processor unit'
-        IntersightCommon.__init__(self, iaccount, self.iobject)
+        IntersightCommon.__init__(self, iaccount, self.iobject, log_id=log_id)
 
     def get_processor_units_info(self):
         processor_units = self.get_all()

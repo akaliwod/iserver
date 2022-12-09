@@ -1,4 +1,3 @@
-import json
 import sys
 import traceback
 import click
@@ -34,7 +33,7 @@ def delete_os_image_command(ctx, image_id, image_name, iaccount, devel):
             ctx.my_output.error('Define --id or --name parameters')
             raise ErrorExit
 
-        image_handler = os_image.OsImage(iaccount)
+        image_handler = os_image.OsImage(iaccount, log_id=ctx.run_id)
 
         if len(image_name) > 0:
             image_attributes = image_handler.get_by_name(image_name)

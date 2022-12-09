@@ -165,9 +165,10 @@ class StorageController(IntersightCommon):
         ]
         }
     """
-    def __init__(self, iaccount):
+    def __init__(self, iaccount, log_id=None):
         self.iobject = 'storage controller'
-        IntersightCommon.__init__(self, iaccount, self.iobject)
+        self.cache_key = 'storage_controller'
+        IntersightCommon.__init__(self, iaccount, self.iobject, log_id=log_id, cache_key=self.cache_key)
 
     def get_board_storage_controllers(self, board_id, cache=True):
         if cache:
@@ -242,6 +243,12 @@ class StorageController(IntersightCommon):
             if item['ComputeBlade'] is not None:
                 if item['ComputeBlade']['Moid'] == blade_id:
                     controllers.append(item)
+                    continue
+
+            for ancestor in item['Ancestors']:
+                if ancestor['ObjectType'] == 'compute.Blade' and ancestor['Moid'] == blade_id:
+                    controllers.append(item)
+                    continue
 
         return controllers
 

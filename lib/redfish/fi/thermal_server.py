@@ -95,7 +95,7 @@ class RedfishEndpointFabricInterconnectTemplateThermalServer():
 
         self.my_output.dictionary(
             properties,
-            title='Summary',
+            title='Thermal Summary',
             underline=True,
             prefix="- ",
             justify=True,
@@ -114,7 +114,7 @@ class RedfishEndpointFabricInterconnectTemplateThermalServer():
         ]
 
         headers = [
-            'Name',
+            'Sensor Name',
             'State',
             'Health',
             'Location',

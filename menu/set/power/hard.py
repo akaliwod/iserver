@@ -40,7 +40,15 @@ def set_power_hard_command(ctx, iaccount, group, serial_filter, name_filter, ip_
     common.flags_fixup(ctx, silent, verbose, debug)
 
     try:
-        servers = common.get_selected_servers(ctx, iaccount, group, serial_filter, name_filter, ip_filter, not no_confirm)
+        servers = common.get_selected_servers(
+            ctx,
+            iaccount,
+            group,
+            serial_filter,
+            name_filter,
+            ip_filter,
+            confirm=not no_confirm
+        )
         if servers is None or len(servers) == 0:
             raise ErrorExit
 

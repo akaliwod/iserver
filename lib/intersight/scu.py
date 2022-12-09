@@ -91,9 +91,9 @@ class SoftwareConfigurationUtility(IntersightCommon):
         "Version": "6.2.2a"
     }
     """
-    def __init__(self, iaccount):
+    def __init__(self, iaccount, log_id=None):
         self.iobject = 'firmware serverconfigurationutilitydistributable'
-        IntersightCommon.__init__(self, iaccount, self.iobject)
+        IntersightCommon.__init__(self, iaccount, self.iobject, log_id=log_id)
 
     def get_all(self, max_errors=3, error_timeout=1):
         """Get all SCU objects

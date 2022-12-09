@@ -6,11 +6,14 @@ import yaml
 from lib import iaccount_helper
 from lib import ip_helper
 from lib import my_servers_helper
+
 from lib.intersight import organization
 from lib.intersight import scu
 from lib.intersight import os_image
 from lib.intersight import hcl_operating_system
 from lib.intersight import hcl_operating_system_vendor
+
+from lib.ucsm import settings as ucsm_settings
 
 
 def validate_iaccount(ctx, param, value):
@@ -21,7 +24,7 @@ def validate_iaccount(ctx, param, value):
 
 
 def validate_organization(ctx, iaccount, organization_name):
-    organization_handler = organization.Organization(iaccount)
+    organization_handler = organization.Organization(iaccount, log_id=ctx.run_id)
 
     if len(organization_name) == 0:
         organizations = organization_handler.get_moids_dict()
@@ -52,6 +55,19 @@ def validate_ip(ctx, param, value):
     if len(value) > 0:
         if not ip_helper.is_valid_ipv4_address(value):
             raise click.BadParameter('Invalid IPv4 address: %s' % (value))
+    return value
+
+
+def validate_ip_subnet(ctx, param, value):
+    if len(value) > 0:
+        if ip_helper.is_valid_ipv4_address(value):
+            return value
+
+        if ip_helper.is_valid_ipv4_cidr(value):
+            return value
+
+        raise click.BadParameter('Invalid IPv4 address or subnet: %s' % (value))
+
     return value
 
 
@@ -189,7 +205,7 @@ def validate_scu(ctx, iaccount, scu_name, required=True):
             return None
         return scu_name
 
-    scu_handler = scu.SoftwareConfigurationUtility(iaccount)
+    scu_handler = scu.SoftwareConfigurationUtility(iaccount, log_id=ctx.run_id)
     scu_item = scu_handler.get_by_name(scu_name)
     if scu_item is None:
         ctx.my_output.error('SCU not found: %s' % (scu_name))
@@ -205,20 +221,20 @@ def validate_os_image(ctx, iaccount, image_name, required=True):
             return None
         return image_name
 
-    image_handler = os_image.OsImage(iaccount)
+    image_handler = os_image.OsImage(iaccount, log_id=ctx.run_id)
     image_item = image_handler.get_by_name(image_name)
     if image_item is None:
         ctx.my_output.error('Image not found: %s' % (image_name))
         return None
 
-    vendor_handler = hcl_operating_system_vendor.HclOperatingSystemVendor(iaccount)
+    vendor_handler = hcl_operating_system_vendor.HclOperatingSystemVendor(iaccount, log_id=ctx.run_id)
     vendor_item = vendor_handler.get_by_name(image_item['Vendor'])
     if vendor_item is None:
         ctx.my_output.error('Image vendor not found: %s' % (image_item['Vendor']))
         return None
     image_item['VendorId'] = vendor_item['Moid']
 
-    version_handler = hcl_operating_system.HclOperatingSystem(iaccount)
+    version_handler = hcl_operating_system.HclOperatingSystem(iaccount, log_id=ctx.run_id)
     version_item = version_handler.get_vendor_version(vendor_item['Moid'], image_item['Version'])
     if version_item is None:
         ctx.my_output.error('Image version not found: %s' % (image_item['Version']))
@@ -362,3 +378,15 @@ def validate_redfish_path(ctx, param, value):
         value = value.lstrip('/api-explorer/resources/redfish/v1/')
 
     return value
+
+
+def validate_ucsm_name(ctx, param, value):
+    if len(value) == 0:
+        raise click.BadParameter('Define ucsm name')
+
+    ucsm_settings_handler = ucsm_settings.UcsmSettings(log_id=None)
+    ucsm_manager = ucsm_settings_handler.get_ucsm_manager(value)
+    if ucsm_manager is None:
+        raise click.BadParameter('Invalid ucsm name')
+
+    return ucsm_manager

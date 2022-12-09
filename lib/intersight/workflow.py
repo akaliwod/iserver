@@ -223,9 +223,10 @@ class Workflow(IntersightCommon):
     }
 
     """
-    def __init__(self, iaccount, get_filter=None):
+    def __init__(self, iaccount, get_filter=None, log_id=None):
         self.iobject = 'workflow workflowinfo'
-        IntersightCommon.__init__(self, iaccount, self.iobject, get_filter=get_filter)
+        self.cache_key = 'workflow'
+        IntersightCommon.__init__(self, iaccount, self.iobject, get_filter=get_filter, log_id=log_id, cache_key=self.cache_key)
 
     def convert_time_epoch(self, time_string):
         """Return epoch ms time from string in workflow info object
@@ -285,15 +286,16 @@ class Workflow(IntersightCommon):
             time.strftime('%Y-%m-%dT%H:%M:%S', time.localtime(int(start_time)))
         )
         self.set_get_filter('CreateTime gt %s' % (reference_time))
-        full_objects = self.get_all()
-        if full_objects is None:
+
+        self.prepare_cache()
+        if self.cache is None:
             return None
 
         if not brief:
-            return full_objects
+            return self.cache
 
         brief_objects = []
-        for full_object in full_objects:
+        for full_object in self.cache:
             brief_objects.append(
                 self.get_workflow_info(full_object)
             )

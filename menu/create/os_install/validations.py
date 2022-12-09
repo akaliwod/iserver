@@ -1,5 +1,4 @@
 import os
-import json
 
 from progress.bar import IncrementalBar
 
@@ -302,8 +301,8 @@ def get_embedded_attributes(ctx, iaccount, name_filter, ip_filter, serial_filter
 
     settings = common.get_server_selection_settings(details=False, workflow=None, action=True)
     settings['storage'] = True
-    compute_handler = compute_info.ComputeInfo(iaccount, settings=settings)
-    server_info = compute_handler.get(server=server)
+    compute_handler = compute_info.ComputeInfo(iaccount, settings=settings, log_id=ctx.run_id)
+    server_info = compute_handler.get_server_info(server)
 
     scu_info = validations.validate_scu(ctx, iaccount, scu_name)
     if scu_info is None:
@@ -366,8 +365,8 @@ def get_dhcp_attributes(ctx, iaccount, name_filter, ip_filter, serial_filter, sc
 
     settings = common.get_server_selection_settings(details=False, workflow=None, action=True)
     settings['storage'] = True
-    compute_handler = compute_info.ComputeInfo(iaccount, settings=settings)
-    server_info = compute_handler.get(server=server)
+    compute_handler = compute_info.ComputeInfo(iaccount, settings=settings, log_id=ctx.run_id)
+    server_info = compute_handler.get_server_info(server)
 
     scu_info = validations.validate_scu(ctx, iaccount, scu_name)
     if scu_info is None:
@@ -405,7 +404,7 @@ def get_dhcp_attributes(ctx, iaccount, name_filter, ip_filter, serial_filter, sc
     attributes['organization_id'] = organization_id
     attributes['server'] = server
 
-    os_configuration_file_handler = os_configuration_file.OsConfigurationFile(iaccount)
+    os_configuration_file_handler = os_configuration_file.OsConfigurationFile(iaccount, log_id=ctx.run_id)
     os_configuration_files = os_configuration_file_handler.get_file_for_os(
         attributes['image']['version_id']
     )
@@ -473,8 +472,8 @@ def get_static_attributes(ctx, iaccount, name_filter, ip_filter, serial_filter, 
 
     settings = common.get_server_selection_settings(details=False, workflow=None, action=True)
     settings['storage'] = True
-    compute_handler = compute_info.ComputeInfo(iaccount, settings=settings)
-    server_info = compute_handler.get(server=server)
+    compute_handler = compute_info.ComputeInfo(iaccount, settings=settings, log_id=ctx.run_id)
+    server_info = compute_handler.get_server_info(server)
 
     scu_info = validations.validate_scu(ctx, iaccount, scu_name)
     if scu_info is None:
@@ -516,7 +515,7 @@ def get_static_attributes(ctx, iaccount, name_filter, ip_filter, serial_filter, 
     attributes['organization_id'] = organization_id
     attributes['server'] = server
 
-    os_configuration_file_handler = os_configuration_file.OsConfigurationFile(iaccount)
+    os_configuration_file_handler = os_configuration_file.OsConfigurationFile(iaccount, log_id=ctx.run_id)
     os_configuration_files = os_configuration_file_handler.get_file_for_os(
         attributes['image']['version_id']
     )

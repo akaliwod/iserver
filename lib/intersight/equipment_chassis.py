@@ -212,9 +212,9 @@ class EquipmentChassis(IntersightCommon):
         "VirtualDriveContainer": []
     }
     """
-    def __init__(self, iaccount, get_filter=None):
+    def __init__(self, iaccount, get_filter=None, log_id=None):
         self.iobject = 'equipment chassis'
-        IntersightCommon.__init__(self, iaccount, self.iobject, get_filter=get_filter)
+        IntersightCommon.__init__(self, iaccount, self.iobject, get_filter=get_filter, log_id=log_id)
 
     def filter(self, name_filter='', serial_filter='', model_filter=''):
         items = IntersightCommon.get_all(self)

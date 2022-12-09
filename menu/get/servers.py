@@ -26,9 +26,10 @@ class ErrorExit(Exception):
 @click.pass_obj
 @click.option("--iaccount", is_flag=False, show_default=True, cls=defaults.default_from_context('iaccount'), callback=validations.validate_iaccount, type=click.STRING, help="Intersight account")
 @click.option("--group", default='', callback=validations.validate_group_serials, help="Group name")
-@click.option("--type", "server_type", type=click.Choice(['all', 'blade', 'rack'], case_sensitive=False), default='all', show_default=True)
-@click.option("--column", "-c", default='default', help="Extra columns: id,fw,pci,fan,psu,group,storage")
+@click.option("--column", "-c", default='default', help="Extra columns: id,fw,pci,fan,psu,group,storage,power,thermal,env")
 @click.option("--loc", "locator", is_flag=True, default=False, help="Locator LED on")
+@click.option("--rack", "rack", is_flag=True, default=False, help="Filter rack servers")
+@click.option("--blade", "blade", is_flag=True, default=False, help="Filter blade servers")
 @click.option("--off", "power_off", is_flag=True, default=False, help="Filter powered off")
 @click.option("--health", is_flag=True, default=False, help="Filter unhealthy")
 @click.option("--fan", is_flag=True, default=False, help="Filter unhealthy fans")
@@ -44,14 +45,17 @@ class ErrorExit(Exception):
 @click.option("--cpu", "cpu_filter", default='', callback=validations.validate_int_oper, help="CPU cores filter")
 @click.option("--memory", "memory_filter", default='', callback=validations.validate_int_oper, help="Memory [GiB] filter")
 @click.option("--set", "set_group", default='', callback=validations.validate_group_oper, help="Set as group")
+@click.option("--legend", "legend_on", is_flag=True, show_default=True, default=False, help="Show legend")
 @click.option("--output", "-o", type=click.Choice(['default', 'json', 'yaml'], case_sensitive=False), default='default', show_default=True)
 @click.option("--devel", is_flag=True, show_default=True, default=False, help="Developer output")
 def get_servers_command(
         ctx,
         iaccount,
         group,
-        server_type,
-        column, locator,
+        column,
+        rack,
+        blade,
+        locator,
         power_off,
         health,
         fan,
@@ -67,6 +71,7 @@ def get_servers_command(
         cpu_filter,
         memory_filter,
         set_group,
+        legend_on,
         output,
         devel
         ):
@@ -90,19 +95,24 @@ def get_servers_command(
         settings = {}
         settings['locator'] = True
         settings['workflow'] = 86400
+        settings['registration'] = True
         settings['rack'] = True
         settings['blade'] = True
-        if server_type.lower() == 'blade':
-            settings['rack'] = False
-        if server_type.lower() == 'rack':
+        if rack:
             settings['blade'] = False
+        if blade:
+            settings['rack'] = False
 
         # Selected columns for output
 
-        for key in ['id', 'cpu', 'memory', 'fw', 'pci', 'fan', 'psu', 'group', 'storage', 'server_setting_id']:
+        for key in ['id', 'cpu', 'memory', 'fw', 'pci', 'fan', 'psu', 'group', 'storage', 'server_setting_id', 'power', 'thermal', 'env']:
             settings[key] = False
             if key in column.split(','):
                 settings[key] = True
+
+        if settings['env']:
+            settings['power'] = True
+            settings['thermal'] = True
 
         # Make sure that columns choice follows filtering choice
 
@@ -134,7 +144,7 @@ def get_servers_command(
         match_rules['fan'] = fan
         match_rules['psu'] = psu
 
-        computes_handler = computes_info.ComputesInfo(iaccount, settings)
+        computes_handler = computes_info.ComputesInfo(iaccount, settings, log_id=ctx.run_id)
         servers = computes_handler.get(match_rules=match_rules)
 
         ctx.my_output.json_output(servers)
@@ -155,7 +165,11 @@ def get_servers_command(
 
         ctx.busy = False
         time.sleep(.1)
-        computes_handler.print(servers)
+
+        computes_handler.print(
+            servers,
+            legend_on=legend_on
+        )
 
         # Set group operation handling
 

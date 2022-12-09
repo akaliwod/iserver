@@ -31,7 +31,7 @@ def get_scu_command(ctx, iaccount, verify, output, devel):
     ctx.developer = devel
 
     try:
-        scu_handler = scu.SoftwareConfigurationUtility(iaccount)
+        scu_handler = scu.SoftwareConfigurationUtility(iaccount, log_id=ctx.run_id)
         scus = scu_handler.get_all()
         if output == 'json':
             ctx.my_output.default(json.dumps(scus, indent=4))

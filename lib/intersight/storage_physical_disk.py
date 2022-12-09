@@ -162,9 +162,10 @@ class StoragePhysicalDisk(IntersightCommon):
         "WriteIoErrorCount": 0
     }
     """
-    def __init__(self, iaccount):
+    def __init__(self, iaccount, log_id=None):
         self.iobject = 'storage physicaldisk'
-        IntersightCommon.__init__(self, iaccount, self.iobject)
+        self.cache_key = 'physical_disk'
+        IntersightCommon.__init__(self, iaccount, self.iobject, log_id=log_id, cache_key=self.cache_key)
 
     def get_compute_disks(self, compute_id, cache=True, disk_type=None):
         if cache:

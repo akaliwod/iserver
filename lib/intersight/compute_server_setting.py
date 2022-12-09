@@ -126,9 +126,9 @@ class ComputeServerSetting(IntersightCommon):
         "TunneledKvmState": "Ready"
     }
     """
-    def __init__(self, iaccount):
+    def __init__(self, iaccount, log_id=None):
         self.iobject = 'compute serversetting'
-        IntersightCommon.__init__(self, iaccount, self.iobject)
+        IntersightCommon.__init__(self, iaccount, self.iobject, log_id=log_id)
 
     def create(self, attributes):
         create_iobject = 'compute updatecomputeserversetting'

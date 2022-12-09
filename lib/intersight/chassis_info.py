@@ -9,15 +9,15 @@ from lib import output_helper
 class ChassisInfo(ChassisExtraAttributes):
     """Class for intersight chassis objects
     """
-    def __init__(self, iaccount, settings=None):
+    def __init__(self, iaccount, settings=None, log_id=None):
         self.settings = settings
         if settings is None:
             self.settings = self.get_default_settings()
 
         ChassisExtraAttributes.__init__(self, iaccount, self.settings)
-        self.chassis_handler = equipment_chassis.EquipmentChassis(iaccount)
-        self.my_output = output_helper.OutputHelper()
-        self.log = log_helper.Log()
+        self.chassis_handler = equipment_chassis.EquipmentChassis(iaccount, log_id=log_id)
+        self.my_output = output_helper.OutputHelper(log_id=log_id)
+        self.log = log_helper.Log(log_id=log_id)
 
         self.chassis = None
         self.chassis_info = {}

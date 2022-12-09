@@ -6,10 +6,10 @@ from lib.intersight.intersight_common import IntersightCommon
 class OsInstall(IntersightCommon):
     """Class for Intersight software configuration utility
     """
-    def __init__(self, iaccount, dry_run=False, silent=False, verbose=False, debug=False):
+    def __init__(self, iaccount, dry_run=False, silent=False, verbose=False, debug=False, log_id=None):
         self.iobject = 'os install'
         self.dry_run = dry_run
-        IntersightCommon.__init__(self, iaccount, self.iobject, silent=silent, verbose=verbose, debug=debug)
+        IntersightCommon.__init__(self, iaccount, self.iobject, silent=silent, verbose=verbose, debug=debug, log_id=log_id)
 
     def create_embedded(self, attributes):
         """Create os install object in Intersight to trigger bare metal OS installation

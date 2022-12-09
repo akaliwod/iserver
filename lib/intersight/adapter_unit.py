@@ -132,9 +132,9 @@ class AdapterUnit(IntersightCommon):
         "Vid": ""
     }
     """
-    def __init__(self, iaccount):
+    def __init__(self, iaccount, log_id=None):
         self.iobject = 'adapter unit'
-        IntersightCommon.__init__(self, iaccount, self.iobject)
+        IntersightCommon.__init__(self, iaccount, self.iobject, log_id=log_id)
 
     def get_info(self, moid, cache=True):
         if cache:

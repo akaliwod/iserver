@@ -105,9 +105,9 @@ class NetworkElementSummary(IntersightCommon):
         "Version": "9.3(5)I42(2c)"
     }
     """
-    def __init__(self, iaccount):
+    def __init__(self, iaccount, log_id=None):
         self.iobject = 'network elementsummary'
-        IntersightCommon.__init__(self, iaccount, self.iobject)
+        IntersightCommon.__init__(self, iaccount, self.iobject, log_id=log_id)
 
     def get_info(self, moid, cache=True):
         if cache:

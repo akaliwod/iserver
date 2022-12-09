@@ -1,7 +1,7 @@
 import json
 import sys
-import yaml
 import traceback
+import yaml
 import click
 
 from lib.intersight import hcl_operating_system
@@ -32,11 +32,11 @@ def get_os_version_command(ctx, iaccount, vendor_name, output, devel):
     ctx.developer = devel
 
     try:
-        version_handler = hcl_operating_system.HclOperatingSystem(iaccount)
+        version_handler = hcl_operating_system.HclOperatingSystem(iaccount, log_id=ctx.run_id)
         if vendor_name == '':
             versions = version_handler.get_all()
         else:
-            vendor_handler = hcl_operating_system_vendor.HclOperatingSystemVendor(iaccount)
+            vendor_handler = hcl_operating_system_vendor.HclOperatingSystemVendor(iaccount, log_id=ctx.run_id)
             vendor_attributes = vendor_handler.get_by_name(vendor_name)
             if vendor_attributes is None:
                 ctx.my_output.error('Vendor not found: %s' % (vendor_name))

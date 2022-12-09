@@ -3,7 +3,7 @@ class RedfishEndpointFabricInterconnectTemplateThermalChassis():
         pass
 
     def get_template_thermal_chassis_properties(self):
-        uri = 'Chassis/1/Thermal'
+        uri = '%s/Thermal' % (self.get_chassis_uri())
         data = self.get_properties(uri)
         if data is None:
             return None
@@ -85,7 +85,7 @@ class RedfishEndpointFabricInterconnectTemplateThermalChassis():
         ]
 
         headers = [
-            'Name',
+            'Sensor Name',
             'State',
             'Value (Celcius)'
         ]
@@ -107,7 +107,7 @@ class RedfishEndpointFabricInterconnectTemplateThermalChassis():
         ]
 
         headers = [
-            'Name',
+            'Fan Name',
             'State',
             'Model',
             'SerialNumber'

@@ -6,10 +6,10 @@ from lib import output_helper
 class ChassizInfo():
     """Class for intersight chassis objects
     """
-    def __init__(self, iaccount):
-        self.chassis_handler = equipment_chassis.EquipmentChassis(iaccount)
+    def __init__(self, iaccount, log_id=None):
+        self.chassis_handler = equipment_chassis.EquipmentChassis(iaccount, log_id=log_id)
         self.chassis_handler.set_get_expand('RegisteredDevice')
-        self.my_output = output_helper.OutputHelper()
+        self.my_output = output_helper.OutputHelper(log_id=log_id)
 
     def get(self, match_rules=None):
         if match_rules is None:

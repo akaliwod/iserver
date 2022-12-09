@@ -23,7 +23,7 @@ class ErrorExit(Exception):
 @click.pass_obj
 @click.option("--type", "endpoint_type", type=click.Choice(['standard', 'ucsc', 'fi', 'dell', 'hpe'], case_sensitive=False), default='standard', help="Redfish endpoint type")
 @click.option("--cache", "cache_name", default='', help="Redfish cache entry name")
-@click.option("--ip", "endpoint_ip", default='', help="Redfish management IP")
+@click.option("--ip", "endpoint_ip", default='', callback=validations.validate_ip, help="Redfish management IP")
 @click.option("--port", "endpoint_port", default=443, help="Redfish management TCP port")
 @click.option("--username", default='', help="Redfish username")
 @click.option("--password", default='', help="Redfish password")
@@ -76,7 +76,7 @@ def get_redfish_endpoint_command(
         verbose,
         devel
         ):
-    """Run redfish API on UCS rack server"""
+    """Get redfish uri resources - direct mode"""
 
     # iserver get redfish ucsc
 
@@ -101,6 +101,19 @@ def get_redfish_endpoint_command(
         if len(cache_name) > 0:
             endpoint_type = 'cache'
 
+        if len(cache_name) == 0:
+            if endpoint_ip == '':
+                ctx.my_output.error('Define Redfish endpoint IP')
+                raise ErrorExit
+
+            if username == '':
+                ctx.my_output.error('Define Redfish access username')
+                raise ErrorExit
+
+            if password == '':
+                ctx.my_output.error('Define Redfish access password')
+                raise ErrorExit
+
         redfish_handler = endpoint.RedfishEndpoint(
             endpoint_type,
             endpoint_ip,
@@ -112,6 +125,7 @@ def get_redfish_endpoint_command(
             ssl_verify=ssl_verify,
             deep_search_exlusions=not no_exclusions,
             tree_max_execution_time=tree_max_execution_time,
+            log_id=ctx.run_id,
             verbose=verbose,
             debug=debug
         )

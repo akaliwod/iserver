@@ -10,8 +10,8 @@ from lib import iaccount_helper
 
 
 class Isctl():
-    def __init__(self, iaccount):
-        self.log = log_helper.Log()
+    def __init__(self, iaccount, log_id=None):
+        self.log = log_helper.Log(log_id=log_id)
         self.iaccount = iaccount
 
         self.ia_handler = iaccount_helper.IntersightAccount()

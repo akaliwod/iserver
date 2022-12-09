@@ -1,4 +1,3 @@
-import json
 import sys
 import traceback
 import click
@@ -34,7 +33,7 @@ def delete_scu_command(ctx, scu_id, scu_name, iaccount, devel):
             ctx.my_output.error('Define --id or --name parameters')
             raise ErrorExit
 
-        scu_handler = scu.SoftwareConfigurationUtility(iaccount)
+        scu_handler = scu.SoftwareConfigurationUtility(iaccount, log_id=ctx.run_id)
 
         if len(scu_name) > 0:
             scu_attributes = scu_handler.get_by_name(scu_name)

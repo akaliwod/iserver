@@ -105,9 +105,9 @@ class EthernetPhysicalPort(IntersightCommon):
         "TransceiverType": "SFP-25G-AOC2M"
     }
     """
-    def __init__(self, iaccount, get_filter=None):
+    def __init__(self, iaccount, get_filter=None, log_id=None):
         self.iobject = 'ether physicalport'
-        IntersightCommon.__init__(self, iaccount, self.iobject, get_filter=get_filter)
+        IntersightCommon.__init__(self, iaccount, self.iobject, get_filter=get_filter, log_id=log_id)
 
     def get_info(self, moid, cache=True):
         if cache:

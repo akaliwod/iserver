@@ -13,15 +13,15 @@ from lib.intersight import workflow_info
 
 
 class LcmServerCommon():
-    def __init__(self, iaccount, silent=False, verbose=False, debug=False):
+    def __init__(self, iaccount, silent=False, verbose=False, debug=False, log_id=None):
         self.iaccount = iaccount
-        self.log = log_helper.Log()
-        self.my_output = output_helper.OutputHelper()
-        self.isctl = isctl_helper.Isctl(iaccount)
-        self.workflow_handler = workflow.Workflow(iaccount)
-        self.workflow_task_info_handler = workflow_task_info.WorkflowTaskInfo(iaccount)
-        self.organization = organization.Organization(iaccount)
-        self.server_setting_handler = compute_server_setting.ComputeServerSetting(iaccount)
+        self.log = log_helper.Log(log_id=log_id)
+        self.my_output = output_helper.OutputHelper(log_id=log_id)
+        self.isctl = isctl_helper.Isctl(iaccount, log_id=log_id)
+        self.workflow_handler = workflow.Workflow(iaccount, log_id=log_id)
+        self.workflow_task_info_handler = workflow_task_info.WorkflowTaskInfo(iaccount, log_id=log_id)
+        self.organization = organization.Organization(iaccount, log_id=log_id)
+        self.server_setting_handler = compute_server_setting.ComputeServerSetting(iaccount, log_id=log_id)
         self.workflow_info_handler = workflow_info.WorkflowInfo(
             iaccount,
             silent=silent,
@@ -67,7 +67,13 @@ class LcmServerCommon():
                     if workflow_item['Name'] != workflow_name:
                         continue
 
-                    if workflow_item['Moid'] in server['WorkflowsLastIds']:
+                    in_server_workflows = False
+                    for server_workflow in server['Workflow']['Last']:
+                        if workflow_item['Moid'] == server_workflow['Moid']:
+                            in_server_workflows = True
+                            break
+
+                    if in_server_workflows:
                         continue
 
                     server['LcmWorkflowId'] = workflow_item['Moid']

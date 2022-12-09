@@ -70,30 +70,30 @@ class ComputesWorkflow():
         workflows = []
 
         for server in servers:
-            if server['WorkflowRunning'] is not None:
-                if self.match_workflow(server['WorkflowRunning'], settings):
+            if server['Workflow']['Running'] is not None:
+                if self.match_workflow(server['Workflow']['Running'], settings):
                     workflow_info = {}
                     workflow_info['server_id'] = server['Moid']
-                    workflow_info['server_state'] = server['State']
+                    workflow_info['server_state'] = server['FlagState']
                     workflow_info['server_name'] = server['Name']
                     workflow_info['server_ip'] = server['ManagementIp']
                     workflow_info['server_serial'] = server['Serial']
-                    workflow_info['workflow_id'] = server['WorkflowRunning']['Moid']
-                    workflow_info['name'] = server['WorkflowRunning']['Name']
-                    workflow_info['created'] = server['WorkflowRunning']['CreateTime']
-                    workflow_info['created_epoch'] = server['WorkflowRunning']['CreateTimeEpoch']
-                    workflow_info['status'] = 'RUNNING %s%%' % (server['WorkflowRunning']['Progress'])
+                    workflow_info['workflow_id'] = server['Workflow']['Running']['Moid']
+                    workflow_info['name'] = server['Workflow']['Running']['Name']
+                    workflow_info['created'] = server['Workflow']['Running']['CreateTime']
+                    workflow_info['created_epoch'] = server['Workflow']['Running']['CreateTimeEpoch']
+                    workflow_info['status'] = 'RUNNING %s%%' % (server['Workflow']['Running']['Progress'])
                     workflows.append(workflow_info)
 
             count = settings['count']
             if count < 0:
                 count = 1000
 
-            for workflow_item in server['WorkflowsLast']:
+            for workflow_item in server['Workflow']['Last']:
                 if self.match_workflow(workflow_item, settings):
                     workflow_info = {}
                     workflow_info['server_id'] = server['Moid']
-                    workflow_info['server_state'] = server['State']
+                    workflow_info['server_state'] = server['FlagState']
                     workflow_info['server_name'] = server['Name']
                     workflow_info['server_ip'] = server['ManagementIp']
                     workflow_info['server_serial'] = server['Serial']

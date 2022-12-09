@@ -1,12 +1,11 @@
 import json
 import os
+import sys
 import traceback
-
-RUN_ID = None
 
 
 class OutputHelper():
-    def __init__(self, silent=False, verbose=False, debug=False):
+    def __init__(self, silent=False, verbose=False, debug=False, log_id=None):
         self.flags = {}
         self.flags['silent'] = silent
         self.flags['verbose'] = verbose
@@ -16,18 +15,14 @@ class OutputHelper():
         self.set_stream()
 
         self.output_directory = '/tmp/iserver/'
-        if RUN_ID is not None:
-            self.output_directory = os.path.join(self.output_directory, RUN_ID)
+        if log_id is not None:
+            self.output_directory = os.path.join(self.output_directory, log_id)
 
         self.default_filename = os.path.join(self.output_directory, 'iserver.output.default')
         self.verbose_filename = os.path.join(self.output_directory, 'iserver.output.verbose')
         self.debug_filename = os.path.join(self.output_directory, 'iserver.output.debug')
         self.json_filename = os.path.join(self.output_directory, 'iserver.output.json')
         self.devel_filename = os.path.join(self.output_directory, 'devel.debug')
-
-    def run_id(self, my_run_id):
-        global RUN_ID
-        RUN_ID = my_run_id
 
     def initialize(self, max_dirs=1000):
         try:
@@ -160,7 +155,18 @@ class OutputHelper():
         self.append(self.verbose_filename, output)
         self.append(self.debug_filename, output)
 
-    def my_table(self, values, spacing=3, underline=False, order=None, headers=None, headers_upper=False, table=False, stream='default'):
+    def get_subkey(self, value, key):
+        if '.' in key:
+            subkey = key.split('.')[0]
+            if subkey not in value:
+                return None
+
+            new_key = '.'.join(key.split('.')[1:])
+            return self.get_subkey(value[subkey], new_key)
+
+        return value[key]
+
+    def my_table(self, values, spacing=3, underline=False, order=None, allow_order_subkeys=False, headers=None, headers_upper=False, table=False, stream='default'):
         ''' Expects list of dict '''
         if values is None:
             values = []
@@ -193,7 +199,12 @@ class OutputHelper():
         for value in values:
             for key in keys:
                 try:
-                    value[key] = str(value[key])
+                    if allow_order_subkeys and '.' in key:
+                        value[key] = str(
+                            self.get_subkey(value, key)
+                        )
+                    else:
+                        value[key] = str(value[key])
                 except BaseException:
                     value[key] = ''
 
@@ -228,8 +239,8 @@ class OutputHelper():
                     column_title = column_title.upper()
 
                 if table:
-                    table_top = '%s%s-+-' % (table_top, ''.ljust(keys[key], '-'))
-                    header = '%s%s | ' % (header, column_title.ljust(keys[key]))
+                    table_top = '%s%s+-' % (table_top, ''.ljust(keys[key], '-'))
+                    header = '%s%s| ' % (header, column_title.ljust(keys[key]))
                 else:
                     header = '%s%s' % (header, column_title.ljust(keys[key]))
 
@@ -276,7 +287,7 @@ class OutputHelper():
 
             for key in keys:
                 if table:
-                    line = '%s%s | ' % (line, value[key].ljust(keys[key]))
+                    line = '%s%s| ' % (line, value[key].ljust(keys[key]))
                 else:
                     line = '%s%s' % (line, value[key].ljust(keys[key]))
 
@@ -483,8 +494,9 @@ class OutputHelper():
                 output = '%s\n%s\n' % (output, "".join(('-',) * len(output)))
 
                 if stream == 'devel':
-                    self.devel(output)
-                    self.devel(logs[log_entry])
+                    if log_entry != 'debug':
+                        self.devel(output)
+                        self.devel(logs[log_entry])
 
                 if stream == 'default':
                     self.default(output)

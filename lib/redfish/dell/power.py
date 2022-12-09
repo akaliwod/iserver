@@ -9,7 +9,8 @@ class RedfishEndpointDellTemplatePower():
             return None
 
         properties = {}
-        properties['PowerControl'] = {}
+        properties['Data'] = {}
+        properties['Data']['PowerControl'] = {}
 
         # {
         #     "PhysicalContext": "PowerSupply",
@@ -26,10 +27,10 @@ class RedfishEndpointDellTemplatePower():
         #     "@odata.id": "/redfish/v1/Chassis/1/Power#/PowerControl/1"
         # }
         power_control_data = data['PowerControl'][0]
-        properties['PowerControl']['PowerConsumedWatts'] = power_control_data['PowerConsumedWatts']
-        properties['PowerControl']['LimitException'] = power_control_data['PowerLimit']['LimitException']
+        properties['Data']['PowerControl']['PowerConsumedWatts'] = power_control_data['PowerConsumedWatts']
+        properties['Data']['PowerControl']['LimitException'] = power_control_data['PowerLimit']['LimitException']
         for key in power_control_data['PowerMetrics']:
-            properties['PowerControl'][key] = power_control_data['PowerMetrics'][key]
+            properties['Data']['PowerControl'][key] = power_control_data['PowerMetrics'][key]
 
         # {
         #     "PhysicalContext": "PowerSupply",
@@ -44,7 +45,7 @@ class RedfishEndpointDellTemplatePower():
         #     "Name": "PSU1_VOUT",
         #     "ReadingVolts": 12.2
         # },
-        properties['Voltage'] = []
+        properties['Data']['Voltage'] = []
         for voltage in data['Voltages']:
             voltage_info = {}
             voltage_info['Name'] = voltage['Name']
@@ -53,7 +54,7 @@ class RedfishEndpointDellTemplatePower():
             voltage_info['PhysicalContext'] = voltage['PhysicalContext']
             voltage_info['State'] = voltage['Status']['State']
             voltage_info['Health'] = voltage['Status']['Health']
-            properties['Voltage'].append(voltage_info)
+            properties['Data']['Voltage'].append(voltage_info)
 
         # {
         #     "SerialNumber": "LIT241244RQ",
@@ -85,7 +86,7 @@ class RedfishEndpointDellTemplatePower():
         #         "Health": "OK"
         #     }
         # },
-        properties['PowerSupply'] = []
+        properties['Data']['PowerSupply'] = []
         for power_supply in data['PowerSupplies']:
             power_supply_info = {}
             power_supply_info['Name'] = power_supply['Name']
@@ -106,7 +107,14 @@ class RedfishEndpointDellTemplatePower():
                     if key != 'InputType':
                         power_supply_info[key] = input_range[key]
 
-            properties['PowerSupply'].append(power_supply_info)
+            properties['Data']['PowerSupply'].append(power_supply_info)
+
+        properties['Summary'] = {}
+        properties['Summary']['Source'] = 'Redfish'
+        properties['Summary']['PowerNow'] = properties['Data']['PowerControl']['PowerConsumedWatts']
+        properties['Summary']['PowerMin'] = properties['Data']['PowerControl']['MinConsumedWatts']
+        properties['Summary']['PowerAvg'] = properties['Data']['PowerControl']['AverageConsumedWatts']
+        properties['Summary']['PowerMax'] = properties['Data']['PowerControl']['MaxConsumedWatts']
 
         return properties
 
@@ -128,7 +136,7 @@ class RedfishEndpointDellTemplatePower():
         ]
 
         self.my_output.dictionary(
-            properties['PowerControl'],
+            properties['Data']['PowerControl'],
             title='Power Consumption (Watt)',
             underline=True,
             prefix="- ",
@@ -147,7 +155,7 @@ class RedfishEndpointDellTemplatePower():
         ]
 
         headers = [
-            'Name',
+            'Voltage Sensor',
             'State',
             'Health',
             'Volts',
@@ -155,7 +163,7 @@ class RedfishEndpointDellTemplatePower():
         ]
 
         self.my_output.my_table(
-            properties['Voltage'],
+            properties['Data']['Voltage'],
             order=order,
             headers=headers,
             underline=True,
@@ -178,7 +186,7 @@ class RedfishEndpointDellTemplatePower():
         ]
 
         headers = [
-            'Name',
+            'PSU Name',
             'State',
             'Health',
             'Serial',
@@ -192,7 +200,7 @@ class RedfishEndpointDellTemplatePower():
         ]
 
         self.my_output.my_table(
-            properties['PowerSupply'],
+            properties['Data']['PowerSupply'],
             order=order,
             headers=headers,
             underline=True,

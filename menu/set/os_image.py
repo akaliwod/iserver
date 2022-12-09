@@ -53,7 +53,7 @@ def set_os_image_command(ctx, filename, iaccount, moid, name, vendor, version, l
             item['Type'] = 'url'
             images.append(item)
 
-        image_handler = os_image.OsImage(iaccount)
+        image_handler = os_image.OsImage(iaccount, log_id=ctx.run_id)
         success, reason = image_handler.validate_set(images)
         if not success:
             ctx.my_output.error('Input parameters validation failed')

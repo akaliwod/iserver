@@ -76,9 +76,10 @@ class EquipmentLed(IntersightCommon):
         "Tags": []
     }
     """
-    def __init__(self, iaccount, get_filter='"OperState eq \'on\'"'):
+    def __init__(self, iaccount, get_filter='"OperState eq \'on\'"', log_id=None):
         self.iobject = 'equipment locatorled'
-        IntersightCommon.__init__(self, iaccount, self.iobject, get_filter=get_filter)
+        self.cache_key = 'locator_led'
+        IntersightCommon.__init__(self, iaccount, self.iobject, get_filter=get_filter, log_id=log_id, cache_key=self.cache_key)
 
     def is_locator_led_on(self, item):
         if item is None:

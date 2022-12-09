@@ -8,10 +8,12 @@ from lib.settings_helper import Settings
 
 
 class RedfishSettings(Settings):
-    def __init__(self):
+    def __init__(self, log_id=None):
         Settings.__init__(self)
-        self.log = log_helper.Log()
+
+        self.log = log_helper.Log(log_id=log_id)
         self.my_output = output_helper.OutputHelper(
+            log_id=log_id,
             verbose=False,
             debug=False
         )
@@ -23,6 +25,13 @@ class RedfishSettings(Settings):
 
         if not self.initialize_redfish_settings():
             raise ValueError('Redfish settings initialization failed')
+
+    def initialize_redfish_settings(self):
+        if not os.path.isfile(self.redfish_settings_filename):
+            settings = self.get_redfish_default_settings()
+            if not self.set_redfish_settings(settings):
+                return False
+        return True
 
     def get_redfish_settings(self):
         if not os.path.isfile(self.redfish_settings_filename):
@@ -54,13 +63,6 @@ class RedfishSettings(Settings):
         settings['CacheEnabled'] = False
         settings['CacheDirectory'] = '/tmp/redfish'
         return settings
-
-    def initialize_redfish_settings(self):
-        if not os.path.isfile(self.redfish_settings_filename):
-            settings = self.get_redfish_default_settings()
-            if not self.set_redfish_settings(settings):
-                return False
-        return True
 
     def print_redfish_settings(self):
         settings = self.get_redfish_settings()

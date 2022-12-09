@@ -1,4 +1,3 @@
-import os
 from lib.intersight.compute_extra_attributes import ComputeExtraAttributes
 from lib.intersight import compute_rack
 from lib.intersight import compute_blade
@@ -8,17 +7,17 @@ from lib import output_helper
 class ComputeInfo(ComputeExtraAttributes):
     """Class for intersight compute blade and rack objects
     """
-    def __init__(self, iaccount, settings=None):
+    def __init__(self, iaccount, settings=None, log_id=None):
         self.settings = settings
         if settings is None:
             self.settings = self.get_default_settings()
 
-        ComputeExtraAttributes.__init__(self, iaccount, self.settings)
+        ComputeExtraAttributes.__init__(self, iaccount, self.settings, log_id=log_id)
         self.get_info_cache_mode = False
 
-        self.rack_handler = compute_rack.ComputeRack(iaccount)
-        self.blade_handler = compute_blade.ComputeBlade(iaccount)
-        self.my_output = output_helper.OutputHelper()
+        self.rack_handler = compute_rack.ComputeRack(iaccount, log_id=log_id)
+        self.blade_handler = compute_blade.ComputeBlade(iaccount, log_id=log_id)
+        self.my_output = output_helper.OutputHelper(log_id=log_id)
 
     def get_default_settings(self):
         settings = {}
@@ -26,170 +25,135 @@ class ComputeInfo(ComputeExtraAttributes):
         settings['blade'] = True
         settings['server_setting_id'] = False
         settings['workflow'] = None
-        for key in ['id', 'cpu', 'memory', 'fw', 'pci', 'fan', 'psu', 'group', 'storage', 'locator']:
+        settings['registration'] = False
+        for key in ['id', 'cpu', 'memory', 'fw', 'pci', 'fan', 'psu', 'group', 'storage', 'locator', 'power', 'thermal']:
             settings[key] = False
         return settings
 
-    def get(self, moid=None, server=None):
-        if moid is None and server is None:
-            return None
-
-        if moid is not None:
-            server = self.rack_handler.get(moid)
-            if server is None:
-                server = self.blade_handler.get(moid)
+    def get(self, server_id, include_object=False):
+        server = self.rack_handler.get(server_id)
+        if server is None:
+            server = self.blade_handler.get(server_id)
 
         if server is None:
             return None
 
-        if server['ObjectType'] == 'compute.RackUnit':
-            self.set_rack_compute_filter(server)
-
-        return self.add_server_attributes(server)
-
-    def print_summary_columns(self, server):
-        data = self.my_output.dictionary(
+        server_info = self.get_server_info(
             server,
-            title='Identity',
-            underline=False,
-            prefix="- ",
-            justify=True,
-            keys=[
-                'Moid',
-                'Name',
-                'Type',
-                'Model',
-                'Serial',
-                'ManagementIp',
-                'AssetTag',
-                'ManagementMode'
-            ],
-            title_keys=[
-                'Server ID',
-                'Name',
-                'Type',
-                'Model',
-                'Serial',
-                'IP',
-                'AssetTag',
-                'Mode'
-            ],
-            stream=None
+            include_object=include_object
         )
-        column1 = []
-        for line in data.split('\n'):
-            if len(line) > 0:
-                column1.append(line)
 
-        data = self.my_output.dictionary(
-            server,
-            title='State',
+        return server_info
+
+    def print_summary_table(self, server, legend_on=False):
+        order = [
+            'FlagState',
+            'FlagManagement',
+            'FlagWorkflow',
+            'Name',
+            'TypeModel',
+            'Serial',
+            'ManagementIp',
+            'Cpu',
+            'TotalMemoryUnit'
+        ]
+
+        headers = [
+            'SF',
+            'MF',
+            'WF',
+            'Name',
+            'Model',
+            'Serial',
+            'IP',
+            'CPU',
+            'Memory'
+        ]
+
+        self.my_output.my_table(
+            [server],
+            order=order,
+            headers=headers,
+            table=True
+        )
+
+        if legend_on:
+            self.print_flags_legend()
+
+    def print_flags_legend(self):
+        legend = {}
+        legend['power'] = '(P+) on (P-) off'
+        legend['health'] = '(H)ealthy (W)arning (C)ritical'
+        legend['locator'] = '(L)ocator on'
+
+        self.my_output.dictionary(
+            legend,
+            title='State Flags (SF)',
             underline=False,
             prefix="- ",
             justify=True,
             keys=[
-                'OperPowerState',
-                'LocatorLedOn',
-                'Health',
-                'Fw',
-                'PsuSummary',
-                'FanSummary'
+                'power',
+                'health',
+                'locator'
             ],
             title_keys=[
                 'Power',
-                'Locator',
                 'Health',
-                'Firmware',
-                'PSU',
-                'Fan'
-            ],
-            stream=None
+                'Locator'
+            ]
         )
-        column2 = []
-        for line in data.split('\n'):
-            if len(line) > 0:
-                column2.append(line)
 
-        data = self.my_output.dictionary(
-            server,
-            title='CPU and Memory',
+        legend = {}
+        legend['connected'] = '(C) connected (c) disconnected'
+        legend['ucsm'] = '(U)csm ready (u)csm capable'
+        legend['redfish'] = '(R)edfish ready (r)edfish capable'
+        legend['imc'] = '(I)mc ready (i)imc capable'
+
+        self.my_output.dictionary(
+            legend,
+            title='Management Flags (MF)',
             underline=False,
             prefix="- ",
             justify=True,
             keys=[
-                'NumCpus',
-                'NumThreads',
-                'NumCpuCores',
-                'NumCpuCoresEnabled',
-                'TotalMemoryUnit'
+                'connected',
+                'ucsm',
+                'redfish',
+                'imc'
             ],
             title_keys=[
-                'CPU Sockets',
-                'Threads',
-                'Cores',
-                'Enabled Cores',
-                'Memory'
-            ],
-            stream=None
+                'Intersight API',
+                'UCSM API',
+                'Redfish API',
+                'IMC API'
+            ]
         )
-        column3 = []
-        for line in data.split('\n'):
-            if len(line) > 0:
-                column3.append(line)
 
-        keys = [
-            'StorageControllersCount',
-            'PhysicalDiskCount',
-            'PhysicalDiskCapacityUnit',
-            'HddDiskCount',
-            'HddDiskCapacityUnit',
-            'SsdDiskCount',
-            'SsdDiskCapacityUnit',
-            'VirtualDiskCount'
-        ]
+        legend = {}
+        legend['running'] = '(R)'
+        legend['last'] = '(F)'
+        legend['some'] = '(f)'
 
-        match = False
-        for key in keys:
-            if key in server:
-                match = True
-                break
+        self.my_output.dictionary(
+            legend,
+            title='Workflow Flags (SF)',
+            underline=False,
+            prefix="- ",
+            justify=True,
+            keys=[
+                'running',
+                'last',
+                'some'
+            ],
+            title_keys=[
+                'Running',
+                'Last Failed',
+                'Failed'
+            ]
+        )
 
-        column4 = None
-        if match:
-            data = self.my_output.dictionary(
-                server,
-                title='Storage',
-                underline=False,
-                prefix="- ",
-                justify=True,
-                keys=keys,
-                title_keys=[
-                    'Controllers',
-                    'Disks count',
-                    'Disks capacity',
-                    'HDD count',
-                    'HDD capacity',
-                    'SSD count',
-                    'SSD capacity',
-                    'Virtual Disks'
-                ],
-                stream=None
-            )
-            column4 = []
-            for line in data.split('\n'):
-                if len(line) > 0:
-                    column4.append(line)
-
-        data = []
-        data.append(column1)
-        data.append(column2)
-        data.append(column3)
-        if column4 is not None:
-            data.append(column4)
-
-        self.my_output.columns(data, max_length=os.get_terminal_size()[0])
-
-    def print_summary_standard(self, server):
+    def print_summary_dictionary(self, server):
         self.my_output.dictionary(
             server,
             title='Identity',
@@ -213,6 +177,23 @@ class ComputeInfo(ComputeExtraAttributes):
                 'IP'
             ]
         )
+
+        if server['Redfish']['Capable']:
+            self.my_output.dictionary(
+                server['Redfish'],
+                title='Redfish',
+                underline=False,
+                prefix="- ",
+                justify=True,
+                keys=[
+                    'Capable',
+                    'Enabled'
+                ],
+                title_keys=[
+                    'Capable',
+                    'Enabled'
+                ]
+            )
 
         self.my_output.dictionary(
             server,
@@ -318,7 +299,7 @@ class ComputeInfo(ComputeExtraAttributes):
         ]
 
         headers = [
-            'Processor Id',
+            'CPU Id',
             'Socket',
             'Vendor',
             'Arch',
@@ -326,7 +307,7 @@ class ComputeInfo(ComputeExtraAttributes):
             'Presence',
             'OperState',
             'Cores',
-            'Cores Enabled',
+            'Enabled',
             'Threads',
             'Speed',
             'Stepping'
@@ -550,10 +531,10 @@ class ComputeInfo(ComputeExtraAttributes):
             table=True
         )
 
-    def print_workflows(self, workflows):
+    def print_workflows(self, workflows, show_empty_table=False):
         if len(workflows) == 0:
-            self.my_output.default('\nNo workflows')
-            return
+            if not show_empty_table:
+                return
 
         order = [
             'Moid',
@@ -579,8 +560,8 @@ class ComputeInfo(ComputeExtraAttributes):
             table=True
         )
 
-    def print(self, server, workflow_count=10):
-        self.print_summary_standard(server)
+    def print(self, server, workflow_count=10, legend_on=False):
+        self.print_summary_table(server, legend_on=legend_on)
 
         if 'CpuInfo' in server:
             self.print_cpu(server['CpuInfo'])
@@ -605,6 +586,42 @@ class ComputeInfo(ComputeExtraAttributes):
 
         if 'PsuInfo' in server:
             self.print_psu(server['PsuInfo'])
+
+        if 'Power' in server:
+            if server['Power'] is None:
+                self.my_output.default('No power consumption information found')
+
+            if server['Power'] is not None and server['Redfish']['Enabled']:
+                self.redfish_endpoint_settings_handler.print_redfish_endpoint_template(
+                    server['Serial'],
+                    'power',
+                    server['Power']
+                )
+
+            if server['Power'] is not None and server['UCSM']['Enabled']:
+                self.ucsm_endpoint_settings_handler.print_ucsm_endpoint_template(
+                    server['Serial'],
+                    'power',
+                    server['Power']
+                )
+
+        if 'Thermal' in server:
+            if server['Thermal'] is None:
+                self.my_output.default('No thermal information found')
+
+            if server['Thermal'] is not None and server['Redfish']['Enabled']:
+                self.redfish_endpoint_settings_handler.print_redfish_endpoint_template(
+                    server['Serial'],
+                    'thermal',
+                    server['Thermal']
+                )
+
+            if server['Thermal'] is not None and server['UCSM']['Enabled']:
+                self.ucsm_endpoint_settings_handler.print_ucsm_endpoint_template(
+                    server['Serial'],
+                    'thermal',
+                    server['Thermal']
+                )
 
         if 'WorkflowsLast' in server:
             self.print_workflows(server['WorkflowsLast'][:workflow_count])

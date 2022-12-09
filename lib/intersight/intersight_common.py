@@ -7,14 +7,15 @@ from lib import info_helper
 
 
 class IntersightCommon():
-    def __init__(self, iaccount, iobject, get_filter=None, silent=False, verbose=False, debug=False):
-        self.log = log_helper.Log()
+    def __init__(self, iaccount, iobject, get_filter=None, silent=False, verbose=False, debug=False, log_id=None, cache_key=None):
+        self.log = log_helper.Log(log_id=log_id)
         self.iaccount = iaccount
-        self.isctl = isctl_helper.Isctl(iaccount)
+        self.isctl = isctl_helper.Isctl(iaccount, log_id=log_id)
         self.iobject = iobject
-        self.info_helper = info_helper.InfoHelper()
-        self.my_output = output_helper.OutputHelper()
+        self.info_helper = info_helper.InfoHelper(log_id=log_id)
+        self.my_output = output_helper.OutputHelper(log_id=log_id)
         self.cache = None
+        self.cache_key = cache_key
         if get_filter is None:
             self.get_filter = ''
         else:
@@ -29,6 +30,10 @@ class IntersightCommon():
         self.my_output.set_flags(self.flags['silent'], self.flags['verbose'], self.flags['debug'])
 
     def prepare_cache(self):
+        if self.cache_key is not None:
+            if self.log.is_cache(self.cache_key):
+                self.cache = self.log.get_cache(self.cache_key)
+
         if self.cache is None:
             self.cache = self.get_all()
 

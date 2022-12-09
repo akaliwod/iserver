@@ -1,26 +1,19 @@
-#!usr/bin/env python
-
-# Copyright (c) Cisco Systems Inc. 2022
-# Author Arkadiusz Kaliwoda <akaliwod@cisco.com>
-
 import datetime
 import os
+import time
 import json
 import shutil
-import traceback
 
 from lib import output_helper
 from lib import ssh
 
-RUN_ID = None
-
 
 class Log():
-    def __init__(self):
+    def __init__(self, log_id=None):
         self.logs_directory = '/tmp/iserver'
-
-        if RUN_ID is not None:
-            self.logs_directory = os.path.join(self.logs_directory, RUN_ID)
+        if log_id is not None:
+            self.logs_directory = os.path.join(self.logs_directory, log_id)
+        self.log_id = log_id
 
         self.command_filename = os.path.join(self.logs_directory, 'command')
         self.error_filename = os.path.join(self.logs_directory, 'iserver.error')
@@ -30,9 +23,11 @@ class Log():
         self.api_filename = os.path.join(self.logs_directory, 'api.debug')
         self.redfish_filename = os.path.join(self.logs_directory, 'redfish.debug')
         self.odata_filename = os.path.join(self.logs_directory, 'odata.debug')
+        self.ucsm_filename = os.path.join(self.logs_directory, 'ucsm.debug')
         self.ssh_filename = os.path.join(self.logs_directory, 'ssh.debug')
         self.devel_filename = os.path.join(self.logs_directory, 'devel.debug')
         self.lcm_report_filename = os.path.join(self.logs_directory, 'lcm.report')
+        self.cache_filename = os.path.join(self.logs_directory, 'cache')
 
         self.mapping = {}
         self.mapping['command'] = self.command_filename
@@ -43,41 +38,41 @@ class Log():
         self.mapping['api'] = self.api_filename
         self.mapping['odata'] = self.odata_filename
         self.mapping['redfish'] = self.redfish_filename
+        self.mapping['ucsm'] = self.ucsm_filename
         self.mapping['ssh'] = self.ssh_filename
 
-    def run_id(self, my_run_id):
-        global RUN_ID
-        RUN_ID = my_run_id
-
-    def initialize(self, max_dirs=1000):
+    def initialize(self, max_dirs=100):
         try:
-            if not os.path.isdir(self.logs_directory):
-                os.makedirs(self.logs_directory, exist_ok=True)
+            if self.log_id is not None:
+                if not os.path.isdir(self.logs_directory):
+                    os.makedirs(self.logs_directory, exist_ok=True)
 
-            my_dirs = []
-            for name in os.listdir(self.logs_directory):
-                directory = os.path.join(self.logs_directory, name)
-                if os.path.isdir(directory):
-                    my_dirs.append(
-                        dict(
-                            directory=directory,
-                            create_time=int(os.path.getmtime(directory))
+                logs_base_directory = os.path.dirname(self.logs_directory)
+                my_dirs = []
+                for name in os.listdir(logs_base_directory):
+                    directory = os.path.join(logs_base_directory, name)
+                    if os.path.isdir(directory):
+                        my_dirs.append(
+                            dict(
+                                directory=directory,
+                                create_time=int(os.path.getmtime(directory))
+                            )
                         )
-                    )
 
-            if len(my_dirs) > max_dirs:
-                my_dirs = sorted(my_dirs, key=lambda i: i['create_time'])
-                my_max = len(my_dirs) - max_dirs
-                for index in range(0, my_max):
-                    directory = my_dirs[index]['directory']
-                    if directory.startswith(self.logs_directory):
-                        shutil.rmtree(directory)
+                if len(my_dirs) > max_dirs:
+                    my_dirs = sorted(my_dirs, key=lambda i: i['create_time'])
+                    my_max = len(my_dirs) - max_dirs
+                    for index in range(0, my_max):
+                        directory = my_dirs[index]['directory']
+                        if directory.startswith(logs_base_directory):
+                            if directory != self.logs_directory:
+                                shutil.rmtree(directory)
 
         except BaseException:
             pass
 
     def clean(self):
-        if RUN_ID is not None:
+        if self.log_id is not None:
             shutil.rmtree(self.logs_directory)
 
     def analyze_isctl(self):
@@ -106,6 +101,49 @@ class Log():
 
         return result
 
+    def analyze_ucsm(self):
+        result = {}
+        result['read'] = False
+        result['success'] = 0
+        result['failed'] = 0
+        result['connect'] = 0
+        result['disconnect'] = 0
+        result['mo'] = 0
+        result['connect_time'] = 0
+        result['disconnect_time'] = 0
+        result['mo_time'] = 0
+        result['total_time'] = 0
+
+        content = self.get_file(self.ucsm_filename)
+        if content is None:
+            return result
+
+        result['read'] = True
+        for line in content.split('\n'):
+            if len(line) > 0:
+                (when, success, duration, command) = line.split('\t')
+                if success == 'True':
+                    result['success'] = result['success'] + 1
+                else:
+                    result['failed'] = result['failed'] + 1
+
+                result['total_time'] = result['total_time'] + int(duration)
+
+                if 'connect ' in command:
+                    result['connect'] = result['connect'] + 1
+                    result['connect_time'] = result['connect_time'] + int(duration)
+                    continue
+
+                if 'disconnect ' in command:
+                    result['disconnect'] = result['disconnect'] + 1
+                    result['disconnect_time'] = result['disconnect_time'] + int(duration)
+                    continue
+
+                result['mo'] = result['mo'] + 1
+                result['mo_time'] = result['mo_time'] + int(duration)
+
+        return result
+
     def analyze_redfish(self):
         result = {}
         result['read'] = False
@@ -126,25 +164,29 @@ class Log():
         result['read'] = True
         for line in content.split('\n'):
             if len(line) > 0:
+                if len(line.split('\t')) != 4:
+                    continue
+
                 (when, success, duration, command) = line.split('\t')
                 if success == 'True':
                     result['success'] = result['success'] + 1
                 else:
                     result['failed'] = result['failed'] + 1
 
-                if command == 'connect':
+                result['total_time'] = result['total_time'] + int(duration)
+
+                if 'connect ' in command:
                     result['connect'] = result['connect'] + 1
                     result['connect_time'] = result['connect_time'] + int(duration)
+                    continue
 
-                if command == 'disconnect':
+                if 'disconnect ' in command:
                     result['disconnect'] = result['disconnect'] + 1
                     result['disconnect_time'] = result['disconnect_time'] + int(duration)
+                    continue
 
-                if command not in ['connect', 'disconnect']:
-                    result['path'] = result['path'] + 1
-                    result['path_time'] = result['path_time'] + int(duration)
-
-                result['total_time'] = result['total_time'] + int(duration)
+                result['path'] = result['path'] + 1
+                result['path_time'] = result['path_time'] + int(duration)
 
         return result
 
@@ -185,6 +227,7 @@ class Log():
         result['duration'] = duration
         result['isctl'] = self.analyze_isctl()
         result['redfish'] = self.analyze_redfish()
+        result['ucsm'] = self.analyze_ucsm()
         result['ssh'] = self.analyze_ssh()
         result['error'] = self.analyze_log(self.error_filename)
         result['info'] = self.analyze_log(self.info_filename)
@@ -203,7 +246,7 @@ class Log():
 
     def get_logs(self, files=None):
         if files is None:
-            files = ['debug', 'info', 'error', 'isctl', 'ssh', 'redfish']
+            files = ['debug', 'info', 'error', 'isctl', 'ssh', 'redfish', 'ucsm']
 
         content = {}
         for filename in files:
@@ -212,13 +255,178 @@ class Log():
 
         return content
 
+    def is_cache(self, key):
+        filename = '%s.%s' % (
+            self.cache_filename,
+            key
+        )
+        return os.path.isfile(filename)
+
+    def get_cache(self, key):
+        try:
+            filename = '%s.%s' % (
+                self.cache_filename,
+                key
+            )
+            if not os.path.isfile(filename):
+                return None
+
+            content = json.loads(
+                self.get_file(
+                    filename
+                )
+            )
+
+        except BaseException:
+            return None
+
+        return content
+
+    def set_cache(self, key, cache):
+        try:
+            filename = '%s.%s' % (
+                self.cache_filename,
+                key
+            )
+            success = self.safe_write(
+                filename,
+                json.dumps(
+                    cache
+                )
+            )
+
+        except BaseException:
+            return False
+
+        return success
+
+    def wait_for_no_file(self, filename, max_wait_ms=1000, gap=0.1):
+        try:
+            start = int(time.time() * 1000)
+            while True:
+                if not os.path.isfile(filename):
+                    return True
+                time.sleep(0.1)
+                if int(time.time() * 1000) - start > max_wait_ms:
+                    return False
+        except BaseException:
+            return False
+
+    def safe_write(self, filename, content, force=True):
+        success = True
+        try:
+            lock = '%s.lock' % (filename)
+            if not self.wait_for_no_file(lock):
+                if not force:
+                    return False
+
+            loop = 0
+            while True:
+                try:
+                    with open(lock, 'w', encoding='utf-8') as file_handler:
+                        file_handler.write('lock')
+                    file_handler.close()
+
+                    with open(filename, 'w', encoding='utf-8') as file_handler:
+                        file_handler.write(content)
+
+                    if os.path.isfile(lock):
+                        os.remove(lock)
+
+                    break
+
+                except BaseException:
+                    if os.path.isfile(lock):
+                        os.remove(lock)
+
+                time.sleep(0.01)
+                loop = loop + 1
+                if loop > 3:
+                    success = False
+                    break
+
+            if os.path.isfile(lock):
+                os.remove(lock)
+
+        except BaseException:
+            return False
+
+        return success
+
+    def safe_append(self, filename, content, force=True):
+        success = True
+        try:
+            lock = '%s.lock' % (filename)
+            if not self.wait_for_no_file(lock):
+                if not force:
+                    return False
+
+            loop = 0
+            while True:
+                try:
+                    with open(lock, 'w', encoding='utf-8') as file_handler:
+                        file_handler.write('lock')
+                    file_handler.close()
+
+                    with open(filename, 'a', encoding='utf-8') as file_handler:
+                        file_handler.write(content)
+
+                    if os.path.isfile(lock):
+                        os.remove(lock)
+
+                    break
+
+                except BaseException:
+                    if os.path.isfile(lock):
+                        os.remove(lock)
+
+                time.sleep(0.01)
+                loop = loop + 1
+                if loop > 3:
+                    success = False
+                    break
+
+            if os.path.isfile(lock):
+                os.remove(lock)
+
+        except BaseException:
+            return False
+
+        return success
+
     def ssh(self, ip_address, cmd, success, duration):
         try:
             current_time = datetime.datetime.now()
             msg = "%s\t%s\t%s\t%s\t%s\n" % (
                 current_time, success, duration, ip_address, cmd)
-            with open(self.ssh_filename, 'a', encoding='utf-8') as file_handler:
-                file_handler.write(msg)
+
+            success = self.safe_append(
+                self.ssh_filename,
+                msg
+            )
+            if not success:
+                print('SSH log failed...')
+
+        except BaseException:
+            pass
+
+    def ucsm(self, command, success, duration):
+        try:
+            current_time = datetime.datetime.now()
+
+            msg = "%s\t%s\t%s\t%s\n" % (
+                current_time,
+                success,
+                duration,
+                command
+            )
+
+            success = self.safe_append(
+                self.ucsm_filename,
+                msg
+            )
+            if not success:
+                print('Ucsm log failed...')
 
         except BaseException:
             pass
@@ -234,8 +442,12 @@ class Log():
                 command
             )
 
-            with open(self.redfish_filename, 'a', encoding='utf-8') as file_handler:
-                file_handler.write(msg)
+            success = self.safe_append(
+                self.redfish_filename,
+                msg
+            )
+            if not success:
+                print('Redfish log failed...')
 
         except BaseException:
             pass
@@ -250,8 +462,13 @@ class Log():
         try:
             apis = self.get_api()
             apis[command] = content
-            with open(self.api_filename, 'w', encoding='utf-8') as file_handler:
-                file_handler.write(json.dumps(apis, indent=4))
+
+            success = self.safe_write(
+                self.api_filename,
+                json.dumps(apis, indent=4)
+            )
+            if not success:
+                print('Api log failed...')
 
         except BaseException:
             pass
@@ -266,8 +483,13 @@ class Log():
         try:
             odatas = self.get_odata()
             odatas[path] = content
-            with open(self.odata_filename, 'w', encoding='utf-8') as file_handler:
-                file_handler.write(json.dumps(odatas, indent=4))
+
+            success = self.safe_write(
+                self.odata_filename,
+                json.dumps(odatas, indent=4)
+            )
+            if not success:
+                print('Odata log failed...')
 
         except BaseException:
             pass
@@ -288,8 +510,12 @@ class Log():
                 command
             )
 
-            with open(self.isctl_filename, 'a', encoding='utf-8') as file_handler:
-                file_handler.write(msg)
+            success = self.safe_append(
+                self.isctl_filename,
+                msg
+            )
+            if not success:
+                print('Isctl log failed...')
 
         except BaseException:
             pass
@@ -299,8 +525,13 @@ class Log():
             current_time = datetime.datetime.now()
             msg = "[%s]\t[%s]\t%s\n" % (
                 current_time, location, message)
-            with open(self.error_filename, 'a', encoding='utf-8') as file_handler:
-                file_handler.write(msg)
+
+            success = self.safe_append(
+                self.error_filename,
+                msg
+            )
+            if not success:
+                print('Error log failed...')
 
             self.info(location, message)
 
@@ -312,8 +543,13 @@ class Log():
             current_time = datetime.datetime.now()
             msg = "[%s]\t[%s]\t%s\n" % (
                 current_time, location, message)
-            with open(self.info_filename, 'a', encoding='utf-8') as file_handler:
-                file_handler.write(msg)
+
+            success = self.safe_append(
+                self.info_filename,
+                msg
+            )
+            if not success:
+                print('Info log failed...')
 
             self.debug(location, message)
 
@@ -325,8 +561,13 @@ class Log():
             current_time = datetime.datetime.now()
             msg = "[%s]\t[%s]\t%s\n" % (
                 current_time, location, message)
-            with open(self.debug_filename, 'a', encoding='utf-8') as file_handler:
-                file_handler.write(msg)
+
+            success = self.safe_append(
+                self.debug_filename,
+                msg
+            )
+            if not success:
+                print('Debug log failed...')
 
         except BaseException:
             pass
@@ -390,16 +631,19 @@ class Log():
 
         my_dirs = sorted(my_dirs, key=lambda i: i['create_time'], reverse=True)
 
-        my_output = output_helper.OutputHelper()
+        my_output = output_helper.OutputHelper(log_id=self.log_id)
         my_output.my_table(
             my_dirs,
             order=['name', 'command', 'directory', 'time'],
             headers=['Name', 'Command', 'Directory', 'Time']
         )
 
-    def get_command_directory(self, search_command):
+    def get_command_directory(self, search_command, debug=False):
         my_dirs = []
-        logs_directory = os.path.dirname(self.logs_directory)
+        logs_directory = self.logs_directory
+        if self.log_id is not None:
+            logs_directory = os.path.dirname(self.logs_directory)
+
         for name in os.listdir(logs_directory):
             directory = os.path.join(logs_directory, name)
             if os.path.isdir(directory):
@@ -414,6 +658,9 @@ class Log():
                 if command is not None:
                     directory_info['command'] = command
                     my_dirs.append(directory_info)
+
+                if debug:
+                    print(json.dumps(directory_info, indent=4))
 
         my_dirs = sorted(my_dirs, key=lambda i: i['create_time'], reverse=True)
 

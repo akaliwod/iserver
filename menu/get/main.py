@@ -1,8 +1,11 @@
 import click
 
 from menu.get.redfish.main import get_redfish_menu
+from menu.get.ucsm.main import get_ucsm_menu
 from menu.get.server import get_server_command
 from menu.get.servers import get_servers_command
+from menu.get.power import get_power_command
+from menu.get.thermal import get_thermal_command
 from menu.get.chassis import get_chassis_command
 from menu.get.chassiz import get_chassiz_command
 from menu.get.summary import get_summary_command
@@ -26,8 +29,11 @@ def get_menu(ctx):
 
 
 get_menu.add_command(get_redfish_menu)
+get_menu.add_command(get_ucsm_menu)
 get_menu.add_command(get_server_command)
 get_menu.add_command(get_servers_command)
+get_menu.add_command(get_power_command)
+get_menu.add_command(get_thermal_command)
 get_menu.add_command(get_chassis_command)
 get_menu.add_command(get_chassiz_command)
 get_menu.add_command(get_summary_command)

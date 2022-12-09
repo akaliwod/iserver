@@ -67,7 +67,7 @@ def create_scu_command(ctx, iaccount, filename, organization_name, name, version
             item['Organization'] = organization_name
             scus.append(item)
 
-        scu_handler = scu.SoftwareConfigurationUtility(iaccount)
+        scu_handler = scu.SoftwareConfigurationUtility(iaccount, log_id=ctx.run_id)
         for scu_definition in scus:
             success, reason = scu_handler.validate_add(scu_definition)
             if not success:

@@ -51,7 +51,7 @@ def set_scu_command(ctx, filename, iaccount, moid, name, version, link, devel):
             item['Type'] = 'url'
             scus.append(item)
 
-        scu_handler = scu.SoftwareConfigurationUtility(iaccount)
+        scu_handler = scu.SoftwareConfigurationUtility(iaccount, log_id=ctx.run_id)
         success, reason = scu_handler.validate_set(scus)
         if not success:
             ctx.my_output.error('Input parameters validation failed')

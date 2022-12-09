@@ -97,9 +97,10 @@ class EquipmentFanModule(IntersightCommon):
         "Vid": ""
     }
     """
-    def __init__(self, iaccount, get_filter=None):
+    def __init__(self, iaccount, get_filter=None, log_id=None):
         self.iobject = 'equipment fanmodule'
-        IntersightCommon.__init__(self, iaccount, self.iobject, get_filter=get_filter)
+        self.cache_key = 'fanmodule'
+        IntersightCommon.__init__(self, iaccount, self.iobject, get_filter=get_filter, log_id=log_id, cache_key=self.cache_key)
 
     def is_fan_on(self, item):
         if item is None:

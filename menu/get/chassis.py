@@ -28,7 +28,7 @@ class ErrorExit(Exception):
 @click.option("--iaccount", is_flag=False, show_default=True, cls=defaults.default_from_context('iaccount'), callback=validations.validate_iaccount, type=click.STRING, help="Intersight account")
 @click.option("--name", "name_filter", default='', help="Name filter")
 @click.option("--serial", "serial_filter", default='', help="Serial filter")
-@click.option("--model", "model_filter", default='ucsx', help="Model filter")
+@click.option("--model", "model_filter", default='', help="Model filter")
 @click.option("--module", "-m", "ifm_filter", default=None, callback=validations.validate_chassis_ifm_filter, help="IFM output control")
 @click.option("--port", "-p", "port_filter", default=None, multiple=True, callback=validations.validate_chassis_port_filter, help="Port output control")
 @click.option("--node", "node_filter", is_flag=True, default=False, callback=validations.validate_chassis_node_filter, help="Node output control")
@@ -61,7 +61,7 @@ def get_chassis_command(
             ctx.busy = True
             threading.Thread(target=progress.spinner_task, args=(ctx,)).start()
 
-        chassiz_info_handler = chassiz_info.ChassizInfo(iaccount)
+        chassiz_info_handler = chassiz_info.ChassizInfo(iaccount, log_id=ctx.run_id)
 
         match_rules = {}
         match_rules['name'] = name_filter
@@ -98,7 +98,7 @@ def get_chassis_command(
         settings['node'] = node_filter
         settings = common.chassis_settings_fixup(settings)
 
-        chassis_info_handler = chassis_info.ChassisInfo(iaccount, settings)
+        chassis_info_handler = chassis_info.ChassisInfo(iaccount, settings, log_id=ctx.run_id)
         chassis = chassis_info_handler.get(
             chassis=chassis_list[0],
             extra_attributes_enabled=True

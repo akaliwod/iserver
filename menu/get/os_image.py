@@ -1,7 +1,7 @@
 import json
 import sys
-import yaml
 import traceback
+import yaml
 import click
 
 from lib.intersight import os_image
@@ -31,7 +31,7 @@ def get_os_image_command(ctx, iaccount, verify, output, devel):
     ctx.developer = devel
 
     try:
-        image_handler = os_image.OsImage(iaccount)
+        image_handler = os_image.OsImage(iaccount, log_id=ctx.run_id)
         images = image_handler.get_all()
 
         if output == 'json':

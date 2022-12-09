@@ -3,7 +3,6 @@ from lib.intersight.intersight_common import IntersightCommon
 
 class PciDevice(IntersightCommon):
     """Class for intersight pci device objects
-
     {
         "AccountMoid": "5be4b2ce67626c6d661ca38d",
         "Ancestors": [
@@ -82,9 +81,10 @@ class PciDevice(IntersightCommon):
         "Vendor": "0x1137"
     }
     """
-    def __init__(self, iaccount):
+    def __init__(self, iaccount, log_id=None):
         self.iobject = 'pci device'
-        IntersightCommon.__init__(self, iaccount, self.iobject)
+        self.cache_key = 'pci'
+        IntersightCommon.__init__(self, iaccount, self.iobject, log_id=log_id, cache_key=self.cache_key)
 
     def get_pci_model(self, moid, cache=True):
         if cache:

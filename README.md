@@ -4,7 +4,8 @@ iserver is command line tool providing monitoring and state control of Intersigh
 
 ## Key Features
 
-iserver key features mirror Intersight capabilities for server state and management tasks
+The key iserver features leverage Intersight API
+
 - [Servers inventory](./doc/features/ServersInventory.md)
 - [Server details](./doc/features/ServerDetails.md)
 - [Power control](./doc/features/PowerControl.md)
@@ -13,12 +14,12 @@ iserver key features mirror Intersight capabilities for server state and managem
 - [Workflows](./doc/features/Workflows.md)
 - [Workflow details](./doc/features/Workflow.md)
 
-iserver supports [Redfish](./doc/redfish/README.md) as a standalone feature as well as to the Intersight data model whenever required.
+Additionally iserver supports [Redfish](./doc/redfish/README.md) and [UCSM](./doc/ucsm/README.md) API with the special use case of [power and thermal monitoring](./doc/green/README.md).
 
 ## Installation
 
 - iserver binary is compiled for Windows, Linux and MAC
-- download the latest release from the [Releases](https://github.com/akaliwod/iserver/releases/latest) page.
+- download the latest release from the [Releases](https://wwwin-github.cisco.com/emear-telcocloud/iserver/releases/latest) page.
 - move binary somewhere that is on your path (e.g. /usr/local/bin)
 
 If binary is not available or you prefer using source code, clone the repository and run iserver using Python3 with [required](requirements) pip3 packages.

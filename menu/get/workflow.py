@@ -6,7 +6,6 @@ import click
 
 from lib.intersight import workflow_info
 
-from menu import common
 from menu import defaults
 from menu import validations
 
@@ -42,7 +41,7 @@ def get_workflow_command(
         if output == 'default':
             ctx.my_output.default('Get server workflow info...')
 
-        workflow_info_handler = workflow_info.WorkflowInfo(iaccount)
+        workflow_info_handler = workflow_info.WorkflowInfo(iaccount, log_id=ctx.run_id)
         workflow_info_object = workflow_info_handler.get_workflow_info(workflow_id)
         if workflow_info_object is None:
             ctx.my_output.error('Workflow information collection failed')

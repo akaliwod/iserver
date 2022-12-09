@@ -93,6 +93,6 @@ class StoragePhysicalDiskUsage(IntersightCommon):
         "VirtualDrive": "0"
     }
     """
-    def __init__(self, iaccount, get_filter=None):
+    def __init__(self, iaccount, get_filter=None, log_id=None):
         self.iobject = 'storage physicaldiskusage'
-        IntersightCommon.__init__(self, iaccount, self.iobject, get_filter=get_filter)
+        IntersightCommon.__init__(self, iaccount, self.iobject, get_filter=get_filter, log_id=log_id)

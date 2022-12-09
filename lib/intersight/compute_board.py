@@ -139,6 +139,6 @@ class ComputeBoard(IntersightCommon):
         "Vendor": "Cisco Systems Inc"
     }
     """
-    def __init__(self, iaccount):
+    def __init__(self, iaccount, log_id=None):
         self.iobject = 'compute board'
-        IntersightCommon.__init__(self, iaccount, self.iobject)
+        IntersightCommon.__init__(self, iaccount, self.iobject, log_id=log_id)

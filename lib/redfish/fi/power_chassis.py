@@ -11,13 +11,13 @@ class RedfishEndpointFabricInterconnectTemplatePowerChassis():
             return False
 
         chassis_power_on = False
-        for power_supply in power_properties['PowerSupply']:
+        for power_supply in power_properties['Data']['PowerSupply']:
             chassis_power_on = chassis_power_on or power_supply['On']
 
         return chassis_power_on
 
     def get_template_power_chassis_properties(self, inventory_type=None, inventory_id=None):
-        uri = 'Chassis/1/Power'
+        uri = '%s/Power' % (self.get_chassis_uri())
         data = self.get_properties(
             uri,
             inventory_type=inventory_type,
@@ -27,10 +27,11 @@ class RedfishEndpointFabricInterconnectTemplatePowerChassis():
             return None
 
         properties = {}
-        properties['PowerControl'] = {}
-        properties['PowerControl']['CurrentConsumedWatts'] = 0
-        properties['Blade'] = []
-        properties['PowerSupply'] = []
+        properties['Data'] = {}
+        properties['Data']['PowerControl'] = {}
+        properties['Data']['PowerControl']['CurrentConsumedWatts'] = 0
+        properties['Data']['Blade'] = []
+        properties['Data']['PowerSupply'] = []
 
         for item in data['PowerControl']:
             if item['MemberId'] == 'Chassis':
@@ -60,7 +61,7 @@ class RedfishEndpointFabricInterconnectTemplatePowerChassis():
                 # }
                 for key in item['Oem']['Cisco']:
                     if key != '@odata.type':
-                        properties['PowerControl'][key] = item['Oem']['Cisco'][key]
+                        properties['Data']['PowerControl'][key] = item['Oem']['Cisco'][key]
 
             if item['MemberId'].startswith('Blade'):
                 # {
@@ -106,9 +107,9 @@ class RedfishEndpointFabricInterconnectTemplatePowerChassis():
                     blade_info[key] = item['Oem']['Cisco']['PowerMetrics'][key]
                 for key in item['Oem']['Cisco']['PowerCharacteristics']:
                     blade_info[key] = item['Oem']['Cisco']['PowerCharacteristics'][key]
-                properties['Blade'].append(blade_info)
+                properties['Data']['Blade'].append(blade_info)
 
-                properties['PowerControl']['CurrentConsumedWatts'] = properties['PowerControl']['CurrentConsumedWatts'] + item['Oem']['Cisco']['PowerMetrics']['CurrentConsumedWatts']
+                properties['Data']['PowerControl']['CurrentConsumedWatts'] = properties['Data']['PowerControl']['CurrentConsumedWatts'] + item['Oem']['Cisco']['PowerMetrics']['CurrentConsumedWatts']
 
         for item in data['PowerSupplies']:
             power_supply_info = {}
@@ -126,7 +127,11 @@ class RedfishEndpointFabricInterconnectTemplatePowerChassis():
                 power_supply_info['Model'] = ''
                 power_supply_info['SerialNumber'] = ''
 
-            properties['PowerSupply'].append(power_supply_info)
+            properties['Data']['PowerSupply'].append(power_supply_info)
+
+        properties['Summary'] = {}
+        properties['Summary']['Source'] = 'Redfish'
+        properties['Summary']['PowerNow'] = properties['Data']['PowerControl']['CurrentConsumedWatts']
 
         return properties
 
@@ -139,7 +144,7 @@ class RedfishEndpointFabricInterconnectTemplatePowerChassis():
         ]
 
         self.my_output.dictionary(
-            properties['PowerControl'],
+            properties['Data']['PowerControl'],
             title='Power Control',
             underline=True,
             prefix="- ",
@@ -162,7 +167,7 @@ class RedfishEndpointFabricInterconnectTemplatePowerChassis():
         ]
 
         headers = [
-            'Name',
+            'Blade Name',
             'State',
             'Health',
             'AverageConsumedWatts',
@@ -174,7 +179,7 @@ class RedfishEndpointFabricInterconnectTemplatePowerChassis():
         ]
 
         self.my_output.my_table(
-            properties['Blade'],
+            properties['Data']['Blade'],
             order=order,
             headers=headers,
             underline=True,
@@ -191,7 +196,7 @@ class RedfishEndpointFabricInterconnectTemplatePowerChassis():
         ]
 
         headers = [
-            'Name',
+            'PSU Name',
             'State',
             'Manufacturer',
             'Model',
@@ -199,7 +204,7 @@ class RedfishEndpointFabricInterconnectTemplatePowerChassis():
         ]
 
         self.my_output.my_table(
-            properties['PowerSupply'],
+            properties['Data']['PowerSupply'],
             order=order,
             headers=headers,
             underline=True,

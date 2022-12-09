@@ -114,9 +114,9 @@ class MemoryUnit(IntersightCommon):
     "Width": "64"
     }
     """
-    def __init__(self, iaccount):
+    def __init__(self, iaccount, log_id=None):
         self.iobject = 'memory unit'
-        IntersightCommon.__init__(self, iaccount, self.iobject)
+        IntersightCommon.__init__(self, iaccount, self.iobject, log_id=log_id)
 
     def get_memory_units_info(self):
         memory_units = self.get_all()
@@ -128,6 +128,23 @@ class MemoryUnit(IntersightCommon):
             memory_unit_info = {}
             for key in ['ArrayId', 'Bank', 'Capacity', 'Clock', 'Dn', 'FormFactor', 'Latency', 'Location', 'MemoryId', 'Model', 'OperState', 'Presence', 'Serial', 'Speed', 'Type', 'Vendor']:
                 memory_unit_info[key] = memory_unit[key]
+
+            memory_unit_info['MemoryArrayId'] = None
+            memory_unit_info['ChassisId'] = None
+            memory_unit_info['ServerId'] = None
+            memory_unit_info['BoardId'] = None
+            for ancestor in memory_unit['Ancestors']:
+                if ancestor['ObjectType'] == 'memory.Array':
+                    memory_unit_info['MemoryArrayId'] = ancestor['Moid']
+                if ancestor['ObjectType'] == 'compute.Board':
+                    memory_unit_info['BoardId'] = ancestor['Moid']
+                if ancestor['ObjectType'] == 'equipment.Chassis':
+                    memory_unit_info['ChassisId'] = ancestor['Moid']
+                if ancestor['ObjectType'] == 'compute.Blade':
+                    memory_unit_info['ServerId'] = ancestor['Moid']
+                if ancestor['ObjectType'] == 'compute.RackUnit':
+                    memory_unit_info['ServerId'] = ancestor['Moid']
+
             memory_units_info.append(memory_unit_info)
 
         memory_units_info = sorted(memory_units_info, key=lambda i: int(i['MemoryId']))

@@ -73,7 +73,7 @@ def create_os_image_command(ctx, iaccount, filename, organization_name, name, ve
             item['Organization'] = organization_name
             images.append(item)
 
-        image_handler = os_image.OsImage(iaccount)
+        image_handler = os_image.OsImage(iaccount, log_id=ctx.run_id)
         for image_definition in images:
             success, reason = image_handler.validate_add(image_definition)
             if not success:

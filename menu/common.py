@@ -40,24 +40,49 @@ def get_no_match_definition():
     return match_rules
 
 
-def get_selected_servers(ctx, iaccount, group, serial_filter, name_filter, ip_filter, confirm, workflow=86400):
+def get_servers(ctx, iaccount, locator=True, server_setting_id=True, workflow=0, registration=True):
+    settings = {}
+    settings['rack'] = True
+    settings['blade'] = True
+    settings['locator'] = locator
+    settings['server_setting_id'] = server_setting_id
+    settings['workflow'] = workflow
+    settings['registration'] = registration
+
+    for key in ['id', 'cpu', 'memory', 'fw', 'pci', 'fan', 'psu', 'group', 'storage', 'power', 'thermal']:
+        settings[key] = False
+
+    match_rules = get_no_match_definition()
+
+    computes_handler = computes_info.ComputesInfo(iaccount, settings, log_id=ctx.run_id)
+    servers = computes_handler.get(match_rules=match_rules)
+    servers = sorted(servers, key=lambda i: i['Name'])
+    ctx.busy = False
+
+    return servers
+
+
+def get_selected_servers(ctx, iaccount, group, serial_filter, name_filter, ip_filter, model_filter='', confirm=True, workflow=86400, registration=True, server_setting_id=True, locator=True, show_servers=True, allow_all=False):
     if len(group) == 0 and len(serial_filter) == 0 and name_filter == '' and len(ip_filter) == 0:
-        ctx.my_output.error('Select servers')
-        return None
+        if not allow_all:
+            ctx.busy = False
+            ctx.my_output.error('Select servers')
+            return None
 
     settings = {}
     settings['rack'] = True
     settings['blade'] = True
-    settings['locator'] = True
-    settings['server_setting_id'] = True
+    settings['locator'] = locator
+    settings['server_setting_id'] = server_setting_id
     settings['workflow'] = workflow
+    settings['registration'] = registration
 
-    for key in ['id', 'cpu', 'memory', 'fw', 'pci', 'fan', 'psu', 'group', 'storage']:
+    for key in ['id', 'cpu', 'memory', 'fw', 'pci', 'fan', 'psu', 'group', 'storage', 'power', 'thermal']:
         settings[key] = False
 
     match_rules = {}
     match_rules['name'] = name_filter
-    match_rules['model'] = ''
+    match_rules['model'] = model_filter
     match_rules['ip'] = ip_filter
     match_rules['serials'] = group + serial_filter
     match_rules['locator'] = False
@@ -72,35 +97,40 @@ def get_selected_servers(ctx, iaccount, group, serial_filter, name_filter, ip_fi
     match_rules['fan'] = False
     match_rules['psu'] = False
 
-    computes_handler = computes_info.ComputesInfo(iaccount, settings)
+    computes_handler = computes_info.ComputesInfo(iaccount, settings, log_id=ctx.run_id)
     servers = computes_handler.get(match_rules=match_rules)
+    servers = sorted(servers, key=lambda i: i['Name'])
+    ctx.busy = False
+
     if servers is None or len(servers) == 0:
         ctx.my_output.error('No server found')
         return None
 
-    computes_handler.print(servers, legend_on=False)
-    if confirm:
-        if not get_confirmation():
-            return None
-    else:
-        ctx.my_output.default('Auto confirmation: Y')
+    if show_servers:
+        computes_handler.print(servers, legend_on=False)
+        if confirm:
+            if not get_confirmation():
+                return None
+        else:
+            ctx.my_output.default('Auto confirmation: Y')
 
     return servers
 
 
-def get_server_selection_settings(details=False, workflow=None, action=False):
+def get_server_selection_settings(details=False, workflow=None, action=False, registration=False):
     settings = {}
     settings['rack'] = True
     settings['blade'] = True
     settings['server_setting_id'] = action
     settings['workflow'] = workflow
-    for key in ['id', 'cpu', 'memory', 'fw', 'pci', 'fan', 'psu', 'group', 'storage', 'locator']:
+    settings['registration'] = registration
+    for key in ['id', 'cpu', 'memory', 'fw', 'pci', 'fan', 'psu', 'group', 'storage', 'locator', 'power', 'thermal']:
         settings[key] = details
 
     return settings
 
 
-def get_selected_server(ctx, iaccount, name_filter, ip_filter, serial_filter, details=False, workflow=None, action=False):
+def get_selected_server(ctx, iaccount, name_filter, ip_filter, serial_filter, details=False, workflow=None, action=False, include_object=False):
     if name_filter == '' and ip_filter == '' and serial_filter == '':
         ctx.my_output.error('Select server by name, ip or serial')
         return None
@@ -122,12 +152,11 @@ def get_selected_server(ctx, iaccount, name_filter, ip_filter, serial_filter, de
     if len(serial_filter) > 0:
         match_rules['serials'] = [serial_filter]
 
-    base_search = True
-    if details or workflow or action:
-        base_search = False
-
-    computes_handler = computes_info.ComputesInfo(iaccount, settings)
-    servers = computes_handler.get(match_rules=match_rules, base_search=base_search)
+    computes_handler = computes_info.ComputesInfo(iaccount, settings, log_id=ctx.run_id)
+    servers = computes_handler.get(
+        match_rules=match_rules,
+        include_object=include_object
+    )
     if len(servers) == 0:
         ctx.busy = False
         ctx.my_output.error('Server not found')
@@ -142,16 +171,16 @@ def get_selected_server(ctx, iaccount, name_filter, ip_filter, serial_filter, de
     return servers[0]
 
 
-def print_servers(iaccount, servers):
+def print_servers(ctx, iaccount, servers):
     settings = {}
     settings['rack'] = True
     settings['blade'] = True
     settings['locator'] = False
 
-    for key in ['id', 'cpu', 'memory', 'fw', 'pci', 'fan', 'psu', 'group', 'storage', 'server_setting_id']:
+    for key in ['id', 'cpu', 'memory', 'fw', 'pci', 'fan', 'psu', 'group', 'storage', 'power', 'thermal', 'server_setting_id']:
         settings[key] = False
 
-    computes_handler = computes_info.ComputesInfo(iaccount, settings)
+    computes_handler = computes_info.ComputesInfo(iaccount, settings, log_id=ctx.run_id)
     computes_handler.print(servers, legend_on=False)
 
 

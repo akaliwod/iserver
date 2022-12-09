@@ -38,7 +38,8 @@ class RedfishEndpointUcsRackTemplatePower():
             return None
 
         properties = {}
-        properties['PowerControl'] = {}
+        properties['Data'] = {}
+        properties['Data']['PowerControl'] = {}
 
         # {
         #     "PhysicalContext": "PowerSupply",
@@ -55,14 +56,18 @@ class RedfishEndpointUcsRackTemplatePower():
         #     "@odata.id": "/redfish/v1/Chassis/1/Power#/PowerControl/1"
         # }
         power_control_data = data['PowerControl'][0]
-        properties['PowerControl']['PowerConsumedWatts'] = power_control_data['PowerConsumedWatts']
-        properties['PowerControl']['LimitException'] = 'N/A'
+        properties['Data']['PowerControl']['PowerConsumedWatts'] = power_control_data['PowerConsumedWatts']
+
+        properties['Data']['PowerControl']['LimitException'] = 'N/A'
         if 'PowerLimit' in power_control_data:
             if 'LimitException' in power_control_data['PowerLimit']:
-                properties['PowerControl']['LimitException'] = power_control_data['PowerLimit']['LimitException']
-        if 'PowerMetrics' in power_control_data:
-            for key in power_control_data['PowerMetrics']:
-                properties['PowerControl'][key] = power_control_data['PowerMetrics'][key]
+                properties['Data']['PowerControl']['LimitException'] = power_control_data['PowerLimit']['LimitException']
+
+        for key in ['MinConsumedWatts', 'AverageConsumedWatts', 'MaxConsumedWatts']:
+            properties['Data']['PowerControl'][key] = 0
+            if 'PowerMetrics' in power_control_data:
+                for key in power_control_data['PowerMetrics']:
+                    properties['Data']['PowerControl'][key] = power_control_data['PowerMetrics'][key]
 
         # {
         #     "PhysicalContext": "PowerSupply",
@@ -77,7 +82,7 @@ class RedfishEndpointUcsRackTemplatePower():
         #     "Name": "PSU1_VOUT",
         #     "ReadingVolts": 12.2
         # },
-        properties['Voltage'] = []
+        properties['Data']['Voltage'] = []
         for voltage in data['Voltages']:
             voltage_info = {}
 
@@ -101,7 +106,7 @@ class RedfishEndpointUcsRackTemplatePower():
                 if key in voltage['Status']:
                     voltage_info[key] = voltage['Status'][key]
 
-            properties['Voltage'].append(voltage_info)
+            properties['Data']['Voltage'].append(voltage_info)
 
         # {
         #     "SerialNumber": "LIT241244RQ",
@@ -133,7 +138,7 @@ class RedfishEndpointUcsRackTemplatePower():
         #         "Health": "OK"
         #     }
         # },
-        properties['PowerSupply'] = []
+        properties['Data']['PowerSupply'] = []
         for power_supply in data['PowerSupplies']:
             power_supply_info = {}
             power_supply_info['Name'] = power_supply['Name']
@@ -169,7 +174,14 @@ class RedfishEndpointUcsRackTemplatePower():
                     if key != 'InputType':
                         power_supply_info[key] = input_range[key]
 
-            properties['PowerSupply'].append(power_supply_info)
+            properties['Data']['PowerSupply'].append(power_supply_info)
+
+        properties['Summary'] = {}
+        properties['Summary']['Source'] = 'Redfish'
+        properties['Summary']['PowerNow'] = properties['Data']['PowerControl']['PowerConsumedWatts']
+        properties['Summary']['PowerMin'] = properties['Data']['PowerControl']['MinConsumedWatts']
+        properties['Summary']['PowerAvg'] = properties['Data']['PowerControl']['AverageConsumedWatts']
+        properties['Summary']['PowerMax'] = properties['Data']['PowerControl']['MaxConsumedWatts']
 
         return properties
 
@@ -191,7 +203,7 @@ class RedfishEndpointUcsRackTemplatePower():
         ]
 
         self.my_output.dictionary(
-            properties['PowerControl'],
+            properties['Data']['PowerControl'],
             title='Power Consumption (Watt)',
             underline=True,
             prefix="- ",
@@ -210,7 +222,7 @@ class RedfishEndpointUcsRackTemplatePower():
         ]
 
         headers = [
-            'Name',
+            'Sensor Name',
             'State',
             'Health',
             'Volts',
@@ -218,7 +230,7 @@ class RedfishEndpointUcsRackTemplatePower():
         ]
 
         self.my_output.my_table(
-            properties['Voltage'],
+            properties['Data']['Voltage'],
             order=order,
             headers=headers,
             underline=True,
@@ -241,7 +253,7 @@ class RedfishEndpointUcsRackTemplatePower():
         ]
 
         headers = [
-            'Name',
+            'PSU Name',
             'State',
             'Health',
             'Serial',
@@ -255,7 +267,7 @@ class RedfishEndpointUcsRackTemplatePower():
         ]
 
         self.my_output.my_table(
-            properties['PowerSupply'],
+            properties['Data']['PowerSupply'],
             order=order,
             headers=headers,
             underline=True,

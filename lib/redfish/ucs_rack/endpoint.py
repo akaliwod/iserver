@@ -3,7 +3,7 @@ from lib.redfish.ucs_rack.template import RedfishEndpointUcsRackTemplate
 
 
 class RedfishEndpointUcsRack(RedfishEndpointStandard, RedfishEndpointUcsRackTemplate):
-    def __init__(self, endpoint_handler, endpoint_ip, endpoint_port, redfish_username, redfish_password, cache_filename=None, get_timeout=10, ssl_verify=False, deep_search_exlusions=True, verbose=False, debug=False):
+    def __init__(self, endpoint_handler, endpoint_ip, endpoint_port, redfish_username, redfish_password, cache_filename=None, auto_connect=True, get_timeout=10, ssl_verify=False, deep_search_exlusions=True, log_id=None, verbose=False, debug=False):
         RedfishEndpointStandard.__init__(
             self,
             endpoint_handler,
@@ -12,9 +12,11 @@ class RedfishEndpointUcsRack(RedfishEndpointStandard, RedfishEndpointUcsRackTemp
             redfish_username,
             redfish_password,
             cache_filename=cache_filename,
+            auto_connect=auto_connect,
             get_timeout=get_timeout,
             ssl_verify=ssl_verify,
             deep_search_exlusions=deep_search_exlusions,
+            log_id=log_id,
             verbose=verbose,
             debug=debug
         )
@@ -22,6 +24,7 @@ class RedfishEndpointUcsRack(RedfishEndpointStandard, RedfishEndpointUcsRackTemp
             self
         )
 
+        self.endpoint_type = 'ucsc'
         self.default_chassis_uri = '/redfish/v1/Chassis/1'
         self.chassis_uri = None
 

@@ -16,6 +16,7 @@ class RedfishEndpointFabricInterconnectInventory():
     def set_inventory(self, inventory_type, inventory_id):
         self.inventory_type = inventory_type
         self.inventory_id = inventory_id
+        self.clear_system_id()
 
     def print_inventory_chassis(self, chassis):
         order = [
@@ -71,7 +72,7 @@ class RedfishEndpointFabricInterconnectInventory():
             table=True
         )
 
-    def print_inventory(self, inventory, output):
+    def print_inventory(self, inventory, output='default'):
         if output == 'json':
             self.my_output.default(
                 json.dumps(
@@ -249,7 +250,10 @@ class RedfishEndpointFabricInterconnectInventory():
             self.log.error('get_server_to_blade_info', 'Blade IDs discovery failed')
             return
 
-        self.log.error('get_server_to_blade_info', 'Blade IDs: %s' % (json.dumps(blades, indent=4)))
+        self.log.debug(
+            'get_server_to_blade_info',
+            'Blade IDs: %s' % (json.dumps(blades, indent=4))
+        )
 
         for server in self.inventory['servers']:
             for blade in blades:

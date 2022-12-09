@@ -16,7 +16,7 @@ Options:
   --vendor TEXT    Vendor Name
   --version TEXT   Version Name
   --id TEXT        Version ID
-  --devel          Developer output  [default: False]
+  --devel          Developer output
   --help           Show this message and exit.
 ```
 

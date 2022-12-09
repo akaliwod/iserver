@@ -1,7 +1,7 @@
 import json
 import sys
-import yaml
 import traceback
+import yaml
 import click
 
 from lib.intersight import hcl_operating_system_vendor
@@ -30,7 +30,7 @@ def get_os_vendor_command(ctx, iaccount, output, devel):
     ctx.developer = devel
 
     try:
-        handler = hcl_operating_system_vendor.HclOperatingSystemVendor(iaccount)
+        handler = hcl_operating_system_vendor.HclOperatingSystemVendor(iaccount, log_id=ctx.run_id)
         vendors = handler.get_all()
         ctx.my_output.json_output(vendors)
 

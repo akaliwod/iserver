@@ -20,16 +20,19 @@ class RedfishEndpoint(RedfishCache):
         redfish_password,
         cache_name=None,
         get_timeout=10,
+        auto_connect=True,
         ssl_verify=False,
         deep_search_exlusions=True,
         tree_max_execution_time=0,
+        log_id=None,
         verbose=False,
         debug=False
         ):
 
-        RedfishCache.__init__(self)
+        RedfishCache.__init__(self, log_id=log_id)
 
         self.my_output = output_helper.OutputHelper(
+            log_id=log_id,
             verbose=verbose,
             debug=debug
         )
@@ -61,9 +64,11 @@ class RedfishEndpoint(RedfishCache):
                 redfish_username,
                 redfish_password,
                 cache_filename=endpoint_cache_filename,
+                auto_connect=auto_connect,
                 get_timeout=get_timeout,
                 ssl_verify=ssl_verify,
                 deep_search_exlusions=deep_search_exlusions,
+                log_id=log_id,
                 verbose=verbose,
                 debug=debug
             )
@@ -76,9 +81,11 @@ class RedfishEndpoint(RedfishCache):
                 redfish_username,
                 redfish_password,
                 cache_filename=endpoint_cache_filename,
+                auto_connect=auto_connect,
                 get_timeout=get_timeout,
                 ssl_verify=ssl_verify,
                 deep_search_exlusions=deep_search_exlusions,
+                log_id=log_id,
                 verbose=verbose,
                 debug=debug
             )
@@ -91,9 +98,11 @@ class RedfishEndpoint(RedfishCache):
                 redfish_username,
                 redfish_password,
                 cache_filename=endpoint_cache_filename,
+                auto_connect=auto_connect,
                 get_timeout=get_timeout,
                 ssl_verify=ssl_verify,
                 deep_search_exlusions=deep_search_exlusions,
+                log_id=log_id,
                 verbose=verbose,
                 debug=debug
             )
@@ -112,9 +121,11 @@ class RedfishEndpoint(RedfishCache):
                 redfish_username,
                 redfish_password,
                 cache_filename=endpoint_cache_filename,
+                auto_connect=auto_connect,
                 get_timeout=get_timeout,
                 ssl_verify=ssl_verify,
                 deep_search_exlusions=deep_search_exlusions,
+                log_id=log_id,
                 verbose=verbose,
                 debug=debug
             )
@@ -127,9 +138,11 @@ class RedfishEndpoint(RedfishCache):
                 redfish_username,
                 redfish_password,
                 cache_filename=endpoint_cache_filename,
+                auto_connect=auto_connect,
                 get_timeout=get_timeout,
                 ssl_verify=ssl_verify,
                 deep_search_exlusions=deep_search_exlusions,
+                log_id=log_id,
                 verbose=verbose,
                 debug=debug
             )

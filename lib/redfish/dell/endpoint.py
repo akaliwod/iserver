@@ -3,7 +3,7 @@ from lib.redfish.dell.template import RedfishEndpointDellTemplate
 
 
 class RedfishEndpointDell(RedfishEndpointStandard, RedfishEndpointDellTemplate):
-    def __init__(self, endpoint_handler, endpoint_ip, endpoint_port, redfish_username, redfish_password, cache_filename=None, get_timeout=10, ssl_verify=False, deep_search_exlusions=True, verbose=False, debug=False):
+    def __init__(self, endpoint_handler, endpoint_ip, endpoint_port, redfish_username, redfish_password, cache_filename=None, auto_connect=True, get_timeout=10, ssl_verify=False, deep_search_exlusions=True, log_id=None, verbose=False, debug=False):
         RedfishEndpointStandard.__init__(
             self,
             endpoint_handler,
@@ -12,15 +12,19 @@ class RedfishEndpointDell(RedfishEndpointStandard, RedfishEndpointDellTemplate):
             redfish_username,
             redfish_password,
             cache_filename=cache_filename,
+            auto_connect=auto_connect,
             get_timeout=get_timeout,
             ssl_verify=ssl_verify,
             deep_search_exlusions=deep_search_exlusions,
+            log_id=log_id,
             verbose=verbose,
             debug=debug
         )
         RedfishEndpointDellTemplate.__init__(
             self
         )
+
+        self.endpoint_type = 'dell'
 
     def get_excluded_tree_uri(self):
         if not self.deep_search_exclusions:

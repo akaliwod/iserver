@@ -444,7 +444,7 @@ def save_test_result(results_directory, filename, command, ref_command, success,
     if '--help' not in command:
         log = log_helper.Log()
         search_command = command.lstrip('python3').lstrip('python.exe').lstrip(' ')
-        log_directory = log.get_command_directory(search_command)
+        log_directory = log.get_command_directory(search_command, debug=False)
         if log_directory is None:
             print('Failed to find log directory: %s' % (search_command))
             sys.exit(1)
@@ -455,12 +455,14 @@ def save_test_result(results_directory, filename, command, ref_command, success,
             'iserver.info',
             'iserver.error',
             'iserver.output.debug',
+            'iserver.output.json',
             'iserver.output.verbose',
             'iserver.output.default',
             'devel.debug',
             'api.debug',
             'redfish.debug',
-            'odata.debug'
+            'odata.debug',
+            'ucsm.debug'
         ]
 
         for log_filename in files:
@@ -506,6 +508,13 @@ def extend_variables(variables, exec_section, iaccount):
         variables[exec_section['variable']] = response[exec_section['attribute']]
 
     if 'system' in exec_section:
+        my_os = platform.system()
+        if my_os == 'Windows':
+            command = command.replace('python ', 'python.exe')
+            command = command.replace('isctl ', 'isctl.exe')
+        else:
+            command = command.replace('python ', 'python3')
+
         command = template_handler.replace_variables(exec_section['system'], variables)
         try:
             (return_code, output, duration) = get_output(command)

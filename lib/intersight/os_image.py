@@ -80,12 +80,12 @@ class OsImage(IntersightCommon):
         "Link": "http://10.60.0.252/2-IMAGES/ubuntu-22.04.1-live-server-amd64.iso"
     }
     """
-    def __init__(self, iaccount):
+    def __init__(self, iaccount, log_id=None):
         self.iobject = 'softwarerepository operatingsystemfile'
-        self.hcl_os_vendor_handler = hcl_operating_system_vendor.HclOperatingSystemVendor(iaccount)
-        self.hcl_os_version_handler = hcl_operating_system.HclOperatingSystem(iaccount)
+        self.hcl_os_vendor_handler = hcl_operating_system_vendor.HclOperatingSystemVendor(iaccount, log_id=log_id)
+        self.hcl_os_version_handler = hcl_operating_system.HclOperatingSystem(iaccount, log_id=log_id)
 
-        IntersightCommon.__init__(self, iaccount, self.iobject)
+        IntersightCommon.__init__(self, iaccount, self.iobject, log_id=log_id)
 
     def get_all(self, max_errors=3, error_timeout=1):
         """Get all OS image objects

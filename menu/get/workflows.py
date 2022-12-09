@@ -81,7 +81,7 @@ def get_workflows_command(
         if len(serial_filter) > 0:
             match_rules['serials'] = serial_filter
 
-        computes_handler = computes_info.ComputesInfo(iaccount, settings)
+        computes_handler = computes_info.ComputesInfo(iaccount, settings, log_id=ctx.run_id)
         servers = computes_handler.get(match_rules=match_rules)
         if servers is None or len(servers) == 0:
             ctx.my_output.error('No servers found')

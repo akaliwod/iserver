@@ -1,4 +1,3 @@
-import json
 from lib.intersight.intersight_common import IntersightCommon
 
 
@@ -88,9 +87,10 @@ class RunningFirmware(IntersightCommon):
         "Version": "4.1(2f)"
     }
     """
-    def __init__(self, iaccount, get_filter=None):
+    def __init__(self, iaccount, get_filter=None, log_id=None):
         self.iobject = 'firmware runningfirmware'
-        IntersightCommon.__init__(self, iaccount, self.iobject, get_filter=get_filter)
+        self.cache_key = 'firmware'
+        IntersightCommon.__init__(self, iaccount, self.iobject, get_filter=get_filter, log_id=log_id, cache_key=self.cache_key)
 
     def get_registered_device_system_version(self, moid, cache=True):
         if cache:

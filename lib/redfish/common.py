@@ -12,9 +12,10 @@ requests.packages.urllib3.disable_warnings()
 
 
 class RedfishEndpointCommon():
-    def __init__(self, endpoint_handler, endpoint_ip, endpoint_port, redfish_username, redfish_password, cache_filename=None, get_timeout=10, ssl_verify=False, deep_search_exlusions=True, verbose=False, debug=False):
-        self.log = log_helper.Log()
+    def __init__(self, endpoint_handler, endpoint_ip, endpoint_port, redfish_username, redfish_password, cache_filename=None, auto_connect=True, get_timeout=10, ssl_verify=False, deep_search_exlusions=True, log_id=None, verbose=False, debug=False):
+        self.log = log_helper.Log(log_id=log_id)
         self.my_output = output_helper.OutputHelper(
+            log_id=log_id,
             verbose=verbose,
             debug=debug
         )
@@ -25,6 +26,7 @@ class RedfishEndpointCommon():
         self.redfish_username = redfish_username
         self.redfish_password = redfish_password
         self.ssl_verify = ssl_verify
+        self.auto_connect = auto_connect
 
         self.system_id = None
         self.get_timeout = get_timeout
@@ -50,6 +52,21 @@ class RedfishEndpointCommon():
                 )
 
         self.deep_search_exclusions = deep_search_exlusions
+
+    def get_endpoint_configuration(self):
+        configuration = {}
+        configuration['type'] = self.endpoint_type
+        configuration['ip'] = self.endpoint_ip
+        configuration['port'] = self.endpoint_port
+        configuration['username'] = self.redfish_username
+        configuration['password'] = self.redfish_password
+        configuration['inventory_type'] = ''
+        configuration['inventory_id'] = ''
+        if self.endpoint_type == 'fi':
+            configuration['inventory_type'] = self.inventory_type
+            configuration['inventory_id'] = self.inventory_id
+
+        return configuration
 
     def is_cache_enabled(self):
         if self.cache_filename is not None:
@@ -190,7 +207,7 @@ class RedfishEndpointCommon():
                 end_time = int(time.time() * 1000)
                 duration_ms = end_time - start_time
                 self.log.redfish(
-                    path,
+                    '%s:%s' % (self.endpoint_ip, path),
                     False,
                     duration_ms
                 )
@@ -211,7 +228,7 @@ class RedfishEndpointCommon():
                 end_time = int(time.time() * 1000)
                 duration_ms = end_time - start_time
                 self.log.redfish(
-                    path,
+                    '%s:%s' % (self.endpoint_ip, path),
                     False,
                     duration_ms
                 )
@@ -229,7 +246,7 @@ class RedfishEndpointCommon():
         end_time = int(time.time() * 1000)
         duration_ms = end_time - start_time
         self.log.redfish(
-            path,
+            '%s:%s' % (self.endpoint_ip, path),
             True,
             duration_ms
         )
@@ -441,6 +458,9 @@ class RedfishEndpointCommon():
                 filtered[key] = data[key]
 
         return filtered
+
+    def clear_system_id(self):
+        self.system_id = None
 
     def get_system_id(self):
         if self.system_id is not None:

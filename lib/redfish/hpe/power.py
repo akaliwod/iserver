@@ -9,7 +9,8 @@ class RedfishEndpointHpeTemplatePower():
             return None
 
         properties = {}
-        properties['PowerControl'] = {}
+        properties['Data'] = {}
+        properties['Data']['PowerControl'] = {}
 
         # {
         #     "PhysicalContext": "PowerSupply",
@@ -26,9 +27,9 @@ class RedfishEndpointHpeTemplatePower():
         #     "@odata.id": "/redfish/v1/Chassis/1/Power#/PowerControl/1"
         # }
         power_control_data = data['PowerControl'][0]
-        properties['PowerControl']['PowerConsumedWatts'] = power_control_data['PowerConsumedWatts']
+        properties['Data']['PowerControl']['PowerConsumedWatts'] = power_control_data['PowerConsumedWatts']
         for key in power_control_data['PowerMetrics']:
-            properties['PowerControl'][key] = power_control_data['PowerMetrics'][key]
+            properties['Data']['PowerControl'][key] = power_control_data['PowerMetrics'][key]
 
         # {
         #     "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/0",
@@ -64,7 +65,7 @@ class RedfishEndpointHpeTemplatePower():
         #         "State": "Enabled"
         #     }
         # },
-        properties['PowerSupply'] = []
+        properties['Data']['PowerSupply'] = []
         for power_supply in data['PowerSupplies']:
             power_supply_info = {}
             power_supply_info['Name'] = power_supply['Name']
@@ -78,7 +79,14 @@ class RedfishEndpointHpeTemplatePower():
             power_supply_info['PowerSupplyType'] = power_supply['PowerSupplyType']
             power_supply_info['LastPowerOutputWatts'] = power_supply['LastPowerOutputWatts']
             power_supply_info['LineInputVoltage'] = power_supply['LineInputVoltage']
-            properties['PowerSupply'].append(power_supply_info)
+            properties['Data']['PowerSupply'].append(power_supply_info)
+
+        properties['Summary'] = {}
+        properties['Summary']['Source'] = 'Redfish'
+        properties['Summary']['PowerNow'] = properties['Data']['PowerControl']['PowerConsumedWatts']
+        properties['Summary']['PowerMin'] = properties['Data']['PowerControl']['MinConsumedWatts']
+        properties['Summary']['PowerAvg'] = properties['Data']['PowerControl']['AverageConsumedWatts']
+        properties['Summary']['PowerMax'] = properties['Data']['PowerControl']['MaxConsumedWatts']
 
         return properties
 
@@ -98,7 +106,7 @@ class RedfishEndpointHpeTemplatePower():
         ]
 
         self.my_output.dictionary(
-            properties['PowerControl'],
+            properties['Data']['PowerControl'],
             title='Power Consumption (Watt)',
             underline=True,
             prefix="- ",
@@ -119,7 +127,7 @@ class RedfishEndpointHpeTemplatePower():
         ]
 
         headers = [
-            'Name',
+            'PSU Name',
             'State',
             'Health',
             'Serial',
@@ -129,7 +137,7 @@ class RedfishEndpointHpeTemplatePower():
         ]
 
         self.my_output.my_table(
-            properties['PowerSupply'],
+            properties['Data']['PowerSupply'],
             order=order,
             headers=headers,
             underline=True,

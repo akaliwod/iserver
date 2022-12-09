@@ -4,8 +4,8 @@ from lib import info_helper
 class ComputesSummary():
     """Class for server summary
     """
-    def __init__(self, settings):
-        self.info_handler = info_helper.InfoHelper()
+    def __init__(self, settings, log_id=None):
+        self.info_handler = info_helper.InfoHelper(log_id=log_id)
         self.settings = settings
 
     def get_type_summary(self, summary, servers):
@@ -398,29 +398,31 @@ class ComputesSummary():
         workflow_no_servers_count = 0
 
         for server in servers:
-            if not server['WorkflowRunning'] and len(server['WorkflowsLast']) == 0:
+            if server['Workflow']['Running'] is None and len(server['Workflow']['Last']) == 0:
                 workflow_no_servers_count = workflow_no_servers_count + 1
                 continue
 
             workflow_servers_count = workflow_servers_count + 1
 
-            if server['WorkflowRunning']:
+            if server['Workflow']['Running'] is not None:
                 workflow_running_count = workflow_running_count + 1
-                workflow_name = server['WorkflowRunning']['Name']
+                workflow_name = server['Workflow']['Running']['Name']
                 if workflow_name not in workflow_names_dict:
                     workflow_names_dict[workflow_name] = 1
                 else:
                     workflow_names_dict[workflow_name] = workflow_names_dict[workflow_name] + 1
 
-            for workflow_item in server['WorkflowsLast']:
+            for workflow_item in server['Workflow']['Last']:
+                if workflow_item['Completed']:
+                    workflow_success_count = workflow_success_count + 1
+                else:
+                    workflow_failed_count = workflow_failed_count + 1
+
                 workflow_name = workflow_item['Name']
                 if workflow_name not in workflow_names_dict:
                     workflow_names_dict[workflow_name] = 1
                 else:
                     workflow_names_dict[workflow_name] = workflow_names_dict[workflow_name] + 1
-
-            workflow_success_count = workflow_success_count + len(server['WorkflowsLastIds']) - len(server['WorkflowsLastFailedIds'])
-            workflow_failed_count = workflow_failed_count + len(server['WorkflowsLastFailedIds'])
 
         summary['workflow'] = {}
         summary['workflow']['running_count'] = workflow_running_count

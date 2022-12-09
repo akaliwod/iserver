@@ -24,10 +24,15 @@ class RedfishEndpointFabricInterconnectTemplateIdentityServer():
 
     def get_template_identity_server_properties(self):
         main = self.get_properties(self.identity_main_url)
-        system = self.get_properties(self.identity_system_url)
-        firmware = self.get_properties(self.identity_firmware_url)
+        if main is None:
+            return None
 
-        if main is None or system is None or firmware is None:
+        system = self.get_properties(self.identity_system_url)
+        if system is None:
+            return None
+
+        firmware = self.get_properties(self.identity_firmware_url)
+        if firmware is None:
             return None
 
         properties = {}

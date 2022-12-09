@@ -34,8 +34,13 @@ class ErrorExit(Exception):
 @click.option("--psu", is_flag=True, default=False, help="Show psu units")
 @click.option("--storage", is_flag=True, default=False, help="Show storage details")
 @click.option("--pci", is_flag=True, default=False, help="Show pci details")
+@click.option("--power", is_flag=True, default=False, help="Show power consumption")
+@click.option("--thermal", is_flag=True, default=False, help="Show thermal info")
+@click.option("--power", is_flag=True, default=False, help="Show power consumption")
+@click.option("--env", is_flag=True, default=False, help="Show environmental info")
 @click.option("--all", "all_info", is_flag=True, default=False, help="Show all details")
 @click.option("--days", default=7, type=click.INT, help="Last <n> days workflows")
+@click.option("--legend", "legend_on", is_flag=True, show_default=True, default=False, help="Show legend")
 @click.option("--output", "-o", type=click.Choice(['default', 'json', 'yaml'], case_sensitive=False), default='default', show_default=True)
 @click.option("--devel", is_flag=True, show_default=True, default=False, help="Developer output")
 def get_server_command(
@@ -51,8 +56,12 @@ def get_server_command(
         psu,
         storage,
         pci,
+        power,
+        thermal,
+        env,
         all_info,
         days,
+        legend_on,
         output,
         devel
         ):
@@ -67,12 +76,28 @@ def get_server_command(
             ctx.busy = True
             threading.Thread(target=progress.spinner_task, args=(ctx,)).start()
 
-        server = common.get_selected_server(ctx, iaccount, name_filter, ip_filter, serial_filter, details=False, workflow=None, action=False)
+        server = common.get_selected_server(
+            ctx,
+            iaccount,
+            name_filter,
+            ip_filter,
+            serial_filter,
+            details=False,
+            workflow=None,
+            action=False,
+            include_object=True
+        )
         if server is None:
             raise ErrorExit
 
+        if env:
+            power = True
+            thermal = True
+
         seconds = 86400 * days
         settings = common.get_server_selection_settings(details=False, workflow=seconds, action=False)
+        settings['registration'] = True
+        settings['locator'] = True
         settings['cpu'] = cpu or all_info
         settings['memory'] = memory or all_info
         settings['fw'] = firmware or all_info
@@ -80,8 +105,10 @@ def get_server_command(
         settings['fan'] = fan or all_info
         settings['psu'] = psu or all_info
         settings['storage'] = storage or all_info
-        compute_handler = compute_info.ComputeInfo(iaccount, settings=settings)
-        server_info = compute_handler.get(server=server)
+        settings['power'] = power or all_info
+        settings['thermal'] = thermal or all_info
+        compute_handler = compute_info.ComputeInfo(iaccount, settings=settings, log_id=ctx.run_id)
+        server_info = compute_handler.get_server_info(server['IntersightObject'])
 
         ctx.my_output.debug(
             json.dumps(server_info, indent=4)
@@ -104,7 +131,13 @@ def get_server_command(
         ctx.busy = False
         time.sleep(.1)
         ctx.my_output.default('')
-        compute_handler.print(server_info)
+
+        ctx.my_output.json_output(server_info)
+
+        compute_handler.print(
+            server_info,
+            legend_on=legend_on
+        )
 
     except ErrorExit:
         ctx.busy = False

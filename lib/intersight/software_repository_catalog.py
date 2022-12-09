@@ -28,9 +28,9 @@ class SoftwareRepositoryCatalog(IntersightCommon):
         "Tags": []
     }
     """
-    def __init__(self, iaccount):
+    def __init__(self, iaccount, log_id=None):
         self.iobject = 'softwarerepository catalog'
-        IntersightCommon.__init__(self, iaccount, self.iobject)
+        IntersightCommon.__init__(self, iaccount, self.iobject, log_id=log_id)
 
     def get_user_catalog_id(self, organization_id):
         items = IntersightCommon.get_all(self)

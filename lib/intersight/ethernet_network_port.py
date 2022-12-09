@@ -87,9 +87,9 @@ class EthernetNetworkPort(IntersightCommon):
         "Tags": []
     }
     """
-    def __init__(self, iaccount, get_filter=None):
+    def __init__(self, iaccount, get_filter=None, log_id=None):
         self.iobject = 'ether networkport'
-        IntersightCommon.__init__(self, iaccount, self.iobject, get_filter=get_filter)
+        IntersightCommon.__init__(self, iaccount, self.iobject, get_filter=get_filter, log_id=log_id)
 
     def get_info(self, moid, cache=True):
         if cache:

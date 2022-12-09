@@ -8,7 +8,9 @@ iserver supports Redfish (GET) API that can be executed on supported Redfish end
 - [Dell](./EndpointDell.md)
 - [HPE](./EndpointHpe.md)
 
-Note: Redfish API call runs directly on endpoint
+Notes:
+- Redfish API call runs directly on user defined endpoint with provided authentication details
+- For Intersight managed servers you can benefit from [integration](./Integration.md) feature
 
 ## Features
 

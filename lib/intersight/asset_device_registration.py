@@ -124,14 +124,24 @@ class AssetDeviceContractInformation(IntersightCommon):
     "Vendor": "Cisco Systems, Inc."
     }
     """
-    def __init__(self, iaccount):
+    def __init__(self, iaccount, log_id=None):
         self.iobject = 'asset deviceregistration'
-        IntersightCommon.__init__(self, iaccount, self.iobject)
+        self.cache_key = 'asset_device_registration'
+        IntersightCommon.__init__(self, iaccount, self.iobject, log_id=log_id, cache_key=self.cache_key)
 
     def get_info(self, moid, cache=True):
+        item = None
         if cache:
             item = self.get_cache_moid(moid)
-        else:
+            if self.log.is_cache(self.cache_key) and item is None:
+                return None
+
+        if not cache and self.log.is_cache(self.cache_key):
+            item = self.get_cache_moid(moid)
+            if item is None:
+                return None
+
+        if item is None:
             item = self.get(moid)
 
         if item is None:

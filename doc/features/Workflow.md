@@ -13,535 +13,242 @@ Options:
   --iaccount TEXT                 Intersight account  [default: isctl]
   -o, --output [default|json|yaml]
                                   [default: default]
-  --devel                         Developer output  [default: False]
+  --devel                         Developer output
   --help                          Show this message and exit.
 ```
 
 Default output
 
 ```
-# iserver get workflow 6346a23c696f6e2d30f93ad5
+# iserver get workflow 638fe4e7696f6e2d308cdd5b
 
 Get server workflow info...
 
 Server
-- Name: comp-1-p2b-eu-spdc-WMP240400FM
+- Name: comp-4-p2b-eu-spdc-WMP240400FM
 - Model: UCSC-C220-M5SX
 - Serial: WMP240400FM
 - IP: 10.58.50.44
 
 
 Workflow
-- Workflow ID: 6346a23c696f6e2d30f93ad5
-- Name: Reboot IMC
+- Workflow ID: 638fe4e7696f6e2d308cdd5b
+- Name: Power On
 - Status: COMPLETED
-- Create Time: 2022-10-12T11:17:16.245Z
-- Start Time: 2022-10-12T11:17:16.286Z
-- End Time: 2022-10-12T11:17:27.422Z
-- Duration: 00:00:11
+- Create Time: 2022-12-07T00:57:11.666Z
+- Start Time: 2022-12-07T00:57:11.811Z
+- End Time: 2022-12-07T00:57:16.472Z
+- Duration: 00:00:05
 
 
-+---------------------------+----------------------------------+---------------------------+------------+-----------+--------------------------------+
-| Task Moid                 | Description                      | Create Time               | Status     | Duration  | Details                        |
-+---------------------------+----------------------------------+---------------------------+------------+-----------+--------------------------------+
-| 6346a23c696f6e2d30f93ae6  | workflow.StartWorkflowTask       | 2022-10-12T11:17:16.398Z  | COMPLETED  | 00:00:00  |                                | 
-| 6346a23c696f6e2d30f93aef  | Invoke IMC Reboot                | 2022-10-12T11:17:16.476Z  | COMPLETED  | 00:00:10  | Cisco IMC reboot is initiated  | 
-| 6346a246696f6e2d30f93b17  | Invoke the IMC Reboot            | 2022-10-12T11:17:26.713Z  | NO_OP      | 00:00:00  |                                | 
-| 6346a246696f6e2d30f93b24  | Invoke IMC Reboot                | 2022-10-12T11:17:26.935Z  | NO_OP      | 00:00:01  |                                | 
-| 6346a247696f6e2d30f93b2f  | Update Server Inventory          | 2022-10-12T11:17:27.18Z   | NO_OP      | 00:00:00  | Skipped                        | 
-| 6346a247696f6e2d30f93b42  | workflow.SuccessEndWorkflowTask  | 2022-10-12T11:17:27.346Z  | COMPLETED  | 00:00:00  |                                | 
-+---------------------------+----------------------------------+---------------------------+------------+-----------+--------------------------------+
++--------------------------+---------------------------------------------------+--------------------------+-----------+----------+------------------------------------------------------------------------------+
+| Task Moid                | Description                                       | Create Time              | Status    | Duration | Details                                                                      |
++--------------------------+---------------------------------------------------+--------------------------+-----------+----------+------------------------------------------------------------------------------+
+| 638fe4e7696f6e2d308cdd6b | workflow.StartWorkflowTask                        | 2022-12-07T00:57:11.922Z | COMPLETED | 00:00:00 |                                                                              | 
+| 638fe4e8696f6e2d308cdd75 | Validate the platform type                        | 2022-12-07T00:57:12.01Z  | COMPLETED | 00:00:00 | Physical Summary for Server Moid 5fdfa1806176752d35e678c2 found successfully | 
+| 638fe4e9696f6e2d308cdda7 | Invoke tasks based on the platform type           | 2022-12-07T00:57:13.061Z | COMPLETED | 00:00:00 | The task evaluated to case IMCM5                                             | 
+| 638fe4e9696f6e2d308cddb9 | Check and Execute Set One Time Boot Configuration | 2022-12-07T00:57:13.279Z | COMPLETED | 00:00:00 | The task evaluated to case false                                             | 
+| 638fe4e9696f6e2d308cddcb | Invoke Server Power On                            | 2022-12-07T00:57:13.492Z | COMPLETED | 00:00:02 | Server power on is initiated                                                 | 
+| 638fe4eb696f6e2d308cddd7 | Invoke the Server Power On                        | 2022-12-07T00:57:15.603Z | NO_OP     | 00:00:00 |                                                                              | 
+| 638fe4ec696f6e2d308cdde1 | Update Server Inventory                           | 2022-12-07T00:57:16.03Z  | COMPLETED | 00:00:00 | State synchronized.                                                          | 
+| 638fe4ec696f6e2d308cddeb | workflow.SuccessEndWorkflowTask                   | 2022-12-07T00:57:16.391Z | COMPLETED | 00:00:00 |                                                                              | 
++--------------------------+---------------------------------------------------+--------------------------+-----------+----------+------------------------------------------------------------------------------+
 ```
 
 JSON output
 
 ```
-# iserver get workflow 6346a23c696f6e2d30f93ad5 -o json
+# iserver get workflow 638fe4e7696f6e2d308cdd5b -o json
 
 {
     "workflow": {
-        "Moid": "6346a23c696f6e2d30f93ad5",
-        "Name": "Reboot IMC",
+        "Moid": "638fe4e7696f6e2d308cdd5b",
+        "Name": "Power On",
         "Progress": 100,
-        "CreateTime": "2022-10-12T11:17:16.245Z",
-        "StartTime": "2022-10-12T11:17:16.286Z",
-        "EndTime": "2022-10-12T11:17:27.422Z",
+        "CreateTime": "2022-12-07T00:57:11.666Z",
+        "StartTime": "2022-12-07T00:57:11.811Z",
+        "EndTime": "2022-12-07T00:57:16.472Z",
         "Status": "COMPLETED",
         "Type": "UserDefined",
-        "CreateTimeEpoch": 1665566236245,
-        "StartTimeEpoch": 1665566236286,
-        "EndTimeEpoch": 1665566247422,
+        "CreateTimeEpoch": 1670371031666,
+        "StartTimeEpoch": 1670371031811,
+        "EndTimeEpoch": 1670371036472,
         "Running": false,
         "Completed": true,
-        "Duration": "00:00:11"
+        "Duration": "00:00:05"
     },
     "tasks": [
         {
-            "Moid": "6346a23c696f6e2d30f93ae6",
+            "Moid": "638fe4e7696f6e2d308cdd6b",
             "Name": "workflow.StartWorkflowTask",
             "Label": "",
-            "CreateTime": "2022-10-12T11:17:16.398Z",
-            "StartTime": "2022-10-12T11:17:16.392Z",
-            "EndTime": "2022-10-12T11:17:16.4Z",
+            "CreateTime": "2022-12-07T00:57:11.922Z",
+            "StartTime": "2022-12-07T00:57:11.913Z",
+            "EndTime": "2022-12-07T00:57:11.924Z",
             "Status": "COMPLETED",
             "FailureReason": "",
             "Description": "workflow.StartWorkflowTask",
-            "CreateTimeEpoch": 1665566236398,
-            "StartTimeEpoch": 1665566236392,
-            "EndTimeEpoch": 1665566236400,
+            "CreateTimeEpoch": 1670371031922,
+            "StartTimeEpoch": 1670371031913,
+            "EndTimeEpoch": 1670371031924,
             "Duration": "00:00:00"
         },
         {
-            "Moid": "6346a23c696f6e2d30f93aef",
-            "Name": "compute.ServerOperationTask",
-            "Label": "Invoke IMC Reboot",
-            "CreateTime": "2022-10-12T11:17:16.476Z",
-            "StartTime": "2022-10-12T11:17:16.467Z",
-            "EndTime": "2022-10-12T11:17:26.622Z",
+            "Moid": "638fe4e8696f6e2d308cdd75",
+            "Name": "GetServerPlatformType",
+            "Label": "Validate the platform type",
+            "CreateTime": "2022-12-07T00:57:12.01Z",
+            "StartTime": "2022-12-07T00:57:12.003Z",
+            "EndTime": "2022-12-07T00:57:12.926Z",
             "Status": "COMPLETED",
-            "FailureReason": "Cisco IMC reboot is initiated",
-            "Description": "Invoke IMC Reboot",
-            "CreateTimeEpoch": 1665566236476,
-            "StartTimeEpoch": 1665566236467,
-            "EndTimeEpoch": 1665566246622,
-            "Duration": "00:00:10"
-        },
-        {
-            "Moid": "6346a246696f6e2d30f93b17",
-            "Name": "compute.ServerRedfishOperationTask",
-            "Label": "Invoke the IMC Reboot",
-            "CreateTime": "2022-10-12T11:17:26.713Z",
-            "StartTime": "2022-10-12T11:17:26.702Z",
-            "EndTime": "2022-10-12T11:17:26.809Z",
-            "Status": "NO_OP",
-            "FailureReason": "",
-            "Description": "Invoke the IMC Reboot",
-            "CreateTimeEpoch": 1665566246713,
-            "StartTimeEpoch": 1665566246702,
-            "EndTimeEpoch": 1665566246809,
+            "FailureReason": "Physical Summary for Server Moid 5fdfa1806176752d35e678c2 found successfully",
+            "Description": "Validate the platform type",
+            "CreateTimeEpoch": 1670371032010,
+            "StartTimeEpoch": 1670371032003,
+            "EndTimeEpoch": 1670371032926,
             "Duration": "00:00:00"
         },
         {
-            "Moid": "6346a246696f6e2d30f93b24",
-            "Name": "RestartIMCInAssistManagedDevices",
-            "Label": "Invoke IMC Reboot",
-            "CreateTime": "2022-10-12T11:17:26.935Z",
-            "StartTime": "2022-10-12T11:17:26.927Z",
-            "EndTime": "2022-10-12T11:17:27.089Z",
-            "Status": "NO_OP",
-            "FailureReason": "",
-            "Description": "Invoke IMC Reboot",
-            "CreateTimeEpoch": 1665566246935,
-            "StartTimeEpoch": 1665566246927,
-            "EndTimeEpoch": 1665566247089,
-            "Duration": "00:00:01"
+            "Moid": "638fe4e9696f6e2d308cdda7",
+            "Name": "workflow.DecisionWorkflowTask",
+            "Label": "Invoke tasks based on the platform type",
+            "CreateTime": "2022-12-07T00:57:13.061Z",
+            "StartTime": "2022-12-07T00:57:13.054Z",
+            "EndTime": "2022-12-07T00:57:13.161Z",
+            "Status": "COMPLETED",
+            "FailureReason": "The task evaluated to case IMCM5",
+            "Description": "Invoke tasks based on the platform type",
+            "CreateTimeEpoch": 1670371033061,
+            "StartTimeEpoch": 1670371033054,
+            "EndTimeEpoch": 1670371033161,
+            "Duration": "00:00:00"
         },
         {
-            "Moid": "6346a247696f6e2d30f93b2f",
+            "Moid": "638fe4e9696f6e2d308cddb9",
+            "Name": "workflow.DecisionWorkflowTask",
+            "Label": "Check and Execute Set One Time Boot Configuration",
+            "CreateTime": "2022-12-07T00:57:13.279Z",
+            "StartTime": "2022-12-07T00:57:13.269Z",
+            "EndTime": "2022-12-07T00:57:13.393Z",
+            "Status": "COMPLETED",
+            "FailureReason": "The task evaluated to case false",
+            "Description": "Check and Execute Set One Time Boot Configuration",
+            "CreateTimeEpoch": 1670371033279,
+            "StartTimeEpoch": 1670371033269,
+            "EndTimeEpoch": 1670371033393,
+            "Duration": "00:00:00"
+        },
+        {
+            "Moid": "638fe4e9696f6e2d308cddcb",
+            "Name": "compute.ServerOperationTask",
+            "Label": "Invoke Server Power On",
+            "CreateTime": "2022-12-07T00:57:13.492Z",
+            "StartTime": "2022-12-07T00:57:13.482Z",
+            "EndTime": "2022-12-07T00:57:15.459Z",
+            "Status": "COMPLETED",
+            "FailureReason": "Server power on is initiated",
+            "Description": "Invoke Server Power On",
+            "CreateTimeEpoch": 1670371033492,
+            "StartTimeEpoch": 1670371033482,
+            "EndTimeEpoch": 1670371035459,
+            "Duration": "00:00:02"
+        },
+        {
+            "Moid": "638fe4eb696f6e2d308cddd7",
+            "Name": "compute.ServerRedfishOperationTask",
+            "Label": "Invoke the Server Power On",
+            "CreateTime": "2022-12-07T00:57:15.603Z",
+            "StartTime": "2022-12-07T00:57:15.593Z",
+            "EndTime": "2022-12-07T00:57:15.918Z",
+            "Status": "NO_OP",
+            "FailureReason": "",
+            "Description": "Invoke the Server Power On",
+            "CreateTimeEpoch": 1670371035603,
+            "StartTimeEpoch": 1670371035593,
+            "EndTimeEpoch": 1670371035918,
+            "Duration": "00:00:00"
+        },
+        {
+            "Moid": "638fe4ec696f6e2d308cdde1",
             "Name": "UpdateServerInventoryTask",
             "Label": "Update Server Inventory",
-            "CreateTime": "2022-10-12T11:17:27.18Z",
-            "StartTime": "2022-10-12T11:17:27.169Z",
-            "EndTime": "2022-10-12T11:17:27.248Z",
-            "Status": "NO_OP",
-            "FailureReason": "Skipped",
+            "CreateTime": "2022-12-07T00:57:16.03Z",
+            "StartTime": "2022-12-07T00:57:16.018Z",
+            "EndTime": "2022-12-07T00:57:16.275Z",
+            "Status": "COMPLETED",
+            "FailureReason": "State synchronized.",
             "Description": "Update Server Inventory",
-            "CreateTimeEpoch": 1665566247180,
-            "StartTimeEpoch": 1665566247169,
-            "EndTimeEpoch": 1665566247248,
+            "CreateTimeEpoch": 1670371036030,
+            "StartTimeEpoch": 1670371036018,
+            "EndTimeEpoch": 1670371036275,
             "Duration": "00:00:00"
         },
         {
-            "Moid": "6346a247696f6e2d30f93b42",
+            "Moid": "638fe4ec696f6e2d308cddeb",
             "Name": "workflow.SuccessEndWorkflowTask",
             "Label": "",
-            "CreateTime": "2022-10-12T11:17:27.346Z",
-            "StartTime": "2022-10-12T11:17:27.339Z",
-            "EndTime": "2022-10-12T11:17:27.349Z",
+            "CreateTime": "2022-12-07T00:57:16.391Z",
+            "StartTime": "2022-12-07T00:57:16.382Z",
+            "EndTime": "2022-12-07T00:57:16.395Z",
             "Status": "COMPLETED",
             "FailureReason": "",
             "Description": "workflow.SuccessEndWorkflowTask",
-            "CreateTimeEpoch": 1665566247346,
-            "StartTimeEpoch": 1665566247339,
-            "EndTimeEpoch": 1665566247349,
+            "CreateTimeEpoch": 1670371036391,
+            "StartTimeEpoch": 1670371036382,
+            "EndTimeEpoch": 1670371036395,
             "Duration": "00:00:00"
         }
     ],
     "server": {
-        "AccountMoid": "5be4b2ce67626c6d661ca38d",
-        "Adapters": [
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "5fdfa1736176752d35e673d8",
-                "ObjectType": "adapter.Unit",
-                "link": "https://www.intersight.com/api/v1/adapter/Units/5fdfa1736176752d35e673d8"
-            },
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "5fdfa2076176752d35e6b71d",
-                "ObjectType": "adapter.Unit",
-                "link": "https://www.intersight.com/api/v1/adapter/Units/5fdfa2076176752d35e6b71d"
-            },
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "5fdfa2076176752d35e6b726",
-                "ObjectType": "adapter.Unit",
-                "link": "https://www.intersight.com/api/v1/adapter/Units/5fdfa2076176752d35e6b726"
-            },
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "5fdfa2076176752d35e6b72f",
-                "ObjectType": "adapter.Unit",
-                "link": "https://www.intersight.com/api/v1/adapter/Units/5fdfa2076176752d35e6b72f"
-            }
-        ],
-        "AdminPowerState": "policy",
-        "AlarmSummary": {
-            "ClassId": "compute.AlarmSummary",
-            "Critical": 0,
-            "ObjectType": "compute.AlarmSummary",
-            "Warning": 0
-        },
-        "Alerts": [],
-        "Ancestors": [],
-        "AssetTag": "022C2B2",
-        "AvailableMemory": 393216,
-        "BiosBootmode": {
-            "ClassId": "mo.MoRef",
-            "Moid": "5fdfa17d6176752d35e677fe",
-            "ObjectType": "bios.BootMode",
-            "link": "https://www.intersight.com/api/v1/bios/BootModes/5fdfa17d6176752d35e677fe"
-        },
-        "BiosPostComplete": false,
-        "BiosTokenSettings": null,
-        "BiosVfSelectMemoryRasConfiguration": {
-            "ClassId": "mo.MoRef",
-            "Moid": "60d5fbe96176752d35a30a97",
-            "ObjectType": "bios.VfSelectMemoryRasConfiguration",
-            "link": "https://www.intersight.com/api/v1/bios/VfSelectMemoryRasConfigurations/60d5fbe96176752d35a30a97"
-        },
-        "Biosunits": [
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "5fdfa17b6176752d35e67765",
-                "ObjectType": "bios.Unit",
-                "link": "https://www.intersight.com/api/v1/bios/Units/5fdfa17b6176752d35e67765"
-            }
-        ],
-        "Bmc": {
-            "ClassId": "mo.MoRef",
-            "Moid": "5fdfa1bc6176752d35e693d4",
-            "ObjectType": "management.Controller",
-            "link": "https://www.intersight.com/api/v1/management/Controllers/5fdfa1bc6176752d35e693d4"
-        },
-        "Board": {
-            "ClassId": "mo.MoRef",
-            "Moid": "5fdfa1846176752d35e67a50",
-            "ObjectType": "compute.Board",
-            "link": "https://www.intersight.com/api/v1/compute/Boards/5fdfa1846176752d35e67a50"
-        },
-        "BootCddDevices": [],
-        "BootDeviceBootSecurity": {
-            "ClassId": "mo.MoRef",
-            "Moid": "5fdfa1a86176752d35e68947",
-            "ObjectType": "boot.DeviceBootSecurity",
-            "link": "https://www.intersight.com/api/v1/boot/DeviceBootSecurities/5fdfa1a86176752d35e68947"
-        },
-        "BootDeviceBootmode": {
-            "ClassId": "mo.MoRef",
-            "Moid": "5fdfa1a86176752d35e6896b",
-            "ObjectType": "boot.DeviceBootMode",
-            "link": "https://www.intersight.com/api/v1/boot/DeviceBootModes/5fdfa1a86176752d35e6896b"
-        },
-        "BootHddDevices": [
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "60000bfa6176752d35b76833",
-                "ObjectType": "boot.HddDevice",
-                "link": "https://www.intersight.com/api/v1/boot/HddDevices/60000bfa6176752d35b76833"
-            },
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "61b9d31376752d31394dd98b",
-                "ObjectType": "boot.HddDevice",
-                "link": "https://www.intersight.com/api/v1/boot/HddDevices/61b9d31376752d31394dd98b"
-            },
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "61c1e5c376752d3139f1d90a",
-                "ObjectType": "boot.HddDevice",
-                "link": "https://www.intersight.com/api/v1/boot/HddDevices/61c1e5c376752d3139f1d90a"
-            }
-        ],
-        "BootIscsiDevices": [],
-        "BootNvmeDevices": [],
-        "BootPchStorageDevices": [],
-        "BootPxeDevices": [
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "60000bf76176752d35b76641",
-                "ObjectType": "boot.PxeDevice",
-                "link": "https://www.intersight.com/api/v1/boot/PxeDevices/60000bf76176752d35b76641"
-            }
-        ],
-        "BootSanDevices": [],
-        "BootSdDevices": [],
-        "BootUefiShellDevices": [],
-        "BootUsbDevices": [],
-        "BootVmediaDevices": [
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "6013f13a6176752d35458792",
-                "ObjectType": "boot.VmediaDevice",
-                "link": "https://www.intersight.com/api/v1/boot/VmediaDevices/6013f13a6176752d35458792"
-            },
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "61b9d31376752d31394dd99b",
-                "ObjectType": "boot.VmediaDevice",
-                "link": "https://www.intersight.com/api/v1/boot/VmediaDevices/61b9d31376752d31394dd99b"
-            },
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "61c1e32276752d3139f1582d",
-                "ObjectType": "boot.VmediaDevice",
-                "link": "https://www.intersight.com/api/v1/boot/VmediaDevices/61c1e32276752d3139f1582d"
-            }
-        ],
-        "ClassId": "compute.RackUnit",
-        "ConnectionStatus": "",
-        "CreateTime": "2020-12-20T19:09:52.345Z",
-        "DeviceMoId": "5fdfa1686f72612d300b383f",
-        "DisplayNames": {
-            "hierarchical": [
-                "server-1"
-            ],
-            "short": [
-                "Server-1"
-            ]
-        },
-        "Dn": "sys/rack-unit-1",
-        "DomainGroupMoid": "5be4b2ce67626c6d661ca39c",
-        "Fanmodules": [
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "5fdfa18f6176752d35e67e6a",
-                "ObjectType": "equipment.FanModule",
-                "link": "https://www.intersight.com/api/v1/equipment/FanModules/5fdfa18f6176752d35e67e6a"
-            },
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "5fdfa18f6176752d35e67e70",
-                "ObjectType": "equipment.FanModule",
-                "link": "https://www.intersight.com/api/v1/equipment/FanModules/5fdfa18f6176752d35e67e70"
-            },
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "5fdfa18f6176752d35e67e72",
-                "ObjectType": "equipment.FanModule",
-                "link": "https://www.intersight.com/api/v1/equipment/FanModules/5fdfa18f6176752d35e67e72"
-            },
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "5fdfa18f6176752d35e67e74",
-                "ObjectType": "equipment.FanModule",
-                "link": "https://www.intersight.com/api/v1/equipment/FanModules/5fdfa18f6176752d35e67e74"
-            },
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "5fdfa18f6176752d35e67e76",
-                "ObjectType": "equipment.FanModule",
-                "link": "https://www.intersight.com/api/v1/equipment/FanModules/5fdfa18f6176752d35e67e76"
-            },
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "5fdfa18f6176752d35e67e78",
-                "ObjectType": "equipment.FanModule",
-                "link": "https://www.intersight.com/api/v1/equipment/FanModules/5fdfa18f6176752d35e67e78"
-            },
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "5fdfa18f6176752d35e67e7a",
-                "ObjectType": "equipment.FanModule",
-                "link": "https://www.intersight.com/api/v1/equipment/FanModules/5fdfa18f6176752d35e67e7a"
-            }
-        ],
-        "FaultSummary": 0,
-        "GenericInventoryHolders": [
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "5fdfa1fe6176752d35e6b22f",
-                "ObjectType": "inventory.GenericInventoryHolder",
-                "link": "https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/5fdfa1fe6176752d35e6b22f"
-            }
-        ],
-        "GraphicsCards": [],
-        "HardwareUuid": "",
-        "InventoryDeviceInfo": null,
-        "KvmIpAddresses": [
-            {
-                "Address": "10.58.50.44",
-                "Category": "Equipment",
-                "ClassId": "compute.IpAddress",
-                "DefaultGateway": "10.58.50.62",
-                "Dn": "sys/rack-unit-1/mgmt/if-1",
-                "HttpPort": 80,
-                "HttpsPort": 443,
-                "KvmPort": 2068,
-                "KvmVlan": 1,
-                "Name": "Outband",
-                "ObjectType": "compute.IpAddress",
-                "Subnet": "255.255.255.224",
-                "Type": "MgmtInterface"
-            }
-        ],
-        "KvmServerStateEnabled": false,
-        "KvmVendor": "Avocent",
-        "LocatorLed": {
-            "ClassId": "mo.MoRef",
-            "Moid": "5fdfa1936176752d35e68058",
-            "ObjectType": "equipment.LocatorLed",
-            "link": "https://www.intersight.com/api/v1/equipment/LocatorLeds/5fdfa1936176752d35e68058"
-        },
-        "ManagementMode": "IntersightStandalone",
-        "MemoryArrays": [],
-        "MemorySpeed": "2933",
-        "MgmtIdentity": null,
-        "MgmtIpAddress": "10.58.50.44",
-        "ModTime": "2022-10-12T11:16:18.093Z",
-        "Model": "UCSC-C220-M5SX",
         "Moid": "5fdfa1806176752d35e678c2",
-        "Name": "comp-1-p2b-eu-spdc-WMP240400FM",
-        "NumAdaptors": 1,
-        "NumCpuCores": 40,
-        "NumCpuCoresEnabled": 40,
-        "NumCpus": 2,
-        "NumEthHostInterfaces": 10,
-        "NumFcHostInterfaces": 2,
-        "NumThreads": 80,
-        "ObjectType": "compute.RackUnit",
-        "OperPowerState": "on",
-        "OperReason": [],
-        "OperState": "",
-        "Operability": "",
-        "Owners": [
-            "5be4b2ce67626c6d661ca38d",
-            "5fdfa1686f72612d300b383f"
-        ],
-        "PciDevices": [
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "5fdfa1d46176752d35e69f99",
-                "ObjectType": "pci.Device",
-                "link": "https://www.intersight.com/api/v1/pci/Devices/5fdfa1d46176752d35e69f99"
-            },
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "5fdfa1d46176752d35e69f9b",
-                "ObjectType": "pci.Device",
-                "link": "https://www.intersight.com/api/v1/pci/Devices/5fdfa1d46176752d35e69f9b"
-            },
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "5fdfa1d46176752d35e69f9d",
-                "ObjectType": "pci.Device",
-                "link": "https://www.intersight.com/api/v1/pci/Devices/5fdfa1d46176752d35e69f9d"
-            },
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "5fdfa1d46176752d35e69fa2",
-                "ObjectType": "pci.Device",
-                "link": "https://www.intersight.com/api/v1/pci/Devices/5fdfa1d46176752d35e69fa2"
-            },
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "5fdfa1d46176752d35e69fa4",
-                "ObjectType": "pci.Device",
-                "link": "https://www.intersight.com/api/v1/pci/Devices/5fdfa1d46176752d35e69fa4"
-            }
-        ],
-        "PermissionResources": [
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "5dee1d736972652d321d26b5",
-                "ObjectType": "organization.Organization",
-                "link": "https://www.intersight.com/api/v1/organization/Organizations/5dee1d736972652d321d26b5"
-            },
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "625706a06972652d3202a8f9",
-                "ObjectType": "organization.Organization",
-                "link": "https://www.intersight.com/api/v1/organization/Organizations/625706a06972652d3202a8f9"
-            },
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "6242d1016972652d32eda017",
-                "ObjectType": "organization.Organization",
-                "link": "https://www.intersight.com/api/v1/organization/Organizations/6242d1016972652d32eda017"
-            }
-        ],
-        "PlatformType": "IMCM5",
-        "Presence": "equipped",
-        "PreviousFru": null,
-        "Processors": [],
-        "Psus": [
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "62a7eebf76752d313928bfbc",
-                "ObjectType": "equipment.Psu",
-                "link": "https://www.intersight.com/api/v1/equipment/Psus/62a7eebf76752d313928bfbc"
-            },
-            {
-                "ClassId": "mo.MoRef",
-                "Moid": "62a7eebf76752d313928bfbe",
-                "ObjectType": "equipment.Psu",
-                "link": "https://www.intersight.com/api/v1/equipment/Psus/62a7eebf76752d313928bfbe"
-            }
-        ],
-        "RackEnclosureSlot": null,
-        "RegisteredDevice": {
-            "ClassId": "mo.MoRef",
-            "Moid": "5fdfa1686f72612d300b383f",
-            "ObjectType": "asset.DeviceRegistration",
-            "link": "https://www.intersight.com/api/v1/asset/DeviceRegistrations/5fdfa1686f72612d300b383f"
-        },
-        "Revision": "",
-        "Rn": "",
-        "SasExpanders": [],
+        "DeviceMoId": "5fdfa1686f72612d300b383f",
+        "Name": "comp-4-p2b-eu-spdc-WMP240400FM",
+        "Model": "UCSC-C220-M5SX",
         "Serial": "WMP240400FM",
-        "ServerId": 1,
-        "ServiceProfile": "",
-        "SharedScope": "",
-        "StorageControllers": [],
-        "StorageEnclosures": [],
-        "Tags": [
-            {
-                "Key": "Intersight.LicenseTier",
-                "Value": "Premier"
-            }
-        ],
-        "TopSystem": {
-            "ClassId": "mo.MoRef",
-            "Moid": "5fdfa1d16176752d35e69dd1",
-            "ObjectType": "top.System",
-            "link": "https://www.intersight.com/api/v1/top/Systems/5fdfa1d16176752d35e69dd1"
-        },
-        "TopologyScanStatus": "",
-        "TotalMemory": 393216,
-        "TunneledKvm": true,
-        "UnitPersonality": [],
-        "UserLabel": "comp-1-p2b-eu-spdc-WMP240400FM",
-        "Uuid": "E6FB96C5-2DA8-465D-A83E-E1764CA90D5B",
-        "Vendor": "Cisco Systems Inc",
-        "Vmedia": null,
-        "ManagementIp": "10.58.50.44",
+        "ManagementMode": "IntersightStandalone",
+        "OperPowerState": "on",
+        "NumCpus": 2,
+        "NumCpuCores": 40,
+        "NumThreads": 80,
         "Cpu": "2S 40C 80T",
-        "Health": "Healthy",
+        "AvailableMemory": 393216,
+        "TotalMemory": 393216,
+        "UsedMemory": 0,
         "TotalMemoryUnit": "384 [GiB]",
         "TotalMemoryGB": 384,
-        "Groups": "self-test-power,p2b",
+        "AvailableMemoryUnit": "384 [GiB]",
+        "AvailableMemoryGB": 384,
+        "UsedMemoryUnit": "0 [KiB]",
+        "UsedMemoryGB": 0,
+        "UsedMemoryPct": 0,
+        "UsedMemoryPctUnit": "0%",
+        "ManagementIp": "10.58.50.44",
+        "AlarmSummary": {
+            "Critical": 0,
+            "Warning": 0,
+            "Info": 0
+        },
+        "Health": "Healthy",
+        "Connected": false,
+        "Groups": "p2b,pod2b,test,self-test-power,power",
+        "Redfish": {
+            "Capable": true,
+            "Enabled": true
+        },
+        "UCSM": {
+            "Capable": false,
+            "Enabled": false
+        },
+        "IMC": {
+            "Capable": true,
+            "Enabled": false
+        },
         "Type": "Rack",
-        "State": "P+HRS"
+        "TypeModel": "(R) UCSC-C220-M5SX",
+        "LocatorLedOn": false,
+        "FlagState": "P+ H",
+        "FlagManagement": "cRi",
+        "FlagWorkflow": ""
     }
 }
 ```
@@ -549,385 +256,172 @@ JSON output
 YAML output
 
 ```
-# iserver get workflow 6346a23c696f6e2d30f93ad5 -o yaml
+# iserver get workflow 638fe4e7696f6e2d308cdd5b -o yaml
 
 server:
-  AccountMoid: 5be4b2ce67626c6d661ca38d
-  Adapters:
-  - ClassId: mo.MoRef
-    Moid: 5fdfa1736176752d35e673d8
-    ObjectType: adapter.Unit
-    link: https://www.intersight.com/api/v1/adapter/Units/5fdfa1736176752d35e673d8
-  - ClassId: mo.MoRef
-    Moid: 5fdfa2076176752d35e6b71d
-    ObjectType: adapter.Unit
-    link: https://www.intersight.com/api/v1/adapter/Units/5fdfa2076176752d35e6b71d
-  - ClassId: mo.MoRef
-    Moid: 5fdfa2076176752d35e6b726
-    ObjectType: adapter.Unit
-    link: https://www.intersight.com/api/v1/adapter/Units/5fdfa2076176752d35e6b726
-  - ClassId: mo.MoRef
-    Moid: 5fdfa2076176752d35e6b72f
-    ObjectType: adapter.Unit
-    link: https://www.intersight.com/api/v1/adapter/Units/5fdfa2076176752d35e6b72f
-  AdminPowerState: policy
   AlarmSummary:
-    ClassId: compute.AlarmSummary
     Critical: 0
-    ObjectType: compute.AlarmSummary
+    Info: 0
     Warning: 0
-  Alerts: []
-  Ancestors: []
-  AssetTag: 022C2B2
   AvailableMemory: 393216
-  BiosBootmode:
-    ClassId: mo.MoRef
-    Moid: 5fdfa17d6176752d35e677fe
-    ObjectType: bios.BootMode
-    link: https://www.intersight.com/api/v1/bios/BootModes/5fdfa17d6176752d35e677fe
-  BiosPostComplete: false
-  BiosTokenSettings: null
-  BiosVfSelectMemoryRasConfiguration:
-    ClassId: mo.MoRef
-    Moid: 60d5fbe96176752d35a30a97
-    ObjectType: bios.VfSelectMemoryRasConfiguration
-    link: https://www.intersight.com/api/v1/bios/VfSelectMemoryRasConfigurations/60d5fbe96176752d35a30a97
-  Biosunits:
-  - ClassId: mo.MoRef
-    Moid: 5fdfa17b6176752d35e67765
-    ObjectType: bios.Unit
-    link: https://www.intersight.com/api/v1/bios/Units/5fdfa17b6176752d35e67765
-  Bmc:
-    ClassId: mo.MoRef
-    Moid: 5fdfa1bc6176752d35e693d4
-    ObjectType: management.Controller
-    link: https://www.intersight.com/api/v1/management/Controllers/5fdfa1bc6176752d35e693d4
-  Board:
-    ClassId: mo.MoRef
-    Moid: 5fdfa1846176752d35e67a50
-    ObjectType: compute.Board
-    link: https://www.intersight.com/api/v1/compute/Boards/5fdfa1846176752d35e67a50
-  BootCddDevices: []
-  BootDeviceBootSecurity:
-    ClassId: mo.MoRef
-    Moid: 5fdfa1a86176752d35e68947
-    ObjectType: boot.DeviceBootSecurity
-    link: https://www.intersight.com/api/v1/boot/DeviceBootSecurities/5fdfa1a86176752d35e68947
-  BootDeviceBootmode:
-    ClassId: mo.MoRef
-    Moid: 5fdfa1a86176752d35e6896b
-    ObjectType: boot.DeviceBootMode
-    link: https://www.intersight.com/api/v1/boot/DeviceBootModes/5fdfa1a86176752d35e6896b
-  BootHddDevices:
-  - ClassId: mo.MoRef
-    Moid: 60000bfa6176752d35b76833
-    ObjectType: boot.HddDevice
-    link: https://www.intersight.com/api/v1/boot/HddDevices/60000bfa6176752d35b76833
-  - ClassId: mo.MoRef
-    Moid: 61b9d31376752d31394dd98b
-    ObjectType: boot.HddDevice
-    link: https://www.intersight.com/api/v1/boot/HddDevices/61b9d31376752d31394dd98b
-  - ClassId: mo.MoRef
-    Moid: 61c1e5c376752d3139f1d90a
-    ObjectType: boot.HddDevice
-    link: https://www.intersight.com/api/v1/boot/HddDevices/61c1e5c376752d3139f1d90a
-  BootIscsiDevices: []
-  BootNvmeDevices: []
-  BootPchStorageDevices: []
-  BootPxeDevices:
-  - ClassId: mo.MoRef
-    Moid: 60000bf76176752d35b76641
-    ObjectType: boot.PxeDevice
-    link: https://www.intersight.com/api/v1/boot/PxeDevices/60000bf76176752d35b76641
-  BootSanDevices: []
-  BootSdDevices: []
-  BootUefiShellDevices: []
-  BootUsbDevices: []
-  BootVmediaDevices:
-  - ClassId: mo.MoRef
-    Moid: 6013f13a6176752d35458792
-    ObjectType: boot.VmediaDevice
-    link: https://www.intersight.com/api/v1/boot/VmediaDevices/6013f13a6176752d35458792
-  - ClassId: mo.MoRef
-    Moid: 61b9d31376752d31394dd99b
-    ObjectType: boot.VmediaDevice
-    link: https://www.intersight.com/api/v1/boot/VmediaDevices/61b9d31376752d31394dd99b
-  - ClassId: mo.MoRef
-    Moid: 61c1e32276752d3139f1582d
-    ObjectType: boot.VmediaDevice
-    link: https://www.intersight.com/api/v1/boot/VmediaDevices/61c1e32276752d3139f1582d
-  ClassId: compute.RackUnit
-  ConnectionStatus: ''
+  AvailableMemoryGB: 384
+  AvailableMemoryUnit: 384 [GiB]
+  Connected: false
   Cpu: 2S 40C 80T
-  CreateTime: '2020-12-20T19:09:52.345Z'
   DeviceMoId: 5fdfa1686f72612d300b383f
-  DisplayNames:
-    hierarchical:
-    - server-1
-    short:
-    - Server-1
-  Dn: sys/rack-unit-1
-  DomainGroupMoid: 5be4b2ce67626c6d661ca39c
-  Fanmodules:
-  - ClassId: mo.MoRef
-    Moid: 5fdfa18f6176752d35e67e6a
-    ObjectType: equipment.FanModule
-    link: https://www.intersight.com/api/v1/equipment/FanModules/5fdfa18f6176752d35e67e6a
-  - ClassId: mo.MoRef
-    Moid: 5fdfa18f6176752d35e67e70
-    ObjectType: equipment.FanModule
-    link: https://www.intersight.com/api/v1/equipment/FanModules/5fdfa18f6176752d35e67e70
-  - ClassId: mo.MoRef
-    Moid: 5fdfa18f6176752d35e67e72
-    ObjectType: equipment.FanModule
-    link: https://www.intersight.com/api/v1/equipment/FanModules/5fdfa18f6176752d35e67e72
-  - ClassId: mo.MoRef
-    Moid: 5fdfa18f6176752d35e67e74
-    ObjectType: equipment.FanModule
-    link: https://www.intersight.com/api/v1/equipment/FanModules/5fdfa18f6176752d35e67e74
-  - ClassId: mo.MoRef
-    Moid: 5fdfa18f6176752d35e67e76
-    ObjectType: equipment.FanModule
-    link: https://www.intersight.com/api/v1/equipment/FanModules/5fdfa18f6176752d35e67e76
-  - ClassId: mo.MoRef
-    Moid: 5fdfa18f6176752d35e67e78
-    ObjectType: equipment.FanModule
-    link: https://www.intersight.com/api/v1/equipment/FanModules/5fdfa18f6176752d35e67e78
-  - ClassId: mo.MoRef
-    Moid: 5fdfa18f6176752d35e67e7a
-    ObjectType: equipment.FanModule
-    link: https://www.intersight.com/api/v1/equipment/FanModules/5fdfa18f6176752d35e67e7a
-  FaultSummary: 0
-  GenericInventoryHolders:
-  - ClassId: mo.MoRef
-    Moid: 5fdfa1fe6176752d35e6b22f
-    ObjectType: inventory.GenericInventoryHolder
-    link: https://www.intersight.com/api/v1/inventory/GenericInventoryHolders/5fdfa1fe6176752d35e6b22f
-  GraphicsCards: []
-  Groups: self-test-power,p2b
-  HardwareUuid: ''
+  FlagManagement: cRi
+  FlagState: P+ H
+  FlagWorkflow: ''
+  Groups: p2b,pod2b,test,self-test-power,power
   Health: Healthy
-  InventoryDeviceInfo: null
-  KvmIpAddresses:
-  - Address: 10.58.50.44
-    Category: Equipment
-    ClassId: compute.IpAddress
-    DefaultGateway: 10.58.50.62
-    Dn: sys/rack-unit-1/mgmt/if-1
-    HttpPort: 80
-    HttpsPort: 443
-    KvmPort: 2068
-    KvmVlan: 1
-    Name: Outband
-    ObjectType: compute.IpAddress
-    Subnet: 255.255.255.224
-    Type: MgmtInterface
-  KvmServerStateEnabled: false
-  KvmVendor: Avocent
-  LocatorLed:
-    ClassId: mo.MoRef
-    Moid: 5fdfa1936176752d35e68058
-    ObjectType: equipment.LocatorLed
-    link: https://www.intersight.com/api/v1/equipment/LocatorLeds/5fdfa1936176752d35e68058
+  IMC:
+    Capable: true
+    Enabled: false
+  LocatorLedOn: false
   ManagementIp: 10.58.50.44
   ManagementMode: IntersightStandalone
-  MemoryArrays: []
-  MemorySpeed: '2933'
-  MgmtIdentity: null
-  MgmtIpAddress: 10.58.50.44
-  ModTime: '2022-10-12T11:16:18.093Z'
   Model: UCSC-C220-M5SX
   Moid: 5fdfa1806176752d35e678c2
-  Name: comp-1-p2b-eu-spdc-WMP240400FM
-  NumAdaptors: 1
+  Name: comp-4-p2b-eu-spdc-WMP240400FM
   NumCpuCores: 40
-  NumCpuCoresEnabled: 40
   NumCpus: 2
-  NumEthHostInterfaces: 10
-  NumFcHostInterfaces: 2
   NumThreads: 80
-  ObjectType: compute.RackUnit
   OperPowerState: 'on'
-  OperReason: []
-  OperState: ''
-  Operability: ''
-  Owners:
-  - 5be4b2ce67626c6d661ca38d
-  - 5fdfa1686f72612d300b383f
-  PciDevices:
-  - ClassId: mo.MoRef
-    Moid: 5fdfa1d46176752d35e69f99
-    ObjectType: pci.Device
-    link: https://www.intersight.com/api/v1/pci/Devices/5fdfa1d46176752d35e69f99
-  - ClassId: mo.MoRef
-    Moid: 5fdfa1d46176752d35e69f9b
-    ObjectType: pci.Device
-    link: https://www.intersight.com/api/v1/pci/Devices/5fdfa1d46176752d35e69f9b
-  - ClassId: mo.MoRef
-    Moid: 5fdfa1d46176752d35e69f9d
-    ObjectType: pci.Device
-    link: https://www.intersight.com/api/v1/pci/Devices/5fdfa1d46176752d35e69f9d
-  - ClassId: mo.MoRef
-    Moid: 5fdfa1d46176752d35e69fa2
-    ObjectType: pci.Device
-    link: https://www.intersight.com/api/v1/pci/Devices/5fdfa1d46176752d35e69fa2
-  - ClassId: mo.MoRef
-    Moid: 5fdfa1d46176752d35e69fa4
-    ObjectType: pci.Device
-    link: https://www.intersight.com/api/v1/pci/Devices/5fdfa1d46176752d35e69fa4
-  PermissionResources:
-  - ClassId: mo.MoRef
-    Moid: 5dee1d736972652d321d26b5
-    ObjectType: organization.Organization
-    link: https://www.intersight.com/api/v1/organization/Organizations/5dee1d736972652d321d26b5
-  - ClassId: mo.MoRef
-    Moid: 625706a06972652d3202a8f9
-    ObjectType: organization.Organization
-    link: https://www.intersight.com/api/v1/organization/Organizations/625706a06972652d3202a8f9
-  - ClassId: mo.MoRef
-    Moid: 6242d1016972652d32eda017
-    ObjectType: organization.Organization
-    link: https://www.intersight.com/api/v1/organization/Organizations/6242d1016972652d32eda017
-  PlatformType: IMCM5
-  Presence: equipped
-  PreviousFru: null
-  Processors: []
-  Psus:
-  - ClassId: mo.MoRef
-    Moid: 62a7eebf76752d313928bfbc
-    ObjectType: equipment.Psu
-    link: https://www.intersight.com/api/v1/equipment/Psus/62a7eebf76752d313928bfbc
-  - ClassId: mo.MoRef
-    Moid: 62a7eebf76752d313928bfbe
-    ObjectType: equipment.Psu
-    link: https://www.intersight.com/api/v1/equipment/Psus/62a7eebf76752d313928bfbe
-  RackEnclosureSlot: null
-  RegisteredDevice:
-    ClassId: mo.MoRef
-    Moid: 5fdfa1686f72612d300b383f
-    ObjectType: asset.DeviceRegistration
-    link: https://www.intersight.com/api/v1/asset/DeviceRegistrations/5fdfa1686f72612d300b383f
-  Revision: ''
-  Rn: ''
-  SasExpanders: []
+  Redfish:
+    Capable: true
+    Enabled: true
   Serial: WMP240400FM
-  ServerId: 1
-  ServiceProfile: ''
-  SharedScope: ''
-  State: P+HRS
-  StorageControllers: []
-  StorageEnclosures: []
-  Tags:
-  - Key: Intersight.LicenseTier
-    Value: Premier
-  TopSystem:
-    ClassId: mo.MoRef
-    Moid: 5fdfa1d16176752d35e69dd1
-    ObjectType: top.System
-    link: https://www.intersight.com/api/v1/top/Systems/5fdfa1d16176752d35e69dd1
-  TopologyScanStatus: ''
   TotalMemory: 393216
   TotalMemoryGB: 384
   TotalMemoryUnit: 384 [GiB]
-  TunneledKvm: true
   Type: Rack
-  UnitPersonality: []
-  UserLabel: comp-1-p2b-eu-spdc-WMP240400FM
-  Uuid: E6FB96C5-2DA8-465D-A83E-E1764CA90D5B
-  Vendor: Cisco Systems Inc
-  Vmedia: null
+  TypeModel: (R) UCSC-C220-M5SX
+  UCSM:
+    Capable: false
+    Enabled: false
+  UsedMemory: 0
+  UsedMemoryGB: 0
+  UsedMemoryPct: 0
+  UsedMemoryPctUnit: 0%
+  UsedMemoryUnit: 0 [KiB]
 tasks:
-- CreateTime: '2022-10-12T11:17:16.398Z'
-  CreateTimeEpoch: 1665566236398
+- CreateTime: '2022-12-07T00:57:11.922Z'
+  CreateTimeEpoch: 1670371031922
   Description: workflow.StartWorkflowTask
   Duration: 00:00:00
-  EndTime: '2022-10-12T11:17:16.4Z'
-  EndTimeEpoch: 1665566236400
+  EndTime: '2022-12-07T00:57:11.924Z'
+  EndTimeEpoch: 1670371031924
   FailureReason: ''
   Label: ''
-  Moid: 6346a23c696f6e2d30f93ae6
+  Moid: 638fe4e7696f6e2d308cdd6b
   Name: workflow.StartWorkflowTask
-  StartTime: '2022-10-12T11:17:16.392Z'
-  StartTimeEpoch: 1665566236392
+  StartTime: '2022-12-07T00:57:11.913Z'
+  StartTimeEpoch: 1670371031913
   Status: COMPLETED
-- CreateTime: '2022-10-12T11:17:16.476Z'
-  CreateTimeEpoch: 1665566236476
-  Description: Invoke IMC Reboot
-  Duration: 00:00:10
-  EndTime: '2022-10-12T11:17:26.622Z'
-  EndTimeEpoch: 1665566246622
-  FailureReason: Cisco IMC reboot is initiated
-  Label: Invoke IMC Reboot
-  Moid: 6346a23c696f6e2d30f93aef
-  Name: compute.ServerOperationTask
-  StartTime: '2022-10-12T11:17:16.467Z'
-  StartTimeEpoch: 1665566236467
-  Status: COMPLETED
-- CreateTime: '2022-10-12T11:17:26.713Z'
-  CreateTimeEpoch: 1665566246713
-  Description: Invoke the IMC Reboot
+- CreateTime: '2022-12-07T00:57:12.01Z'
+  CreateTimeEpoch: 1670371032010
+  Description: Validate the platform type
   Duration: 00:00:00
-  EndTime: '2022-10-12T11:17:26.809Z'
-  EndTimeEpoch: 1665566246809
+  EndTime: '2022-12-07T00:57:12.926Z'
+  EndTimeEpoch: 1670371032926
+  FailureReason: Physical Summary for Server Moid 5fdfa1806176752d35e678c2 found successfully
+  Label: Validate the platform type
+  Moid: 638fe4e8696f6e2d308cdd75
+  Name: GetServerPlatformType
+  StartTime: '2022-12-07T00:57:12.003Z'
+  StartTimeEpoch: 1670371032003
+  Status: COMPLETED
+- CreateTime: '2022-12-07T00:57:13.061Z'
+  CreateTimeEpoch: 1670371033061
+  Description: Invoke tasks based on the platform type
+  Duration: 00:00:00
+  EndTime: '2022-12-07T00:57:13.161Z'
+  EndTimeEpoch: 1670371033161
+  FailureReason: The task evaluated to case IMCM5
+  Label: Invoke tasks based on the platform type
+  Moid: 638fe4e9696f6e2d308cdda7
+  Name: workflow.DecisionWorkflowTask
+  StartTime: '2022-12-07T00:57:13.054Z'
+  StartTimeEpoch: 1670371033054
+  Status: COMPLETED
+- CreateTime: '2022-12-07T00:57:13.279Z'
+  CreateTimeEpoch: 1670371033279
+  Description: Check and Execute Set One Time Boot Configuration
+  Duration: 00:00:00
+  EndTime: '2022-12-07T00:57:13.393Z'
+  EndTimeEpoch: 1670371033393
+  FailureReason: The task evaluated to case false
+  Label: Check and Execute Set One Time Boot Configuration
+  Moid: 638fe4e9696f6e2d308cddb9
+  Name: workflow.DecisionWorkflowTask
+  StartTime: '2022-12-07T00:57:13.269Z'
+  StartTimeEpoch: 1670371033269
+  Status: COMPLETED
+- CreateTime: '2022-12-07T00:57:13.492Z'
+  CreateTimeEpoch: 1670371033492
+  Description: Invoke Server Power On
+  Duration: 00:00:02
+  EndTime: '2022-12-07T00:57:15.459Z'
+  EndTimeEpoch: 1670371035459
+  FailureReason: Server power on is initiated
+  Label: Invoke Server Power On
+  Moid: 638fe4e9696f6e2d308cddcb
+  Name: compute.ServerOperationTask
+  StartTime: '2022-12-07T00:57:13.482Z'
+  StartTimeEpoch: 1670371033482
+  Status: COMPLETED
+- CreateTime: '2022-12-07T00:57:15.603Z'
+  CreateTimeEpoch: 1670371035603
+  Description: Invoke the Server Power On
+  Duration: 00:00:00
+  EndTime: '2022-12-07T00:57:15.918Z'
+  EndTimeEpoch: 1670371035918
   FailureReason: ''
-  Label: Invoke the IMC Reboot
-  Moid: 6346a246696f6e2d30f93b17
+  Label: Invoke the Server Power On
+  Moid: 638fe4eb696f6e2d308cddd7
   Name: compute.ServerRedfishOperationTask
-  StartTime: '2022-10-12T11:17:26.702Z'
-  StartTimeEpoch: 1665566246702
+  StartTime: '2022-12-07T00:57:15.593Z'
+  StartTimeEpoch: 1670371035593
   Status: NO_OP
-- CreateTime: '2022-10-12T11:17:26.935Z'
-  CreateTimeEpoch: 1665566246935
-  Description: Invoke IMC Reboot
-  Duration: 00:00:01
-  EndTime: '2022-10-12T11:17:27.089Z'
-  EndTimeEpoch: 1665566247089
-  FailureReason: ''
-  Label: Invoke IMC Reboot
-  Moid: 6346a246696f6e2d30f93b24
-  Name: RestartIMCInAssistManagedDevices
-  StartTime: '2022-10-12T11:17:26.927Z'
-  StartTimeEpoch: 1665566246927
-  Status: NO_OP
-- CreateTime: '2022-10-12T11:17:27.18Z'
-  CreateTimeEpoch: 1665566247180
+- CreateTime: '2022-12-07T00:57:16.03Z'
+  CreateTimeEpoch: 1670371036030
   Description: Update Server Inventory
   Duration: 00:00:00
-  EndTime: '2022-10-12T11:17:27.248Z'
-  EndTimeEpoch: 1665566247248
-  FailureReason: Skipped
+  EndTime: '2022-12-07T00:57:16.275Z'
+  EndTimeEpoch: 1670371036275
+  FailureReason: State synchronized.
   Label: Update Server Inventory
-  Moid: 6346a247696f6e2d30f93b2f
+  Moid: 638fe4ec696f6e2d308cdde1
   Name: UpdateServerInventoryTask
-  StartTime: '2022-10-12T11:17:27.169Z'
-  StartTimeEpoch: 1665566247169
-  Status: NO_OP
-- CreateTime: '2022-10-12T11:17:27.346Z'
-  CreateTimeEpoch: 1665566247346
+  StartTime: '2022-12-07T00:57:16.018Z'
+  StartTimeEpoch: 1670371036018
+  Status: COMPLETED
+- CreateTime: '2022-12-07T00:57:16.391Z'
+  CreateTimeEpoch: 1670371036391
   Description: workflow.SuccessEndWorkflowTask
   Duration: 00:00:00
-  EndTime: '2022-10-12T11:17:27.349Z'
-  EndTimeEpoch: 1665566247349
+  EndTime: '2022-12-07T00:57:16.395Z'
+  EndTimeEpoch: 1670371036395
   FailureReason: ''
   Label: ''
-  Moid: 6346a247696f6e2d30f93b42
+  Moid: 638fe4ec696f6e2d308cddeb
   Name: workflow.SuccessEndWorkflowTask
-  StartTime: '2022-10-12T11:17:27.339Z'
-  StartTimeEpoch: 1665566247339
+  StartTime: '2022-12-07T00:57:16.382Z'
+  StartTimeEpoch: 1670371036382
   Status: COMPLETED
 workflow:
   Completed: true
-  CreateTime: '2022-10-12T11:17:16.245Z'
-  CreateTimeEpoch: 1665566236245
-  Duration: 00:00:11
-  EndTime: '2022-10-12T11:17:27.422Z'
-  EndTimeEpoch: 1665566247422
-  Moid: 6346a23c696f6e2d30f93ad5
-  Name: Reboot IMC
+  CreateTime: '2022-12-07T00:57:11.666Z'
+  CreateTimeEpoch: 1670371031666
+  Duration: 00:00:05
+  EndTime: '2022-12-07T00:57:16.472Z'
+  EndTimeEpoch: 1670371036472
+  Moid: 638fe4e7696f6e2d308cdd5b
+  Name: Power On
   Progress: 100
   Running: false
-  StartTime: '2022-10-12T11:17:16.286Z'
-  StartTimeEpoch: 1665566236286
+  StartTime: '2022-12-07T00:57:11.811Z'
+  StartTimeEpoch: 1670371031811
   Status: COMPLETED
   Type: UserDefined
 ```

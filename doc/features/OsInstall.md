@@ -13,4 +13,4 @@ OS install with DHCP | iserver create os-install dhcp | [examples](OsInstallDhcp
 OS install with static IP | iserver create os-install static | [examples](OsInstallStatic.md)
 OS install with embedded kickstart  | iserver create os-install embedded | [examples](OsInstallEmbedded.md)
 
-You can also perform [batch](OsInstallBatch.md) OS installation on multiple servers based on the YAML files input.
+Perform [batch](OsInstallBatch.md) OS installation on multiple servers based on the YAML files input.

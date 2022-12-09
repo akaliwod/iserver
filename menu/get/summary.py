@@ -1,12 +1,15 @@
 import json
 import sys
 import traceback
+import threading
 import yaml
 import click
 
 from lib.intersight import computes_info
+
 from menu import defaults
 from menu import validations
+from menu import progress
 
 
 class Failure(Exception):
@@ -21,9 +24,10 @@ class ErrorExit(Exception):
 @click.pass_obj
 @click.option("--iaccount", is_flag=False, show_default=True, cls=defaults.default_from_context('iaccount'), callback=validations.validate_iaccount, type=click.STRING, help="Intersight account")
 @click.option("--group", default='', callback=validations.validate_group_serials, help="Group name")
-@click.option("--type", "server_type", type=click.Choice(['all', 'blade', 'rack'], case_sensitive=False), default='all', show_default=True)
 @click.option("--column", "-c", default='default', help="Extra summary: all,fw,pci,fan,psu,storage")
 @click.option("--loc", "locator", is_flag=True, default=False, help="Locator LED on")
+@click.option("--rack", "rack", is_flag=True, default=False, help="Filter rack servers")
+@click.option("--blade", "blade", is_flag=True, default=False, help="Filter blade servers")
 @click.option("--off", "power_off", is_flag=True, default=False, help="Filter powered off")
 @click.option("--health", is_flag=True, default=False, help="Filter unhealthy")
 @click.option("--fan", is_flag=True, default=False, help="Filter unhealthy fans")
@@ -44,8 +48,9 @@ def get_summary_command(
         ctx,
         iaccount,
         group,
-        server_type,
         column,
+        rack,
+        blade,
         locator,
         power_off,
         health,
@@ -71,22 +76,24 @@ def get_summary_command(
     ctx.developer = devel
 
     try:
+        if output not in ['json', 'yaml']:
+            ctx.busy = True
+            threading.Thread(target=progress.spinner_task, args=(ctx,)).start()
+
         settings = {}
         settings['locator'] = True
         settings['workflow'] = 86400 * days
+        settings['registration'] = True
         settings['rack'] = True
         settings['blade'] = True
-        if server_type.lower() == 'blade':
-            settings['rack'] = False
-        if server_type.lower() == 'rack':
+        if rack:
             settings['blade'] = False
+        if blade:
+            settings['rack'] = False
 
         # Selected columns for state gathering
 
-        settings['cpu'] = False
-        settings['memory'] = False
-
-        for key in ['id', 'group', 'server_setting_id']:
+        for key in ['id', 'cpu', 'memory', 'fw', 'pci', 'fan', 'psu', 'group', 'storage', 'power', 'thermal', 'server_setting_id']:
             settings[key] = False
 
         if column == 'all':
@@ -119,9 +126,11 @@ def get_summary_command(
         match_rules['fan'] = fan
         match_rules['psu'] = psu
 
-        computes_handler = computes_info.ComputesInfo(iaccount, settings)
+        computes_handler = computes_info.ComputesInfo(iaccount, settings, log_id=ctx.run_id)
         servers = computes_handler.get(match_rules=match_rules)
         summary = computes_handler.get_summary(servers)
+
+        ctx.busy = False
 
         ctx.my_output.json_output(servers)
 
@@ -142,8 +151,10 @@ def get_summary_command(
         computes_handler.print_summary(summary)
 
     except ErrorExit:
+        ctx.busy = False
         sys.exit(1)
 
     except BaseException:
+        ctx.busy = False
         ctx.my_output.traceback(traceback.format_exc())
         sys.exit(1)

@@ -12,7 +12,7 @@ requests.packages.urllib3.disable_warnings()
 
 
 class RedfishEndpointFabricInterconnect(RedfishEndpointCommon, RedfishEndpointFabricInterconnectInventory, RedfishEndpointFabricInterconnectTemplates):
-    def __init__(self, endpoint_handler, endpoint_ip, endpoint_port, redfish_username, redfish_password, cache_filename=None, get_timeout=10, ssl_verify=False, deep_search_exlusions=True, verbose=False, debug=False):
+    def __init__(self, endpoint_handler, endpoint_ip, endpoint_port, redfish_username, redfish_password, cache_filename=None, auto_connect=True, get_timeout=10, ssl_verify=False, deep_search_exlusions=True, log_id=None, verbose=False, debug=False):
         self.session_connected = False
 
         RedfishEndpointCommon.__init__(
@@ -23,9 +23,11 @@ class RedfishEndpointFabricInterconnect(RedfishEndpointCommon, RedfishEndpointFa
             redfish_username,
             redfish_password,
             cache_filename=cache_filename,
+            auto_connect=auto_connect,
             get_timeout=get_timeout,
             ssl_verify=ssl_verify,
             deep_search_exlusions=deep_search_exlusions,
+            log_id=log_id,
             verbose=verbose,
             debug=debug
         )
@@ -36,7 +38,9 @@ class RedfishEndpointFabricInterconnect(RedfishEndpointCommon, RedfishEndpointFa
             self
         )
 
-        self.connect()
+        self.endpoint_type = 'fi'
+        if auto_connect:
+            self.connect()
 
     def __del__(self):
         self.disconnect()
@@ -105,7 +109,8 @@ class RedfishEndpointFabricInterconnect(RedfishEndpointCommon, RedfishEndpointFa
                 response = self.session_handler.get(
                     url,
                     headers=headers,
-                    verify=self.ssl_verify
+                    verify=self.ssl_verify,
+                    timeout=self.get_timeout
                 )
 
             except BaseException:
@@ -122,7 +127,7 @@ class RedfishEndpointFabricInterconnect(RedfishEndpointCommon, RedfishEndpointFa
                 end_time = int(time.time() * 1000)
                 duration_ms = end_time - start_time
                 self.log.redfish(
-                    path,
+                    '%s:%s' % (self.endpoint_ip, path),
                     False,
                     duration_ms
                 )
@@ -143,7 +148,7 @@ class RedfishEndpointFabricInterconnect(RedfishEndpointCommon, RedfishEndpointFa
                 end_time = int(time.time() * 1000)
                 duration_ms = end_time - start_time
                 self.log.redfish(
-                    path,
+                    '%s:%s' % (self.endpoint_ip, path),
                     False,
                     duration_ms
                 )
@@ -161,7 +166,7 @@ class RedfishEndpointFabricInterconnect(RedfishEndpointCommon, RedfishEndpointFa
         end_time = int(time.time() * 1000)
         duration_ms = end_time - start_time
         self.log.redfish(
-            path,
+            '%s:%s' % (self.endpoint_ip, path),
             True,
             duration_ms
         )
@@ -229,7 +234,7 @@ class RedfishEndpointFabricInterconnect(RedfishEndpointCommon, RedfishEndpointFa
             end_time = int(time.time() * 1000)
             duration_ms = end_time - start_time
             self.log.redfish(
-                'connect',
+                'connect %s' % (self.endpoint_ip),
                 False,
                 duration_ms
             )
@@ -249,29 +254,20 @@ class RedfishEndpointFabricInterconnect(RedfishEndpointCommon, RedfishEndpointFa
             end_time = int(time.time() * 1000)
             duration_ms = end_time - start_time
             self.log.redfish(
-                'connect',
+                'connect %s' % (self.endpoint_ip),
                 False,
                 duration_ms
             )
 
             return False
 
-        self.log.debug(
-            'connect',
-            'Redfish authentication successful: %s' % (self.endpoint_ip)
-        )
-        self.log.debug(
-            'connect',
-            'Response headers: %s' % (str(response.headers))
-        )
-
         self.session_connected = True
 
         end_time = int(time.time() * 1000)
         duration_ms = end_time - start_time
-        self.my_output.info('Redfish connected in %s ms' % (duration_ms))
+        self.my_output.debug('Redfish connected to %s in %s ms' % (self.endpoint_ip, duration_ms))
         self.log.redfish(
-            'connect',
+            'connect %s' % (self.endpoint_ip),
             True,
             duration_ms
         )
@@ -297,6 +293,15 @@ class RedfishEndpointFabricInterconnect(RedfishEndpointCommon, RedfishEndpointFa
                 verify=self.ssl_verify
             )
         except BaseException:
+            self.log.error(
+                'disconnect',
+                'Redfish session close exception: %s' % (self.endpoint_ip)
+            )
+
+            self.log.error(
+                'disconnect',
+                traceback.format_exc()
+            )
             success = False
 
         if not success:
@@ -320,7 +325,7 @@ class RedfishEndpointFabricInterconnect(RedfishEndpointCommon, RedfishEndpointFa
                 end_time = int(time.time() * 1000)
                 duration_ms = end_time - start_time
                 self.log.redfish(
-                    'disconnect',
+                    'disconnect %s' % (self.endpoint_ip),
                     False,
                     duration_ms
                 )
@@ -340,25 +345,21 @@ class RedfishEndpointFabricInterconnect(RedfishEndpointCommon, RedfishEndpointFa
             end_time = int(time.time() * 1000)
             duration_ms = end_time - start_time
             self.log.redfish(
-                'disconnect',
+                'disconnect %s' % (self.endpoint_ip),
                 False,
                 duration_ms
             )
 
             return False
 
-        self.log.debug(
-            'disconnect',
-            'Redfish session close successful: %s' % (self.endpoint_ip)
-        )
-
         self.session_connected = False
+        self.session_handler = None
 
         end_time = int(time.time() * 1000)
         duration_ms = end_time - start_time
-        self.my_output.info('Redfish disconnected in %s ms' % (duration_ms))
+        self.my_output.info('Redfish disconnected from %s in %s ms' % (self.endpoint_ip, duration_ms))
         self.log.redfish(
-            'disconnect',
+            'disconnect %s' % (self.endpoint_ip),
             True,
             duration_ms
         )

@@ -87,9 +87,9 @@ class BiosUnit(IntersightCommon):
         "Vendor": "Cisco Systems, Inc."
     }
     """
-    def __init__(self, iaccount):
+    def __init__(self, iaccount, log_id=None):
         self.iobject = 'bios unit'
-        IntersightCommon.__init__(self, iaccount, self.iobject)
+        IntersightCommon.__init__(self, iaccount, self.iobject, log_id=log_id)
 
     def get_running_firmware_id(self, moid, cache=True):
         if cache:

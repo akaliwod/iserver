@@ -44,19 +44,19 @@ def get_os_config_command(ctx, iaccount, vendor_name, version_name, version_id, 
                 raise ErrorExit
 
         if version_id == '':
-            vendor_handler = hcl_operating_system_vendor.HclOperatingSystemVendor(iaccount)
+            vendor_handler = hcl_operating_system_vendor.HclOperatingSystemVendor(iaccount, log_id=ctx.run_id)
             vendor_id = vendor_handler.get_moid(vendor_name)
             if vendor_id is None:
                 ctx.my_output.error('Vendor not found: %s' % (vendor_name))
                 raise ErrorExit
 
-            version_handler = hcl_operating_system.HclOperatingSystem(iaccount)
+            version_handler = hcl_operating_system.HclOperatingSystem(iaccount, log_id=ctx.run_id)
             version_id = version_handler.get_vendor_version_id(vendor_id, version_name)
             if version_id is None:
                 ctx.my_output.error('Version not found: %s' % (version_name))
                 raise ErrorExit
 
-        config_handler = os_configuration_file.OsConfigurationFile(iaccount)
+        config_handler = os_configuration_file.OsConfigurationFile(iaccount, log_id=ctx.run_id)
         config_files = config_handler.get_file_for_os(version_id)
 
         if config_files is None:

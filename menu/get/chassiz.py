@@ -25,7 +25,7 @@ class ErrorExit(Exception):
 @click.option("--iaccount", is_flag=False, show_default=True, cls=defaults.default_from_context('iaccount'), callback=validations.validate_iaccount, type=click.STRING, help="Intersight account")
 @click.option("--name", "name_filter", default='', help="Name filter")
 @click.option("--serial", "serial_filter", default='', help="Serial filter")
-@click.option("--model", "model_filter", default='ucsx', help="Model filter")
+@click.option("--model", "model_filter", default='', help="Model filter")
 @click.option("--output", "-o", type=click.Choice(['default', 'json', 'yaml'], case_sensitive=False), default='default', show_default=True)
 @click.option("--devel", is_flag=True, show_default=True, default=False, help="Developer output")
 def get_chassiz_command(
@@ -48,7 +48,7 @@ def get_chassiz_command(
             ctx.busy = True
             threading.Thread(target=progress.spinner_task, args=(ctx,)).start()
 
-        chassiz_info_handler = chassiz_info.ChassizInfo(iaccount)
+        chassiz_info_handler = chassiz_info.ChassizInfo(iaccount, log_id=ctx.run_id)
 
         match_rules = {}
         match_rules['name'] = name_filter

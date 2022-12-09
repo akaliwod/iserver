@@ -360,9 +360,9 @@ class EquipmentIoCard(IntersightCommon):
         "Vid": "V01"
     }
     """
-    def __init__(self, iaccount):
+    def __init__(self, iaccount, log_id=None):
         self.iobject = 'equipment iocard'
-        IntersightCommon.__init__(self, iaccount, self.iobject)
+        IntersightCommon.__init__(self, iaccount, self.iobject, log_id=log_id)
 
     def is_iocard_on(self, item):
         if item is None:

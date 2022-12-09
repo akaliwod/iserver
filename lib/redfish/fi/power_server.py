@@ -54,7 +54,8 @@ class RedfishEndpointFabricInterconnectTemplatePowerServer():
             return None
 
         properties = {}
-        properties['PowerControl'] = {}
+        properties['Data'] = {}
+        properties['Data']['PowerControl'] = {}
 
         # "PowerControl": [
         #     {
@@ -65,12 +66,12 @@ class RedfishEndpointFabricInterconnectTemplatePowerServer():
         #     }
         # ],
         power_control_data = data['PowerControl'][0]
-        properties['PowerControl']['PowerConsumedWatts'] = power_control_data['PowerConsumedWatts']
+        properties['Data']['PowerControl']['PowerConsumedWatts'] = power_control_data['PowerConsumedWatts']
 
         server_power_utilization = self.get_server_power_utilization()
         if server_power_utilization is not None:
             for key in server_power_utilization:
-                properties['PowerControl'][key] = server_power_utilization[key]
+                properties['Data']['PowerControl'][key] = server_power_utilization[key]
 
         # "Voltages": [
         #     {
@@ -88,7 +89,7 @@ class RedfishEndpointFabricInterconnectTemplatePowerServer():
         #         "UpperThresholdFatal": 13.156999588012695
         #     }
         # ],
-        properties['Voltage'] = []
+        properties['Data']['Voltage'] = []
         for voltage in data['Voltages']:
             voltage_info = {}
             voltage_info['Name'] = voltage['Name']
@@ -97,7 +98,7 @@ class RedfishEndpointFabricInterconnectTemplatePowerServer():
             voltage_info['PhysicalContext'] = voltage['PhysicalContext']
             voltage_info['State'] = voltage['Status']['State']
             voltage_info['Health'] = voltage['Status']['Health']
-            properties['Voltage'].append(voltage_info)
+            properties['Data']['Voltage'].append(voltage_info)
 
         # {
         #     "SerialNumber": "LIT241244RQ",
@@ -152,6 +153,13 @@ class RedfishEndpointFabricInterconnectTemplatePowerServer():
 
         #     properties['PowerSupply'].append(power_supply_info)
 
+        properties['Summary'] = {}
+        properties['Summary']['Source'] = 'Redfish'
+        properties['Summary']['PowerNow'] = properties['Data']['PowerControl']['PowerConsumedWatts']
+        properties['Summary']['PowerMin'] = properties['Data']['PowerControl']['MinConsumedWatts']
+        properties['Summary']['PowerAvg'] = properties['Data']['PowerControl']['AverageConsumedWatts']
+        properties['Summary']['PowerMax'] = properties['Data']['PowerControl']['MaxConsumedWatts']
+
         return properties
 
     def print_template_power_server_consumption_properties(self, properties):
@@ -170,7 +178,7 @@ class RedfishEndpointFabricInterconnectTemplatePowerServer():
         ]
 
         self.my_output.dictionary(
-            properties['PowerControl'],
+            properties['Data']['PowerControl'],
             title='Power Consumption (Watt)',
             underline=True,
             prefix="- ",
@@ -189,7 +197,7 @@ class RedfishEndpointFabricInterconnectTemplatePowerServer():
         ]
 
         headers = [
-            'Name',
+            'Voltage Sensor',
             'State',
             'Health',
             'Volts',
@@ -197,7 +205,7 @@ class RedfishEndpointFabricInterconnectTemplatePowerServer():
         ]
 
         self.my_output.my_table(
-            properties['Voltage'],
+            properties['Data']['Voltage'],
             order=order,
             headers=headers,
             underline=True,

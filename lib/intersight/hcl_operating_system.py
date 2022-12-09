@@ -28,9 +28,9 @@ class HclOperatingSystem(IntersightCommon):
         "Version": "CentOS 7.6"
     }
     """
-    def __init__(self, iaccount):
+    def __init__(self, iaccount, log_id=None):
         self.iobject = 'hcl operatingsystem'
-        IntersightCommon.__init__(self, iaccount, self.iobject)
+        IntersightCommon.__init__(self, iaccount, self.iobject, log_id=log_id)
 
     def get_vendor_versions(self, vendor_id):
         all_versions = IntersightCommon.get_all(self)

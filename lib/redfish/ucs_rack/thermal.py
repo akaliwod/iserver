@@ -38,8 +38,13 @@ class RedfishEndpointUcsRackTemplateThermal():
             return None
 
         properties = {}
-        properties['State'] = data['Status']['State']
-        properties['Health'] = data['Status']['Health']
+        properties['Data'] = {}
+        properties['Summary'] = {}
+        properties['Summary']['FanHealth'] = True
+        properties['Summary']['SensorHealth'] = True
+        properties['Summary']['HighestTemperature'] = None
+        properties['Summary']['SmallestGap'] = None
+        properties['Summary']['OverThreshold'] = 0
 
         # {
         #     "RelatedItem": [
@@ -59,12 +64,16 @@ class RedfishEndpointUcsRackTemplateThermal():
         #     "UpperThresholdCritical": 90,
         #     "ReadingCelsius": 55
         # },
-        properties['Temperature'] = []
+        properties['Data']['Temperature'] = []
         for sensor in data['Temperatures']:
             sensor_info = {}
             sensor_info['Name'] = sensor['Name']
             sensor_info['State'] = sensor['Status']['State']
             sensor_info['Health'] = sensor['Status']['Health']
+            if sensor_info['State'] == 'Enabled':
+                if sensor_info['Health'].lower() != 'ok':
+                    properties['Summary']['SensorHealth'] = False
+
             keys = [
                 'SensorNumber',
                 'PhysicalContext',
@@ -76,9 +85,36 @@ class RedfishEndpointUcsRackTemplateThermal():
                 if key in sensor:
                     sensor_info[key] = sensor[key]
 
-            properties['Temperature'].append(sensor_info)
+            try:
+                value = int(sensor_info['ReadingCelsius'])
+                if properties['Summary']['HighestTemperature'] is None:
+                    properties['Summary']['HighestTemperature'] = value
+                else:
+                    properties['Summary']['HighestTemperature'] = max(
+                        properties['Summary']['HighestTemperature'],
+                        value
+                    )
+            except BaseException:
+                pass
 
-        properties['Temperature'] = sorted(properties['Temperature'], key=lambda i: i['Name'])
+            try:
+                value = int(sensor_info['UpperThresholdCritical']) - int(sensor_info['ReadingCelsius'])
+                if value < 0:
+                    properties['Summary']['OverThreshold'] = properties['Summary']['OverThreshold'] + 1
+                else:
+                    if properties['Summary']['SmallestGap'] is None:
+                        properties['Summary']['SmallestGap'] = value
+                    else:
+                        properties['Summary']['SmallestGap'] = min(
+                            properties['Summary']['SmallestGap'],
+                            value
+                        )
+            except BaseException:
+                pass
+
+            properties['Data']['Temperature'].append(sensor_info)
+
+        properties['Data']['Temperature'] = sorted(properties['Data']['Temperature'], key=lambda i: i['Name'])
 
         # {
         #     "RelatedItem": [
@@ -97,7 +133,7 @@ class RedfishEndpointUcsRackTemplateThermal():
         #         "Health": "OK"
         #     }
         # },
-        properties['Fan'] = []
+        properties['Data']['Fan'] = []
         for fan in data['Fans']:
             fan_info = {}
             fan_info['Name'] = fan['Name']
@@ -106,6 +142,9 @@ class RedfishEndpointUcsRackTemplateThermal():
             fan_info['Health'] = ''
             if 'Health' in fan['Status']:
                 fan_info['Health'] = fan['Status']['Health']
+                if fan_info['State'] == 'Enabled':
+                    if fan_info['Health'].lower() != 'ok':
+                        properties['Summary']['FanHealth'] = False
 
             fan_info['PhysicalContext'] = ''
             if 'PhysicalContext' in fan:
@@ -121,26 +160,32 @@ class RedfishEndpointUcsRackTemplateThermal():
 
             fan_info['Value'] = '%s %s' % (fan_info['Reading'], fan_info['ReadingUnits'])
 
-            properties['Fan'].append(fan_info)
+            properties['Data']['Fan'].append(fan_info)
 
-        properties['Fan'] = sorted(properties['Fan'], key=lambda i: i['Name'])
+        properties['Data']['Fan'] = sorted(properties['Data']['Fan'], key=lambda i: i['Name'])
 
         return properties
 
     def print_template_thermal_summary_properties(self, properties):
         keys = [
-            'State',
-            'Health'
+            'SensorHealth',
+            'HighestTemperature',
+            'SmallestGap',
+            'OverThreshold',
+            'FanHealth'
         ]
 
         headers = [
-            'State',
-            'Health'
+            'Sensors Health',
+            'Highest (C)',
+            'Smallest Gap (C)',
+            'Over Threshold',
+            'Fans Health'
         ]
 
         self.my_output.dictionary(
-            properties,
-            title='Summary',
+            properties['Summary'],
+            title='Thermal Summary',
             underline=True,
             prefix="- ",
             justify=True,
@@ -159,7 +204,7 @@ class RedfishEndpointUcsRackTemplateThermal():
         ]
 
         headers = [
-            'Name',
+            'Sensor Name',
             'State',
             'Health',
             'Location',
@@ -168,7 +213,7 @@ class RedfishEndpointUcsRackTemplateThermal():
         ]
 
         self.my_output.my_table(
-            properties['Temperature'],
+            properties['Data']['Temperature'],
             order=order,
             headers=headers,
             underline=True,
@@ -184,14 +229,14 @@ class RedfishEndpointUcsRackTemplateThermal():
         ]
 
         headers = [
-            'Name',
+            'Fan Name',
             'State',
             'Health',
             'Value'
         ]
 
         self.my_output.my_table(
-            properties['Fan'],
+            properties['Data']['Fan'],
             order=order,
             headers=headers,
             underline=True,

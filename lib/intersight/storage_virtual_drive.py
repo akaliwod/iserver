@@ -151,9 +151,10 @@ class StorageVirtualDrive(IntersightCommon):
         "VirtualDriveId": "0"
     }
     """
-    def __init__(self, iaccount):
+    def __init__(self, iaccount, log_id=None):
         self.iobject = 'storage virtualdrive'
-        IntersightCommon.__init__(self, iaccount, self.iobject)
+        self.cache_key = 'virtual_drive'
+        IntersightCommon.__init__(self, iaccount, self.iobject, log_id=log_id, cache_key=self.cache_key)
 
     def get_virtual_drives(self, compute_id, cache=True):
         if cache:

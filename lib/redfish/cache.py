@@ -8,10 +8,11 @@ from lib.redfish.settings import RedfishSettings
 
 
 class RedfishCache(RedfishSettings):
-    def __init__(self):
-        RedfishSettings.__init__(self)
-        self.log = log_helper.Log()
+    def __init__(self, log_id=None):
+        RedfishSettings.__init__(self, log_id=log_id)
+        self.log = log_helper.Log(log_id=log_id)
         self.my_output = output_helper.OutputHelper(
+            log_id=log_id,
             verbose=False,
             debug=False
         )

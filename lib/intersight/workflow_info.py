@@ -9,11 +9,11 @@ from lib.intersight import compute_info
 class WorkflowInfo():
     """Class for workflow info
     """
-    def __init__(self, iaccount, silent=False, verbose=False, debug=False):
-        self.my_output = output_helper.OutputHelper()
-        self.workflow_handler = workflow.Workflow(iaccount)
-        self.workflow_task_info_handler = workflow_task_info.WorkflowTaskInfo(iaccount)
-        self.compute_info_handler = compute_info.ComputeInfo(iaccount)
+    def __init__(self, iaccount, silent=False, verbose=False, debug=False, log_id=None):
+        self.my_output = output_helper.OutputHelper(log_id=log_id)
+        self.workflow_handler = workflow.Workflow(iaccount, log_id=log_id)
+        self.workflow_task_info_handler = workflow_task_info.WorkflowTaskInfo(iaccount, log_id=log_id)
+        self.compute_info_handler = compute_info.ComputeInfo(iaccount, log_id=log_id)
 
         self.flags = {}
         self.flags['silent'] = silent
@@ -67,7 +67,7 @@ class WorkflowInfo():
         server_id = self.get_workflow_server_id(workflow_object)
         if server_id is not None:
             server_workflow_info['server'] = self.compute_info_handler.get(
-                moid=server_id
+                server_id
             )
 
         return server_workflow_info

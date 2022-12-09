@@ -49,7 +49,7 @@ def set_redfish_cache_command(
         get_timeout,
         devel
         ):
-    """Cache redfish endpoint URI tree"""
+    """Cache redfish endpoint resources"""
 
     # iserver set redfish cache
 
@@ -91,6 +91,7 @@ def set_redfish_cache_command(
             ssl_verify=ssl_verify,
             deep_search_exlusions=exclusions,
             tree_max_execution_time=tree_max_execution_time,
+            log_id=ctx.run_id,
             verbose=False,
             debug=False
         )

@@ -34,7 +34,7 @@ def servers_power_cycle(ctx, iaccount, attributes, verbose):
 
 
 def request_os_install(ctx, iaccount, attributes, dry_run, verbose):
-    os_install_handler = os_install.OsInstall(iaccount, dry_run=dry_run, verbose=verbose)
+    os_install_handler = os_install.OsInstall(iaccount, dry_run=dry_run, verbose=verbose, log_id=ctx.run_id)
 
     if not dry_run and not verbose:
         bar_handler = IncrementalBar('Request OS installation', max=len(attributes))
@@ -60,7 +60,7 @@ def request_os_install(ctx, iaccount, attributes, dry_run, verbose):
 
 
 def wait_workflows(ctx, iaccount, servers, verbose):
-    lcm_handler = lcm_server_common.LcmServerCommon(iaccount, verbose=verbose)
+    lcm_handler = lcm_server_common.LcmServerCommon(iaccount, verbose=verbose, log_id=ctx.run_id)
     success = lcm_handler.wait_workflows(
         servers,
         'Operating System Install',

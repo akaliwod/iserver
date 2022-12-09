@@ -52,9 +52,10 @@ class EquipmentPsu(IntersightCommon):
         "Voltage": ""
     }
     """
-    def __init__(self, iaccount):
+    def __init__(self, iaccount, log_id=None):
         self.iobject = 'equipment psu'
-        IntersightCommon.__init__(self, iaccount, self.iobject)
+        self.cache_key = 'psu'
+        IntersightCommon.__init__(self, iaccount, self.iobject, log_id=log_id, cache_key=self.cache_key)
 
     def is_psu_on(self, item):
         if item is None:
